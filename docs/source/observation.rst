@@ -106,6 +106,10 @@ Functions
 
    body_occultation_viability_list
 
+   custom_observation_viability
+   
+   custom_observation_viability_list
+
    doppler_ancilliary_settings
 
    two_way_range_ancilliary_settings
@@ -237,6 +241,10 @@ Functions
 .. autofunction:: tudatpy.numerical_simulation.estimation_setup.observation.body_occultation_viability
 
 .. autofunction:: tudatpy.numerical_simulation.estimation_setup.observation.body_occultation_viability_list
+
+.. autofunction:: tudatpy.numerical_simulation.estimation_setup.observation.custom_observation_viability
+
+.. autofunction:: tudatpy.numerical_simulation.estimation_setup.observation.custom_observation_viability_list
 
 .. autofunction:: tudatpy.numerical_simulation.estimation_setup.observation.doppler_ancilliary_settings
 

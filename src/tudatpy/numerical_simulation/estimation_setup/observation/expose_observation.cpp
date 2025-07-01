@@ -2964,6 +2964,22 @@ Examples
 
      )doc" );
 
+    m.def( "custom_observation_viability",
+           py::overload_cast< const std::pair< std::string, std::string >,
+                              const std::function< bool( const std::vector< Eigen::Vector6d >, const std::vector< double > ) > >(
+                   &tom::customObservationViabilitySettings ),
+           py::arg( "link_end_id" ),
+           py::arg( "custom_viability_function" ),
+           R"doc(No documentation found.)doc" );
+
+    m.def( "custom_observation_viability_list",
+           py::overload_cast< const std::vector< std::pair< std::string, std::string > >,
+                              const std::function< bool( const std::vector< Eigen::Vector6d >, const std::vector< double > ) > >(
+                   &tom::customObservationViabilitySettings ),
+           py::arg( "link_end_id" ),
+           py::arg( "custom_viability_function" ),
+           R"doc(No documentation found.)doc" );
+
     m.def( "elevation_angle_viability_list",
            py::overload_cast< const std::vector< std::pair< std::string, std::string > >, const double >(
                    &tom::elevationAngleViabilitySettings ),
