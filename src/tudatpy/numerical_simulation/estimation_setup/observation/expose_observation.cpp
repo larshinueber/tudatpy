@@ -942,6 +942,10 @@ Examples
 
       )doc" );
 
+    py::class_< tom::CustomObservationViabilitySettings,
+                std::shared_ptr< tom::CustomObservationViabilitySettings >,
+                tom::ObservationViabilitySettings >( m, "CustomObservationViabilitySettings", R"doc()doc" );
+
     py::enum_< tom::LightTimeFailureHandling >( m, "LightTimeFailureHandling", R"doc(
 
 Enumeration of behaviour when failing to converge light-time with required settings.
