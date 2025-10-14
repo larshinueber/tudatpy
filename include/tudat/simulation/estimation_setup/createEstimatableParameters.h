@@ -2780,7 +2780,7 @@ std::shared_ptr< estimatable_parameters::EstimatableParameterSet< InitialStatePa
                 std::shared_ptr< propagators::PropagatorSettings< InitialStateParameterType > >( ),
         const std::vector< std::shared_ptr< estimatable_parameters::EstimatableParameterSettings > >& considerParameterNames =
                 std::vector< std::shared_ptr< estimatable_parameters::EstimatableParameterSettings > >( ),
-        bool printParameterOrderWarning = true )
+        const bool printParameterOrderWarning = true )
 
 {
     using namespace tudat::estimatable_parameters;
@@ -2851,8 +2851,12 @@ std::shared_ptr< estimatable_parameters::EstimatableParameterSet< InitialStatePa
     std::shared_ptr< EstimatableParameterSet< InitialStateParameterType > > considerParameters;
     if( !considerParameterNames.empty( ) )
     {
-        considerParameters =
-                createParametersToEstimate< InitialStateParameterType, TimeType >( considerParameterNames, bodies, propagatorSettings );
+        considerParameters = createParametersToEstimate< InitialStateParameterType, TimeType >(
+                considerParameterNames,
+                bodies,
+                propagatorSettings,
+                std::vector< std::shared_ptr< estimatable_parameters::EstimatableParameterSettings > >( ),
+                printParameterOrderWarning );
     }
 
     return std::make_shared< EstimatableParameterSet< InitialStateParameterType > >(
