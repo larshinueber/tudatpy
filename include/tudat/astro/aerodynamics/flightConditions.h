@@ -166,8 +166,10 @@ public:
     void setAerodynamicAngleCalculator( const std::shared_ptr< reference_frames::AerodynamicAngleCalculator > aerodynamicAngleCalculator )
     {
         aerodynamicAngleCalculator_ = aerodynamicAngleCalculator;
-        bodyCenteredPseudoBodyFixedStateFunction_ = std::bind(
-                &reference_frames::AerodynamicAngleCalculator::getCurrentAirspeedBasedBodyFixedState, aerodynamicAngleCalculator_ );
+        bodyCenteredPseudoBodyFixedStateFunction_ =
+                [aerodynamicAngleCalculator = aerodynamicAngleCalculator_]() {
+                    return aerodynamicAngleCalculator->getCurrentAirspeedBasedBodyFixedState( );
+                };
     }
 
     //! Function to return aerodynamic angle calculator object

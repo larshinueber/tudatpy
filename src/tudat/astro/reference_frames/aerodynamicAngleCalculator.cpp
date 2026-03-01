@@ -393,30 +393,27 @@ std::function< Eigen::Vector3d( const Eigen::Vector3d& ) > getAerodynamicForceTr
         std::vector< std::function< Eigen::Vector3d( const Eigen::Vector3d& ) > > rotationsList;
 
         // Get accelerationFrame to corotating frame transformation.
-        std::function< Eigen::Quaterniond( ) > firstRotation = std::bind( &AerodynamicAngleCalculator::getRotationQuaternionBetweenFrames,
-                                                                          aerodynamicAngleCalculator,
-                                                                          accelerationFrame,
-                                                                          corotating_frame );
-        rotationsList.push_back( std::bind( &transformVectorFromQuaternionFunction, std::placeholders::_1, firstRotation ) );
+        std::function< Eigen::Quaterniond( ) > firstRotation = [aerodynamicAngleCalculator, accelerationFrame]() {
+            return aerodynamicAngleCalculator->getRotationQuaternionBetweenFrames(accelerationFrame, corotating_frame);
+        };
+        rotationsList.push_back( [firstRotation](const Eigen::Vector3d& a) { return transformVectorFromQuaternionFunction(a, firstRotation); } );
 
         // Add corotating to inertial frame.
         rotationsList.push_back(
-                std::bind( &transformVectorFromQuaternionFunction, std::placeholders::_1, bodyFixedToInertialFrameFunction ) );
+                [bodyFixedToInertialFrameFunction](const Eigen::Vector3d& a) { return transformVectorFromQuaternionFunction(a, bodyFixedToInertialFrameFunction); } );
 
         // Create transformation function.
-        transformationFunction = std::bind( &transformVectorFromVectorFunctions, std::placeholders::_1, rotationsList );
+        transformationFunction = [rotationsList](const Eigen::Vector3d& a) { return transformVectorFromVectorFunctions(a, rotationsList); };
     }
     else
     {
         // Get accelerationFrame to propagationFrame frame transformation directly.
-        std::function< Eigen::Quaterniond( ) > rotationFunction =
-                std::bind( &AerodynamicAngleCalculator::getRotationQuaternionBetweenFrames,
-                           aerodynamicAngleCalculator,
-                           accelerationFrame,
-                           propagationFrame );
+        std::function< Eigen::Quaterniond( ) > rotationFunction = [aerodynamicAngleCalculator, accelerationFrame, propagationFrame]() {
+            return aerodynamicAngleCalculator->getRotationQuaternionBetweenFrames(accelerationFrame, propagationFrame);
+        };
 
         // Create transformation function.
-        transformationFunction = std::bind( &transformVectorFromQuaternionFunction, std::placeholders::_1, rotationFunction );
+        transformationFunction = [rotationFunction](const Eigen::Vector3d& a) { return transformVectorFromQuaternionFunction(a, rotationFunction); };
     }
 
     return transformationFunction;
@@ -436,19 +433,18 @@ std::function< void( Eigen::Vector3d&, const Eigen::Vector3d& ) > getAerodynamic
         std::vector< std::function< Eigen::Vector3d( const Eigen::Vector3d& ) > > rotationsList;
 
         // Get accelerationFrame to corotating frame transformation.
-        std::function< Eigen::Quaterniond( ) > firstRotation = std::bind( &AerodynamicAngleCalculator::getRotationQuaternionBetweenFrames,
-                                                                          aerodynamicAngleCalculator,
-                                                                          accelerationFrame,
-                                                                          corotating_frame );
-        rotationsList.push_back( std::bind( &transformVectorFromQuaternionFunction, std::placeholders::_1, firstRotation ) );
+        std::function< Eigen::Quaterniond( ) > firstRotation = [aerodynamicAngleCalculator, accelerationFrame]() {
+            return aerodynamicAngleCalculator->getRotationQuaternionBetweenFrames(accelerationFrame, corotating_frame);
+        };
+        rotationsList.push_back( [firstRotation](const Eigen::Vector3d& a) { return transformVectorFromQuaternionFunction(a, firstRotation); } );
 
         // Add corotating to inertial frame.
         rotationsList.push_back(
-                std::bind( &transformVectorFromQuaternionFunction, std::placeholders::_1, bodyFixedToInertialFrameFunction ) );
+                [bodyFixedToInertialFrameFunction](const Eigen::Vector3d& a) { return transformVectorFromQuaternionFunction(a, bodyFixedToInertialFrameFunction); } );
 
         // Create transformation function.
         transformationFunction =
-                std::bind( &transformVectorReferenceFromVectorFunctions, std::placeholders::_1, std::placeholders::_2, rotationsList );
+                [rotationsList](Eigen::Vector3d& a, const Eigen::Vector3d& b) { return transformVectorReferenceFromVectorFunctions(a, b, rotationsList); };
     }
     else
     {

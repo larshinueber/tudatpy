@@ -267,7 +267,7 @@ std::shared_ptr< RotationModelSettings > getHighAccuracyMarsRotationModel(
     // Set up phase correction functions (not customizable via parameters)
     std::vector< std::function< double( const double ) > > timeDependentPhaseCorrectionFunctions;
     timeDependentPhaseCorrectionFunctions.push_back(
-            std::bind( &tudat::simulation_setup::marsTimeDependentPhaseAngleCorrectionFunction, std::placeholders::_1 ) );
+            [](const double time) { return tudat::simulation_setup::marsTimeDependentPhaseAngleCorrectionFunction( time ); } );
 
     // Create the rotation model settings with all provided parameters
     rotationModelSettings =

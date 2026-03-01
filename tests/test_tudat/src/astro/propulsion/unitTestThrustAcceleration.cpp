@@ -233,7 +233,7 @@ BOOST_AUTO_TEST_CASE( testDirectionBasedRotationWithThrustAcceleration )
             std::dynamic_pointer_cast< tudat::ephemerides::DirectionBasedRotationalEphemeris >(
                     bodies.at( "Vehicle" )->getRotationalEphemeris( ) )
                     ->setInertialBodyAxisDirectionCalculator( std::make_shared< CustomBodyFixedDirectionCalculator >(
-                            std::bind( &getEarthJupiterVectorFromEnvironment, std::placeholders::_1, bodies ) ) );
+                            [&bodies]( const double time ) { return getEarthJupiterVectorFromEnvironment( time, bodies ); } ) );
             std::dynamic_pointer_cast< tudat::ephemerides::DirectionBasedRotationalEphemeris >(
                     bodies.at( "Vehicle" )->getRotationalEphemeris( ) )
                     ->setFreeRotationAngleFunction( freeRotationAngleFunction );
@@ -1209,11 +1209,8 @@ BOOST_AUTO_TEST_CASE( testInterpolatedThrustVector )
 
         std::shared_ptr< OneDimensionalInterpolator< double, Eigen::Vector3d > > thrustInterpolator =
                 interpolators::createOneDimensionalInterpolator( thrustDataInterpolation );
-        typedef interpolators::OneDimensionalInterpolator< double, Eigen::Vector3d > LocalInterpolator;
         std::function< Eigen::Vector3d( const double ) > thrustFunction =
-                std::bind( static_cast< Eigen::Vector3d ( LocalInterpolator::* )( const double ) >( &LocalInterpolator::interpolate ),
-                           thrustInterpolator,
-                           std::placeholders::_1 );
+                [thrustInterpolator]( const double time ) { return thrustInterpolator->interpolate( time ); };
         //        std::function< Eigen::Vector3d( const double ) > thrustFunction =
         //                [=](const double time){
         //            std::cout<<time<<" "<<thrustFunction2( time ).transpose( )<<std::endl<<std::endl;

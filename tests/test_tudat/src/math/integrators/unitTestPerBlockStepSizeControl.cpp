@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE( testPerBlockCircleStepSizeControl )
     Eigen::VectorXd initialState = circleState( initialTime, radius, angularRate );
 
     std::function< Eigen::VectorXd( const double, const Eigen::VectorXd& ) > stateDerivativeFunction =
-            std::bind( &circleStateDerivative, std::placeholders::_1, std::placeholders::_2, radius, angularRate );
+            [radius, angularRate]( const double t, const Eigen::VectorXd& x ) { return circleStateDerivative( t, x, radius, angularRate ); };
     for( unsigned int test = 0; test < 2; test++ )
     {
         std::shared_ptr< IntegratorSettings<> > integratorSettings;

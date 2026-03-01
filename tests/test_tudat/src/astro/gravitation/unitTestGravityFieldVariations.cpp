@@ -146,8 +146,8 @@ std::shared_ptr< GravityFieldVariationsSet > getTestGravityFieldVariations( )
     for( unsigned int i = 0; i < deformingBodies.size( ); i++ )
     {
         deformingBodyStateFunctions.push_back(
-                std::bind( &getBodyCartesianStateAtEpoch, deformingBodies.at( i ), "SSB", "J2000", "None", std::placeholders::_1 ) );
-        deformingBodyMasses.push_back( std::bind( &getBodyGravitationalParameter, deformingBodies.at( i ) ) );
+                [body = deformingBodies.at( i )](const double time) { return getBodyCartesianStateAtEpoch(body, "SSB", "J2000", "None", time); } );
+        deformingBodyMasses.push_back( [body = deformingBodies.at( i )]() { return getBodyGravitationalParameter(body); } );
     }
 
     // Define Love numbers ( constant for degree 2 only)
@@ -159,11 +159,11 @@ std::shared_ptr< GravityFieldVariationsSet > getTestGravityFieldVariations( )
     // Set up gravity field variation of Jupiter due to Galilean moons.
     std::shared_ptr< GravityFieldVariations > solidBodyGravityFieldVariations =
             std::make_shared< BasicSolidBodyTideGravityFieldVariations >(
-                    std::bind( &getBodyCartesianStateAtEpoch, "Jupiter", "SSB", "J2000", "None", std::placeholders::_1 ),
-                    std::bind( &computeRotationQuaternionBetweenFrames, "J2000", "IAU_Jupiter", std::placeholders::_1 ),
+                    [](const double time) { return getBodyCartesianStateAtEpoch("Jupiter", "SSB", "J2000", "None", time); },
+                    [](const double time) { return computeRotationQuaternionBetweenFrames("J2000", "IAU_Jupiter", time); },
                     deformingBodyStateFunctions,
                     getAverageRadius( "Jupiter" ),
-                    std::bind( &getBodyGravitationalParameter, "Jupiter" ),
+                    []() { return getBodyGravitationalParameter("Jupiter"); },
                     deformingBodyMasses,
                     loveNumbers,
                     deformingBodies );
@@ -302,8 +302,8 @@ std::shared_ptr< BasicSolidBodyTideGravityFieldVariations > getBasicGravityField
     for( unsigned int i = 0; i < deformingBodies.size( ); i++ )
     {
         deformingBodyStateFunctions.push_back(
-                std::bind( &getBodyCartesianStateAtEpoch, deformingBodies.at( i ), "SSB", "J2000", "None", std::placeholders::_1 ) );
-        deformingBodyMasses.push_back( std::bind( &getBodyGravitationalParameter, deformingBodies.at( i ) ) );
+                [body = deformingBodies.at( i )](const double time) { return getBodyCartesianStateAtEpoch(body, "SSB", "J2000", "None", time); } );
+        deformingBodyMasses.push_back( [body = deformingBodies.at( i )]() { return getBodyGravitationalParameter(body); } );
     }
 
     // Define Love numbers ( constant for degree 2 only)
@@ -315,11 +315,11 @@ std::shared_ptr< BasicSolidBodyTideGravityFieldVariations > getBasicGravityField
 
     // Set up gravity field variation of Jupiter due to Galilean moons.
     return std::make_shared< BasicSolidBodyTideGravityFieldVariations >(
-            std::bind( &getBodyCartesianStateAtEpoch, "Jupiter", "SSB", "J2000", "None", std::placeholders::_1 ),
-            std::bind( &computeRotationQuaternionBetweenFrames, "J2000", "IAU_Jupiter", std::placeholders::_1 ),
+            [](const double time) { return getBodyCartesianStateAtEpoch("Jupiter", "SSB", "J2000", "None", time); },
+            [](const double time) { return computeRotationQuaternionBetweenFrames("J2000", "IAU_Jupiter", time); },
             deformingBodyStateFunctions,
             getAverageRadius( "Jupiter" ),
-            std::bind( &getBodyGravitationalParameter, "Jupiter" ),
+            []() { return getBodyGravitationalParameter("Jupiter"); },
             deformingBodyMasses,
             loveNumbers,
             deformingBodies );
@@ -338,8 +338,8 @@ std::shared_ptr< ModeCoupledSolidBodyTideGravityFieldVariations > getModeCoupled
     for( unsigned int i = 0; i < deformingBodies.size( ); i++ )
     {
         deformingBodyStateFunctions.push_back(
-                std::bind( &getBodyCartesianStateAtEpoch, deformingBodies.at( i ), "SSB", "J2000", "None", std::placeholders::_1 ) );
-        deformingBodyMasses.push_back( std::bind( &getBodyGravitationalParameter, deformingBodies.at( i ) ) );
+                [body = deformingBodies.at( i )](const double time) { return getBodyCartesianStateAtEpoch(body, "SSB", "J2000", "None", time); } );
+        deformingBodyMasses.push_back( [body = deformingBodies.at( i )]() { return getBodyGravitationalParameter(body); } );
     }
 
     // Define Love numbers ( constant for degree 2 only)
@@ -365,11 +365,11 @@ std::shared_ptr< ModeCoupledSolidBodyTideGravityFieldVariations > getModeCoupled
 
     // Set up gravity field variation of Jupiter due to Galilean moons.
     return std::make_shared< ModeCoupledSolidBodyTideGravityFieldVariations >(
-            std::bind( &getBodyCartesianStateAtEpoch, "Jupiter", "SSB", "J2000", "None", std::placeholders::_1 ),
-            std::bind( &computeRotationQuaternionBetweenFrames, "J2000", "IAU_Jupiter", std::placeholders::_1 ),
+            [](const double time) { return getBodyCartesianStateAtEpoch("Jupiter", "SSB", "J2000", "None", time); },
+            [](const double time) { return computeRotationQuaternionBetweenFrames("J2000", "IAU_Jupiter", time); },
             deformingBodyStateFunctions,
             getAverageRadius( "Jupiter" ),
-            std::bind( &getBodyGravitationalParameter, "Jupiter" ),
+            []() { return getBodyGravitationalParameter("Jupiter"); },
             deformingBodyMasses,
             loveNumbers,
             deformingBodies );

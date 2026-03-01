@@ -68,10 +68,9 @@ RadiationPressureAccelerationPartial::getParameterPartialFunctionDerivedAccelera
     int parameterSize = 0;
     if( customAccelerationPartialSet_->customDoubleParameterPartials_.count( parameter->getParameterName( ) ) != 0 )
     {
-        partialFunction = std::bind( &RadiationPressureAccelerationPartial::createCustomParameterPartialFunction,
-                                     this,
-                                     std::placeholders::_1,
-                                     customAccelerationPartialSet_->customDoubleParameterPartials_.at( parameter->getParameterName( ) ) );
+        partialFunction = [this, customPartial = customAccelerationPartialSet_->customDoubleParameterPartials_.at( parameter->getParameterName( ) )](Eigen::MatrixXd& m) {
+            this->createCustomParameterPartialFunction(m, customPartial);
+        };
         parameterSize = 1;
     }
     else if( parameter->getParameterName( ).first == estimatable_parameters::radiation_pressure_coefficient &&
@@ -80,11 +79,10 @@ RadiationPressureAccelerationPartial::getParameterPartialFunctionDerivedAccelera
         if( std::dynamic_pointer_cast< electromagnetism::CannonballRadiationPressureTargetModel >(
                     radiationPressureAcceleration_->getTargetModel( ) ) != nullptr )
         {
-            partialFunction = std::bind( &RadiationPressureAccelerationPartial::wrtRadiationPressureCoefficient,
-                                         this,
-                                         std::placeholders::_1,
-                                         std::dynamic_pointer_cast< electromagnetism::CannonballRadiationPressureTargetModel >(
-                                                 radiationPressureAcceleration_->getTargetModel( ) ) );
+            partialFunction = [this, targetModel = std::dynamic_pointer_cast< electromagnetism::CannonballRadiationPressureTargetModel >(
+                                                 radiationPressureAcceleration_->getTargetModel( ) )](Eigen::MatrixXd& m) {
+                this->wrtRadiationPressureCoefficient(m, targetModel);
+            };
             parameterSize = 1;
         }
     }
@@ -100,12 +98,10 @@ RadiationPressureAccelerationPartial::getParameterPartialFunctionDerivedAccelera
             }
             else
             {
-                partialFunction = std::bind( &RadiationPressureAccelerationPartial::wrtSpecularReflectivity,
-                                             this,
-                                             std::placeholders::_1,
-                                             std::dynamic_pointer_cast< electromagnetism::PaneledRadiationPressureTargetModel >(
-                                                     radiationPressureAcceleration_->getTargetModel( ) ),
-                                             parameter->getParameterName( ).second.second );
+                partialFunction = [this, targetModel = std::dynamic_pointer_cast< electromagnetism::PaneledRadiationPressureTargetModel >(
+                                                     radiationPressureAcceleration_->getTargetModel( ) ), panelTypeId = parameter->getParameterName( ).second.second](Eigen::MatrixXd& m) {
+                    this->wrtSpecularReflectivity(m, targetModel, panelTypeId);
+                };
                 parameterSize = 1;
             };
         }
@@ -122,12 +118,10 @@ RadiationPressureAccelerationPartial::getParameterPartialFunctionDerivedAccelera
             }
             else
             {
-                partialFunction = std::bind( &RadiationPressureAccelerationPartial::wrtDiffuseReflectivity,
-                                             this,
-                                             std::placeholders::_1,
-                                             std::dynamic_pointer_cast< electromagnetism::PaneledRadiationPressureTargetModel >(
-                                                     radiationPressureAcceleration_->getTargetModel( ) ),
-                                             parameter->getParameterName( ).second.second );
+                partialFunction = [this, targetModel = std::dynamic_pointer_cast< electromagnetism::PaneledRadiationPressureTargetModel >(
+                                                     radiationPressureAcceleration_->getTargetModel( ) ), panelTypeId = parameter->getParameterName( ).second.second](Eigen::MatrixXd& m) {
+                    this->wrtDiffuseReflectivity(m, targetModel, panelTypeId);
+                };
                 parameterSize = 1;
             };
         }
@@ -140,17 +134,17 @@ RadiationPressureAccelerationPartial::getParameterPartialFunctionDerivedAccelera
         {
             case estimatable_parameters::source_direction_radiation_pressure_scaling_factor:
 
-                partialFunction = std::bind( &computeRadiationPressureAccelerationWrtSourceDirectionScaling,
-                                             radiationPressureAcceleration_,
-                                             std::placeholders::_1 );
+                partialFunction = [radiationPressureAcceleration = radiationPressureAcceleration_](Eigen::MatrixXd& m) {
+                    computeRadiationPressureAccelerationWrtSourceDirectionScaling(radiationPressureAcceleration, m);
+                };
                 parameterSize = 1;
 
                 break;
             case estimatable_parameters::source_perpendicular_direction_radiation_pressure_scaling_factor:
 
-                partialFunction = std::bind( &computeRadiationPressureAccelerationWrtSourcePerpendicularDirectionScaling,
-                                             radiationPressureAcceleration_,
-                                             std::placeholders::_1 );
+                partialFunction = [radiationPressureAcceleration = radiationPressureAcceleration_](Eigen::MatrixXd& m) {
+                    computeRadiationPressureAccelerationWrtSourcePerpendicularDirectionScaling(radiationPressureAcceleration, m);
+                };
                 parameterSize = 1;
 
                 break;
@@ -170,10 +164,9 @@ RadiationPressureAccelerationPartial::getParameterPartialFunctionDerivedAccelera
     int parameterSize = 0;
     if( customAccelerationPartialSet_->customVectorParameterPartials_.count( parameter->getParameterName( ) ) != 0 )
     {
-        partialFunction = std::bind( &RadiationPressureAccelerationPartial::createCustomParameterPartialFunction,
-                                     this,
-                                     std::placeholders::_1,
-                                     customAccelerationPartialSet_->customVectorParameterPartials_.at( parameter->getParameterName( ) ) );
+        partialFunction = [this, customPartial = customAccelerationPartialSet_->customVectorParameterPartials_.at( parameter->getParameterName( ) )](Eigen::MatrixXd& m) {
+            this->createCustomParameterPartialFunction(m, customPartial);
+        };
         parameterSize = parameter->getParameterSize( );
     }
     else if( parameter->getParameterName( ).first == estimatable_parameters::arc_wise_radiation_pressure_coefficient &&
@@ -185,12 +178,12 @@ RadiationPressureAccelerationPartial::getParameterPartialFunctionDerivedAccelera
                         radiationPressureAcceleration_->getTargetModel( ) ) != nullptr )
             {
                 partialFunction =
-                        std::bind( &RadiationPressureAccelerationPartial::wrtArcWiseRadiationPressureCoefficient,
-                                   this,
-                                   std::placeholders::_1,
-                                   std::dynamic_pointer_cast< estimatable_parameters::ArcWiseRadiationPressureCoefficient >( parameter ),
-                                   std::dynamic_pointer_cast< electromagnetism::CannonballRadiationPressureTargetModel >(
-                                           radiationPressureAcceleration_->getTargetModel( ) ) );
+                        [this,
+                         arcWiseParam = std::dynamic_pointer_cast< estimatable_parameters::ArcWiseRadiationPressureCoefficient >( parameter ),
+                         targetModel = std::dynamic_pointer_cast< electromagnetism::CannonballRadiationPressureTargetModel >(
+                                           radiationPressureAcceleration_->getTargetModel( ) )](Eigen::MatrixXd& m) {
+                            this->wrtArcWiseRadiationPressureCoefficient(m, arcWiseParam, targetModel);
+                        };
                 parameterSize = parameter->getParameterSize( );
             }
         }

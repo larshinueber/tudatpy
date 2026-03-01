@@ -183,13 +183,17 @@ ScalarType convertMeanAnomalyToEccentricAnomaly( const ScalarType eccentricity,
     {
         // Create an object containing the function of which we whish to obtain the root from.
         std::shared_ptr< basic_mathematics::FunctionProxy< ScalarType, ScalarType > > rootFunction =
-                std::make_shared< basic_mathematics::FunctionProxy< ScalarType, ScalarType > >( std::bind(
-                        &computeKeplersFunctionForEllipticalOrbits< ScalarType >, std::placeholders::_1, eccentricity, meanAnomaly ) );
+                std::make_shared< basic_mathematics::FunctionProxy< ScalarType, ScalarType > >(
+                        [eccentricity, meanAnomaly]( const ScalarType x ) {
+                            return computeKeplersFunctionForEllipticalOrbits< ScalarType >( x, eccentricity, meanAnomaly );
+                        } );
 
         // Add the first derivative of the root function.
         rootFunction->addBinding(
                 -1,
-                std::bind( &computeFirstDerivativeKeplersFunctionForEllipticalOrbits< ScalarType >, std::placeholders::_1, eccentricity ) );
+                [eccentricity]( const ScalarType x ) {
+                    return computeFirstDerivativeKeplersFunctionForEllipticalOrbits< ScalarType >( x, eccentricity );
+                } );
 
         // Declare initial guess.
         ScalarType initialGuess = TUDAT_NAN;
@@ -312,15 +316,16 @@ ScalarType convertMeanAnomalyToHyperbolicEccentricAnomaly( const ScalarType ecce
         // Create an object containing the function of which we whish to obtain the root from.
         std::shared_ptr< basic_mathematics::FunctionProxy< ScalarType, ScalarType > > rootFunction =
                 std::make_shared< basic_mathematics::FunctionProxy< ScalarType, ScalarType > >(
-                        std::bind( &computeKeplersFunctionForHyperbolicOrbits< ScalarType >,
-                                   std::placeholders::_1,
-                                   eccentricity,
-                                   hyperbolicMeanAnomaly ) );
+                        [eccentricity, hyperbolicMeanAnomaly]( const ScalarType x ) {
+                            return computeKeplersFunctionForHyperbolicOrbits< ScalarType >( x, eccentricity, hyperbolicMeanAnomaly );
+                        } );
 
         // Add the first derivative of the root function.
         rootFunction->addBinding(
                 -1,
-                std::bind( &computeFirstDerivativeKeplersFunctionForHyperbolicOrbits< ScalarType >, std::placeholders::_1, eccentricity ) );
+                [eccentricity]( const ScalarType x ) {
+                    return computeFirstDerivativeKeplersFunctionForHyperbolicOrbits< ScalarType >( x, eccentricity );
+                } );
 
         // Declare initial guess.
         ScalarType initialGuess = TUDAT_NAN;

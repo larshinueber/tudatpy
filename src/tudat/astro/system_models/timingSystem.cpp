@@ -178,7 +178,7 @@ std::pair< std::map< double, double >, std::vector< double > > convertAllanVaria
         // for( unsigned int i = 0; i != allanVarianceAmplitudes.size(); i++){
         double mu = iter->second.first;
         alphas.push_back( -mu - 1 );
-        auto integrationFunction = std::bind( &genericIntegrationFunction, std::placeholders::_1, mu, sinExponent, factor );
+        auto integrationFunction = [mu, sinExponent, factor](const double a) { return genericIntegrationFunction(a, mu, sinExponent, factor); };
         GaussianQuadrature< double, double > integrator( integrationFunction, lowerLimit, upperLimit, numberOfNodes );
         double integral = integrator.getQuadrature( );
         double B = iter->second.second;
@@ -340,11 +340,8 @@ std::function< double( const double ) > getClockNoiseInterpolator( const std::ma
     std::map< double, double > clockNoiseMap =
             generateClockNoiseMap( allanVarianceAmplitudes, startTime, endTime, timeStep, isInverseSquareTermFlickerPhaseNoise, seed );
 
-    typedef interpolators::OneDimensionalInterpolator< double, double > LocalInterpolator;
-
-    return std::bind( static_cast< double ( LocalInterpolator::* )( const double ) >( &LocalInterpolator::interpolate ),
-                      std::make_shared< interpolators::LinearInterpolatorDouble >( clockNoiseMap ),
-                      std::placeholders::_1 );
+    auto interpolator = std::make_shared< interpolators::LinearInterpolatorDouble >( clockNoiseMap );
+    return [interpolator](const double a) { return interpolator->interpolate(a); };
 }
 
 std::function< double( const double ) > getColoredClockNoiseInterpolator( const std::map< int, double > allanVarianceNodes,
@@ -357,11 +354,8 @@ std::function< double( const double ) > getColoredClockNoiseInterpolator( const 
     std::map< double, double > clockNoiseMap =
             generateColoredClockNoiseMap( allanVarianceNodes, varianceType, startTime, endTime, timeStep, seed );
 
-    typedef interpolators::OneDimensionalInterpolator< double, double > LocalInterpolator;
-
-    return std::bind( static_cast< double ( LocalInterpolator::* )( const double ) >( &LocalInterpolator::interpolate ),
-                      std::make_shared< interpolators::LinearInterpolatorDouble >( clockNoiseMap ),
-                      std::placeholders::_1 );
+    auto interpolator = std::make_shared< interpolators::LinearInterpolatorDouble >( clockNoiseMap );
+    return [interpolator](const double a) { return interpolator->interpolate(a); };
 }
 #endif
 

@@ -33,13 +33,12 @@ double computeEquilibiumWallTemperature( const std::function< double( const doub
     try
     {
         root_finders::SecantRootFinder<>::TerminationFunction terminationConditionFunction =
-                std::bind( &root_finders::RootRelativeToleranceTerminationCondition< double >::checkTerminationCondition,
-                           std::make_shared< root_finders::RootRelativeToleranceTerminationCondition< double > >( ),
-                           std::placeholders::_1,
-                           std::placeholders::_2,
-                           std::placeholders::_3,
-                           std::placeholders::_4,
-                           std::placeholders::_5 );
+                [cond = std::make_shared< root_finders::RootRelativeToleranceTerminationCondition< double > >( )](
+                        const double currentRootGuess, const double currentRootChange,
+                        const double currentFunctionValue, const int numberOfIterations,
+                        const int maximumNumberOfIterations) {
+                    return cond->checkTerminationCondition(currentRootGuess, currentRootChange, currentFunctionValue, numberOfIterations, maximumNumberOfIterations);
+                };
         root_finders::SecantRootFinder<> secant( terminationConditionFunction );
         wallTemperature = secant.execute( equilibriumTemperatureFunction, equilibriumTemperatureFunction->getInitialGuess( ) );
     }
@@ -49,13 +48,12 @@ double computeEquilibiumWallTemperature( const std::function< double( const doub
         try
         {
             root_finders::Bisection<>::TerminationFunction terminationConditionFunction =
-                    std::bind( &root_finders::RootRelativeToleranceTerminationCondition< double >::checkTerminationCondition,
-                               std::make_shared< root_finders::RootRelativeToleranceTerminationCondition< double > >( ),
-                               std::placeholders::_1,
-                               std::placeholders::_2,
-                               std::placeholders::_3,
-                               std::placeholders::_4,
-                               std::placeholders::_5 );
+                    [cond = std::make_shared< root_finders::RootRelativeToleranceTerminationCondition< double > >( )](
+                            const double currentRootGuess, const double currentRootChange,
+                            const double currentFunctionValue, const int numberOfIterations,
+                            const int maximumNumberOfIterations) {
+                        return cond->checkTerminationCondition(currentRootGuess, currentRootChange, currentFunctionValue, numberOfIterations, maximumNumberOfIterations);
+                    };
             root_finders::Bisection<> bisection( terminationConditionFunction );
             wallTemperature = bisection.execute( equilibriumTemperatureFunction, equilibriumTemperatureFunction->getInitialGuess( ) );
         }

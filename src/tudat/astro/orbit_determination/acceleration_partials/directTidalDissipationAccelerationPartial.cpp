@@ -132,7 +132,7 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > DirectTidalDissipati
                       bodiesCausingDeformation.end( ) ) )
                 {
                     partialFunctionPair = std::make_pair(
-                            std::bind( &DirectTidalDissipationAccelerationPartial::wrtTidalTimeLag, this, std::placeholders::_1 ), 1 );
+                            [this](Eigen::MatrixXd& m) { this->wrtTidalTimeLag(m); }, 1 );
                 }
             }
         }
@@ -154,7 +154,7 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > DirectTidalDissipati
                       bodiesCausingDeformation.end( ) ) )
                 {
                     partialFunctionPair = std::make_pair(
-                            std::bind( &DirectTidalDissipationAccelerationPartial::wrtTidalTimeLag, this, std::placeholders::_1 ), 1 );
+                            [this](Eigen::MatrixXd& m) { this->wrtTidalTimeLag(m); }, 1 );
                 }
             }
         }
@@ -179,8 +179,9 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > DirectTidalDissipati
                       bodiesCausingDeformation.end( ) ) )
                 {
                     partialFunctionPair = std::make_pair(
-                            std::bind(
-                                    &DirectTidalDissipationAccelerationPartial::wrtInverseTidalQualityFactor, this, std::placeholders::_1 ),
+                            [this](Eigen::MatrixXd& m) {
+                                this->wrtInverseTidalQualityFactor(m);
+                            },
                             1 );
                 }
             }
@@ -203,8 +204,9 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > DirectTidalDissipati
                       bodiesCausingDeformation.end( ) ) )
                 {
                     partialFunctionPair = std::make_pair(
-                            std::bind(
-                                    &DirectTidalDissipationAccelerationPartial::wrtInverseTidalQualityFactor, this, std::placeholders::_1 ),
+                            [this](Eigen::MatrixXd& m) {
+                                this->wrtInverseTidalQualityFactor(m);
+                            },
                             1 );
                 }
             }
@@ -268,8 +270,9 @@ DirectTidalDissipationAccelerationPartial::getGravitationalParameterPartialFunct
         {
             if( !tidalAcceleration_->getModelTideOnPlanet( ) )
             {
-                partialFunction = std::bind(
-                        &DirectTidalDissipationAccelerationPartial::wrtGravitationalParameterOfPlanet, this, std::placeholders::_1 );
+                partialFunction = [this](Eigen::MatrixXd& m) {
+                    this->wrtGravitationalParameterOfPlanet(m);
+                };
                 numberOfColumns = 1;
             }
         }
@@ -277,8 +280,9 @@ DirectTidalDissipationAccelerationPartial::getGravitationalParameterPartialFunct
         // Check if parameter body is accelerated body, and if the mutual acceleration is used.
         if( parameterId.second.first == acceleratedBody_ )
         {
-            partialFunction = std::bind(
-                    &DirectTidalDissipationAccelerationPartial::wrtGravitationalParameterOfSatellite, this, std::placeholders::_1 );
+            partialFunction = [this](Eigen::MatrixXd& m) {
+                this->wrtGravitationalParameterOfSatellite(m);
+            };
             numberOfColumns = 1;
         }
     }

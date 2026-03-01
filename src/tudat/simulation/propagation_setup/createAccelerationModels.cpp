@@ -324,25 +324,23 @@ std::shared_ptr< CentralGravitationalAccelerationModel3d > createCentralGravityA
         // Set correct value for gravitational parameter.
         if( !useMutualAttraction )
         {
-            gravitationalParameterFunction = std::bind( &gravitation::GravityFieldModel::getGravitationalParameter,
-                                                        bodyExertingAcceleration->getGravityFieldModel( ) );
+            auto gf = bodyExertingAcceleration->getGravityFieldModel( );
+            gravitationalParameterFunction = [gf]( ) { return gf->getGravitationalParameter( ); };
         }
         else
         {
-            std::function< double( ) > gravitationalParameterOfBodyExertingAcceleration = std::bind(
-                    &gravitation::GravityFieldModel::getGravitationalParameter, bodyExertingAcceleration->getGravityFieldModel( ) );
-            std::function< double( ) > gravitationalParameterOfBodyUndergoingAcceleration = std::bind(
-                    &gravitation::GravityFieldModel::getGravitationalParameter, bodyUndergoingAcceleration->getGravityFieldModel( ) );
-            gravitationalParameterFunction = std::bind( &utilities::sumFunctionReturn< double >,
-                                                        gravitationalParameterOfBodyExertingAcceleration,
-                                                        gravitationalParameterOfBodyUndergoingAcceleration );
+            auto gfExerting = bodyExertingAcceleration->getGravityFieldModel( );
+            auto gfUndergoing = bodyUndergoingAcceleration->getGravityFieldModel( );
+            gravitationalParameterFunction = [gfExerting, gfUndergoing]( ) {
+                return gfExerting->getGravitationalParameter( ) + gfUndergoing->getGravitationalParameter( );
+            };
         }
 
         // Create acceleration object.
         std::function< void( Eigen::Vector3d& ) > bodyUndergoingAccelerationPositionFunction =
-                std::bind( &Body::getPositionByReference, bodyUndergoingAcceleration, std::placeholders::_1 );
+                [bodyUndergoingAcceleration]( Eigen::Vector3d& position ) { bodyUndergoingAcceleration->getPositionByReference( position ); };
         std::function< void( Eigen::Vector3d& ) > bodyExertingAccelerationPositionFunction =
-                std::bind( &Body::getPositionByReference, bodyExertingAcceleration, std::placeholders::_1 );
+                [bodyExertingAcceleration]( Eigen::Vector3d& position ) { bodyExertingAcceleration->getPositionByReference( position ); };
 
         accelerationModelPointer = std::make_shared< CentralGravitationalAccelerationModel3d >( bodyUndergoingAccelerationPositionFunction,
                                                                                                 gravitationalParameterFunction,
@@ -418,26 +416,23 @@ std::shared_ptr< gravitation::SphericalHarmonicsGravitationalAccelerationModel >
             if( !useMutualAttraction )
             {
                 gravitationalParameterFunction =
-                        std::bind( &SphericalHarmonicsGravityField::getGravitationalParameter, sphericalHarmonicsGravityField );
+                        [sphericalHarmonicsGravityField]( ) { return sphericalHarmonicsGravityField->getGravitationalParameter( ); };
             }
             else
             {
                 // Create function returning summed gravitational parameter of the two bodies.
-                std::function< double( ) > gravitationalParameterOfBodyExertingAcceleration =
-                        std::bind( &gravitation::GravityFieldModel::getGravitationalParameter, sphericalHarmonicsGravityField );
-                std::function< double( ) > gravitationalParameterOfBodyUndergoingAcceleration = std::bind(
-                        &gravitation::GravityFieldModel::getGravitationalParameter, bodyUndergoingAcceleration->getGravityFieldModel( ) );
-                gravitationalParameterFunction = std::bind( &utilities::sumFunctionReturn< double >,
-                                                            gravitationalParameterOfBodyExertingAcceleration,
-                                                            gravitationalParameterOfBodyUndergoingAcceleration );
+                auto gfUndergoing = bodyUndergoingAcceleration->getGravityFieldModel( );
+                gravitationalParameterFunction = [sphericalHarmonicsGravityField, gfUndergoing]( ) {
+                    return sphericalHarmonicsGravityField->getGravitationalParameter( ) + gfUndergoing->getGravitationalParameter( );
+                };
             }
 
             SphericalHarmonicsBlock cosineCoefficientBlock = SphericalHarmonicsBlock(
-                    std::bind( &SphericalHarmonicsGravityField::getCosineCoefficientsReference, sphericalHarmonicsGravityField ),
+                    [sphericalHarmonicsGravityField]( ) -> Eigen::MatrixXd& { return sphericalHarmonicsGravityField->getCosineCoefficientsReference( ); },
                     sphericalHarmonicsSettings->maximumDegree_ + 1,
                     sphericalHarmonicsSettings->maximumOrder_ + 1 );
             SphericalHarmonicsBlock sineCoefficientBlock = SphericalHarmonicsBlock(
-                    std::bind( &SphericalHarmonicsGravityField::getSineCoefficientsReference, sphericalHarmonicsGravityField ),
+                    [sphericalHarmonicsGravityField]( ) -> Eigen::MatrixXd& { return sphericalHarmonicsGravityField->getSineCoefficientsReference( ); },
                     sphericalHarmonicsSettings->maximumDegree_ + 1,
                     sphericalHarmonicsSettings->maximumOrder_ + 1 );
 
@@ -448,13 +443,13 @@ std::shared_ptr< gravitation::SphericalHarmonicsGravitationalAccelerationModel >
 
             // Create acceleration object.
             accelerationModel = std::make_shared< SphericalHarmonicsGravitationalAccelerationModel >(
-                    std::bind( &Body::getPositionByReference, bodyUndergoingAcceleration, std::placeholders::_1 ),
+                    [bodyUndergoingAcceleration]( Eigen::Vector3d& position ) { bodyUndergoingAcceleration->getPositionByReference( position ); },
                     gravitationalParameterFunction,
                     sphericalHarmonicsGravityField->getReferenceRadius( ),
                     cosineCoefficientBlock,
                     sineCoefficientBlock,
-                    std::bind( &Body::getPositionByReference, bodyExertingAcceleration, std::placeholders::_1 ),
-                    std::bind( &Body::getCurrentRotationToGlobalFrame, bodyExertingAcceleration ),
+                    [bodyExertingAcceleration]( Eigen::Vector3d& position ) { bodyExertingAcceleration->getPositionByReference( position ); },
+                    [bodyExertingAcceleration]( ) { return bodyExertingAcceleration->getCurrentRotationToGlobalFrame( ); },
                     useMutualAttraction );
         }
     }
@@ -512,21 +507,16 @@ std::shared_ptr< gravitation::MutualSphericalHarmonicsGravitationalAccelerationM
             // Create function returning summed gravitational parameter of the two bodies.
             if( useCentralBodyFixedFrame == false )
             {
-                gravitationalParameterFunction = std::bind( &SphericalHarmonicsGravityField::getGravitationalParameter,
-                                                            sphericalHarmonicsGravityFieldOfBodyExertingAcceleration );
+                gravitationalParameterFunction =
+                        [sphericalHarmonicsGravityFieldOfBodyExertingAcceleration]( ) { return sphericalHarmonicsGravityFieldOfBodyExertingAcceleration->getGravitationalParameter( ); };
             }
             else
             {
                 // Create function returning summed gravitational parameter of the two bodies.
-                std::function< double( ) > gravitationalParameterOfBodyExertingAcceleration =
-                        std::bind( &gravitation::GravityFieldModel::getGravitationalParameter,
-                                   sphericalHarmonicsGravityFieldOfBodyExertingAcceleration );
-                std::function< double( ) > gravitationalParameterOfBodyUndergoingAcceleration =
-                        std::bind( &gravitation::GravityFieldModel::getGravitationalParameter,
-                                   sphericalHarmonicsGravityFieldOfBodyUndergoingAcceleration );
-                gravitationalParameterFunction = std::bind( &utilities::sumFunctionReturn< double >,
-                                                            gravitationalParameterOfBodyExertingAcceleration,
-                                                            gravitationalParameterOfBodyUndergoingAcceleration );
+                gravitationalParameterFunction = [sphericalHarmonicsGravityFieldOfBodyExertingAcceleration, sphericalHarmonicsGravityFieldOfBodyUndergoingAcceleration]( ) {
+                    return sphericalHarmonicsGravityFieldOfBodyExertingAcceleration->getGravitationalParameter( ) +
+                           sphericalHarmonicsGravityFieldOfBodyUndergoingAcceleration->getGravitationalParameter( );
+                };
             }
 
             // Create acceleration object.
@@ -544,29 +534,29 @@ std::shared_ptr< gravitation::MutualSphericalHarmonicsGravitationalAccelerationM
             }
 
             accelerationModel = std::make_shared< MutualSphericalHarmonicsGravitationalAccelerationModel >(
-                    std::bind( &Body::getPositionByReference, bodyUndergoingAcceleration, std::placeholders::_1 ),
-                    std::bind( &Body::getPositionByReference, bodyExertingAcceleration, std::placeholders::_1 ),
+                    [bodyUndergoingAcceleration]( Eigen::Vector3d& position ) { bodyUndergoingAcceleration->getPositionByReference( position ); },
+                    [bodyExertingAcceleration]( Eigen::Vector3d& position ) { bodyExertingAcceleration->getPositionByReference( position ); },
                     gravitationalParameterFunction,
                     sphericalHarmonicsGravityFieldOfBodyExertingAcceleration->getReferenceRadius( ),
                     sphericalHarmonicsGravityFieldOfBodyUndergoingAcceleration->getReferenceRadius( ),
-                    SphericalHarmonicsBlock( std::bind( &SphericalHarmonicsGravityField::getCosineCoefficientsReference,
-                                                        sphericalHarmonicsGravityFieldOfBodyExertingAcceleration ),
+                    SphericalHarmonicsBlock( [sphericalHarmonicsGravityFieldOfBodyExertingAcceleration]( ) -> Eigen::MatrixXd& {
+                                                 return sphericalHarmonicsGravityFieldOfBodyExertingAcceleration->getCosineCoefficientsReference( ); },
                                              mutualSphericalHarmonicsSettings->maximumDegreeOfBodyExertingAcceleration_ + 1,
                                              mutualSphericalHarmonicsSettings->maximumOrderOfBodyExertingAcceleration_ + 1 ),
-                    SphericalHarmonicsBlock( std::bind( &SphericalHarmonicsGravityField::getSineCoefficientsReference,
-                                                        sphericalHarmonicsGravityFieldOfBodyExertingAcceleration ),
+                    SphericalHarmonicsBlock( [sphericalHarmonicsGravityFieldOfBodyExertingAcceleration]( ) -> Eigen::MatrixXd& {
+                                                 return sphericalHarmonicsGravityFieldOfBodyExertingAcceleration->getSineCoefficientsReference( ); },
                                              mutualSphericalHarmonicsSettings->maximumDegreeOfBodyExertingAcceleration_ + 1,
                                              mutualSphericalHarmonicsSettings->maximumOrderOfBodyExertingAcceleration_ + 1 ),
-                    SphericalHarmonicsBlock( std::bind( &SphericalHarmonicsGravityField::getCosineCoefficientsReference,
-                                                        sphericalHarmonicsGravityFieldOfBodyUndergoingAcceleration ),
+                    SphericalHarmonicsBlock( [sphericalHarmonicsGravityFieldOfBodyUndergoingAcceleration]( ) -> Eigen::MatrixXd& {
+                                                 return sphericalHarmonicsGravityFieldOfBodyUndergoingAcceleration->getCosineCoefficientsReference( ); },
                                              maximumDegreeOfUndergoingBody + 1,
                                              maximumOrderOfUndergoingBody + 1 ),
-                    SphericalHarmonicsBlock( std::bind( &SphericalHarmonicsGravityField::getSineCoefficientsReference,
-                                                        sphericalHarmonicsGravityFieldOfBodyUndergoingAcceleration ),
+                    SphericalHarmonicsBlock( [sphericalHarmonicsGravityFieldOfBodyUndergoingAcceleration]( ) -> Eigen::MatrixXd& {
+                                                 return sphericalHarmonicsGravityFieldOfBodyUndergoingAcceleration->getSineCoefficientsReference( ); },
                                              maximumDegreeOfUndergoingBody + 1,
                                              maximumOrderOfUndergoingBody + 1 ),
-                    std::bind( &Body::getCurrentRotationToGlobalFrame, bodyExertingAcceleration ),
-                    std::bind( &Body::getCurrentRotationToGlobalFrame, bodyUndergoingAcceleration ),
+                    [bodyExertingAcceleration]( ) { return bodyExertingAcceleration->getCurrentRotationToGlobalFrame( ); },
+                    [bodyUndergoingAcceleration]( ) { return bodyUndergoingAcceleration->getCurrentRotationToGlobalFrame( ); },
                     useCentralBodyFixedFrame );
         }
     }
@@ -616,35 +606,32 @@ std::shared_ptr< gravitation::PolyhedronGravitationalAccelerationModel > createP
         // Check if mutual acceleration is to be used.
         if( useCentralBodyFixedFrame == false || bodyUndergoingAcceleration->getGravityFieldModel( ) == nullptr )
         {
-            gravitationalParameterFunction = std::bind( &PolyhedronGravityField::getGravitationalParameter, polyhedronGravityField );
+            gravitationalParameterFunction = [polyhedronGravityField]( ) { return polyhedronGravityField->getGravitationalParameter( ); };
         }
         else
         {
             // Create function returning summed gravitational parameter of the two bodies.
-            std::function< double( ) > gravitationalParameterOfBodyExertingAcceleration =
-                    std::bind( &gravitation::GravityFieldModel::getGravitationalParameter, polyhedronGravityField );
-            std::function< double( ) > gravitationalParameterOfBodyUndergoingAcceleration = std::bind(
-                    &gravitation::GravityFieldModel::getGravitationalParameter, bodyUndergoingAcceleration->getGravityFieldModel( ) );
-            gravitationalParameterFunction = std::bind( &utilities::sumFunctionReturn< double >,
-                                                        gravitationalParameterOfBodyExertingAcceleration,
-                                                        gravitationalParameterOfBodyUndergoingAcceleration );
+            auto gfUndergoing = bodyUndergoingAcceleration->getGravityFieldModel( );
+            gravitationalParameterFunction = [polyhedronGravityField, gfUndergoing]( ) {
+                return polyhedronGravityField->getGravitationalParameter( ) + gfUndergoing->getGravitationalParameter( );
+            };
         }
 
-        std::function< double( ) > volumeFunction = std::bind( &PolyhedronGravityField::getVolume, polyhedronGravityField );
+        std::function< double( ) > volumeFunction = [polyhedronGravityField]( ) { return polyhedronGravityField->getVolume( ); };
         std::function< Eigen::MatrixXd( ) > verticesCoordinatesFunction =
-                std::bind( &PolyhedronGravityField::getVerticesCoordinates, polyhedronGravityField );
+                [polyhedronGravityField]( ) { return polyhedronGravityField->getVerticesCoordinates( ); };
         std::function< Eigen::MatrixXi( ) > verticesDefiningEachFacetFunction =
-                std::bind( &PolyhedronGravityField::getVerticesDefiningEachFacet, polyhedronGravityField );
+                [polyhedronGravityField]( ) { return polyhedronGravityField->getVerticesDefiningEachFacet( ); };
         std::function< Eigen::MatrixXi( ) > verticesDefiningEachEdgeFunction =
-                std::bind( &PolyhedronGravityField::getVerticesDefiningEachEdge, polyhedronGravityField );
+                [polyhedronGravityField]( ) { return polyhedronGravityField->getVerticesDefiningEachEdge( ); };
         std::function< std::vector< Eigen::MatrixXd >( ) > facetDyadsFunction =
-                std::bind( &PolyhedronGravityField::getFacetDyads, polyhedronGravityField );
+                [polyhedronGravityField]( ) { return polyhedronGravityField->getFacetDyads( ); };
         std::function< std::vector< Eigen::MatrixXd >( ) > edgeDyadsFunction =
-                std::bind( &PolyhedronGravityField::getEdgeDyads, polyhedronGravityField );
+                [polyhedronGravityField]( ) { return polyhedronGravityField->getEdgeDyads( ); };
 
         // Create acceleration object.
         accelerationModel = std::make_shared< PolyhedronGravitationalAccelerationModel >(
-                std::bind( &Body::getPositionByReference, bodyUndergoingAcceleration, std::placeholders::_1 ),
+                [bodyUndergoingAcceleration]( Eigen::Vector3d& position ) { bodyUndergoingAcceleration->getPositionByReference( position ); },
                 gravitationalParameterFunction,
                 volumeFunction,
                 verticesCoordinatesFunction,
@@ -652,8 +639,8 @@ std::shared_ptr< gravitation::PolyhedronGravitationalAccelerationModel > createP
                 verticesDefiningEachEdgeFunction,
                 facetDyadsFunction,
                 edgeDyadsFunction,
-                std::bind( &Body::getPositionByReference, bodyExertingAcceleration, std::placeholders::_1 ),
-                std::bind( &Body::getCurrentRotationToGlobalFrame, bodyExertingAcceleration ),
+                [bodyExertingAcceleration]( Eigen::Vector3d& position ) { bodyExertingAcceleration->getPositionByReference( position ); },
+                [bodyExertingAcceleration]( ) { return bodyExertingAcceleration->getCurrentRotationToGlobalFrame( ); },
                 useCentralBodyFixedFrame );
     }
     return accelerationModel;
@@ -702,30 +689,27 @@ std::shared_ptr< gravitation::RingGravitationalAccelerationModel > createRingGra
         // Check if mutual acceleration is to be used.
         if( useCentralBodyFixedFrame == false || bodyUndergoingAcceleration->getGravityFieldModel( ) == nullptr )
         {
-            gravitationalParameterFunction = std::bind( &RingGravityField::getGravitationalParameter, ringGravityField );
+            gravitationalParameterFunction = [ringGravityField]( ) { return ringGravityField->getGravitationalParameter( ); };
         }
         else
         {
             // Create function returning summed gravitational parameter of the two bodies.
-            std::function< double( ) > gravitationalParameterOfBodyExertingAcceleration =
-                    std::bind( &gravitation::GravityFieldModel::getGravitationalParameter, ringGravityField );
-            std::function< double( ) > gravitationalParameterOfBodyUndergoingAcceleration = std::bind(
-                    &gravitation::GravityFieldModel::getGravitationalParameter, bodyUndergoingAcceleration->getGravityFieldModel( ) );
-            gravitationalParameterFunction = std::bind( &utilities::sumFunctionReturn< double >,
-                                                        gravitationalParameterOfBodyExertingAcceleration,
-                                                        gravitationalParameterOfBodyUndergoingAcceleration );
+            auto gfUndergoing = bodyUndergoingAcceleration->getGravityFieldModel( );
+            gravitationalParameterFunction = [ringGravityField, gfUndergoing]( ) {
+                return ringGravityField->getGravitationalParameter( ) + gfUndergoing->getGravitationalParameter( );
+            };
         }
 
-        std::function< double( ) > ringRadiusFunction = std::bind( &RingGravityField::getRingRadius, ringGravityField );
+        std::function< double( ) > ringRadiusFunction = [ringGravityField]( ) { return ringGravityField->getRingRadius( ); };
 
         // Create acceleration object.
         accelerationModel = std::make_shared< RingGravitationalAccelerationModel >(
-                std::bind( &Body::getPositionByReference, bodyUndergoingAcceleration, std::placeholders::_1 ),
+                [bodyUndergoingAcceleration]( Eigen::Vector3d& position ) { bodyUndergoingAcceleration->getPositionByReference( position ); },
                 gravitationalParameterFunction,
                 ringRadiusFunction,
                 ringGravityField->getEllipticIntegralSFromDAndB( ),
-                std::bind( &Body::getPositionByReference, bodyExertingAcceleration, std::placeholders::_1 ),
-                std::bind( &Body::getCurrentRotationToGlobalFrame, bodyExertingAcceleration ),
+                [bodyExertingAcceleration]( Eigen::Vector3d& position ) { bodyExertingAcceleration->getPositionByReference( position ); },
+                [bodyExertingAcceleration]( ) { return bodyExertingAcceleration->getCurrentRotationToGlobalFrame( ); },
                 useCentralBodyFixedFrame );
     }
     return accelerationModel;
@@ -774,8 +758,8 @@ std::shared_ptr< system_models::RTGAccelerationModel > createRTGAccelerationMode
             rtgAccelerationSettings->bodyFixedForceVectorAtReferenceEpoch_,
             rtgAccelerationSettings->decayScaleFactor_,
             rtgAccelerationSettings->referenceEpoch_,
-            std::bind( &Body::getCurrentRotationToGlobalFrame, bodyUndergoingAcceleration ),
-            std::bind( &Body::getBodyMass, bodyUndergoingAcceleration )
+            [bodyUndergoingAcceleration]( ) { return bodyUndergoingAcceleration->getCurrentRotationToGlobalFrame( ); },
+            [bodyUndergoingAcceleration]( ) { return bodyUndergoingAcceleration->getBodyMass( ); }
             );
 
     return accelerationModel;
@@ -1069,7 +1053,7 @@ std::shared_ptr< aerodynamics::AerodynamicAcceleration > createAerodynamicAccele
         throw std::runtime_error( "Error when making aerodynamic acceleration, found flight conditions that are not atmospheric." );
     }
     // Create acceleration model.
-    return std::make_shared< AerodynamicAcceleration >( bodyFlightConditions, std::bind( &Body::getBodyMass, bodyUndergoingAcceleration ) );
+    return std::make_shared< AerodynamicAcceleration >( bodyFlightConditions, [bodyUndergoingAcceleration]( ) { return bodyUndergoingAcceleration->getBodyMass( ); } );
 }
 
 std::shared_ptr< RadiationPressureAcceleration > createRadiationPressureAccelerationModel(
@@ -1302,8 +1286,8 @@ std::shared_ptr< electromagnetism::YarkovskyAcceleration > createYarkovskyAccele
     {
         accelerationModel =
                 std::make_shared< electromagnetism::YarkovskyAcceleration >( yarkovskySettings->yarkovskyParameter_,
-                                                                             std::bind( &Body::getState, bodyUndergoingAcceleration ),
-                                                                             std::bind( &Body::getState, bodyExertingAcceleration ) );
+                                                                             [bodyUndergoingAcceleration]( ) { return bodyUndergoingAcceleration->getState( ); },
+                                                                             [bodyExertingAcceleration]( ) { return bodyExertingAcceleration->getState( ); } );
         // }
     }
 
@@ -1350,9 +1334,9 @@ std::shared_ptr< relativity::RelativisticAccelerationCorrection > createRelativi
     {
         // Retrieve function pointers for properties of bodies exerting/undergoing acceleration.
         std::function< Eigen::Vector6d( ) > stateFunctionOfBodyExertingAcceleration =
-                std::bind( &Body::getState, bodyExertingAcceleration );
+                [bodyExertingAcceleration]( ) { return bodyExertingAcceleration->getState( ); };
         std::function< Eigen::Vector6d( ) > stateFunctionOfBodyUndergoingAcceleration =
-                std::bind( &Body::getState, bodyUndergoingAcceleration );
+                [bodyUndergoingAcceleration]( ) { return bodyUndergoingAcceleration->getState( ); };
 
         std::function< double( ) > centralBodyGravitationalParameterFunction;
         std::shared_ptr< GravityFieldModel > gravityField = bodyExertingAcceleration->getGravityFieldModel( );
@@ -1364,15 +1348,15 @@ std::shared_ptr< relativity::RelativisticAccelerationCorrection > createRelativi
         else
         {
             centralBodyGravitationalParameterFunction =
-                    std::bind( &GravityFieldModel::getGravitationalParameter, bodyExertingAcceleration->getGravityFieldModel( ) );
+                    [gravityField]( ) { return gravityField->getGravitationalParameter( ); };
         }
 
         // Create acceleration model if only schwarzschild term is to be used.
         if( relativisticAccelerationSettings->calculateLenseThirringCorrection_ == false &&
             relativisticAccelerationSettings->calculateDeSitterCorrection_ == false )
         {
-            std::function< double( ) > ppnGammaFunction = std::bind( &PPNParameterSet::getParameterGamma, ppnParameterSet );
-            std::function< double( ) > ppnBetaFunction = std::bind( &PPNParameterSet::getParameterBeta, ppnParameterSet );
+            std::function< double( ) > ppnGammaFunction = [ppnSet = relativity::ppnParameterSet]( ) { return ppnSet->getParameterGamma( ); };
+            std::function< double( ) > ppnBetaFunction = [ppnSet = relativity::ppnParameterSet]( ) { return ppnSet->getParameterBeta( ); };
 
             // Create acceleration model.
             accelerationModel = std::make_shared< RelativisticAccelerationCorrection >( stateFunctionOfBodyUndergoingAcceleration,
@@ -1393,17 +1377,18 @@ std::shared_ptr< relativity::RelativisticAccelerationCorrection > createRelativi
                     throw std::runtime_error( "Error, no primary body " + relativisticAccelerationSettings->primaryBody_ +
                                               " found when making de Sitter acceleration correction" );
                 }
-                stateFunctionOfPrimaryBody = std::bind( &Body::getState, bodies.at( relativisticAccelerationSettings->primaryBody_ ) );
+                auto primaryBody = bodies.at( relativisticAccelerationSettings->primaryBody_ );
+                stateFunctionOfPrimaryBody = [primaryBody]( ) { return primaryBody->getState( ); };
 
-                if( bodies.at( relativisticAccelerationSettings->primaryBody_ )->getGravityFieldModel( ) == nullptr )
+                if( primaryBody->getGravityFieldModel( ) == nullptr )
                 {
                     throw std::runtime_error( "Error, primary body " + relativisticAccelerationSettings->primaryBody_ +
                                               " has no gravity field when making de Sitter acceleration correction" );
                 }
 
+                auto primaryGravityField = primaryBody->getGravityFieldModel( );
                 primaryBodyGravitationalParameterFunction =
-                        std::bind( &GravityFieldModel::getGravitationalParameter,
-                                   bodies.at( relativisticAccelerationSettings->primaryBody_ )->getGravityFieldModel( ) );
+                        [primaryGravityField]( ) { return primaryGravityField->getGravitationalParameter( ); };
             }
 
             // Retrieve angular momentum vector if Lense-Thirring
@@ -1424,8 +1409,8 @@ std::shared_ptr< relativity::RelativisticAccelerationCorrection > createRelativi
                         primaryBodyGravitationalParameterFunction,
                         relativisticAccelerationSettings->primaryBody_,
                         angularMomentumFunction,
-                        std::bind( &PPNParameterSet::getParameterGamma, ppnParameterSet ),
-                        std::bind( &PPNParameterSet::getParameterBeta, ppnParameterSet ),
+                        [ppnSet = relativity::ppnParameterSet]( ) { return ppnSet->getParameterGamma( ); },
+                        [ppnSet = relativity::ppnParameterSet]( ) { return ppnSet->getParameterBeta( ); },
                         relativisticAccelerationSettings->calculateSchwarzschildCorrection_ );
             }
             else
@@ -1436,8 +1421,8 @@ std::shared_ptr< relativity::RelativisticAccelerationCorrection > createRelativi
                         stateFunctionOfBodyExertingAcceleration,
                         centralBodyGravitationalParameterFunction,
                         angularMomentumFunction,
-                        std::bind( &PPNParameterSet::getParameterGamma, ppnParameterSet ),
-                        std::bind( &PPNParameterSet::getParameterBeta, ppnParameterSet ),
+                        [ppnSet = relativity::ppnParameterSet]( ) { return ppnSet->getParameterGamma( ); },
+                        [ppnSet = relativity::ppnParameterSet]( ) { return ppnSet->getParameterBeta( ); },
                         relativisticAccelerationSettings->calculateSchwarzschildCorrection_ );
             }
         }
@@ -1480,9 +1465,9 @@ std::shared_ptr< EmpiricalAcceleration > createEmpiricalAcceleration( const std:
                     std::make_shared< EmpiricalAcceleration >( empiricalSettings->constantAcceleration_,
                                                                empiricalSettings->sineAcceleration_,
                                                                empiricalSettings->cosineAcceleration_,
-                                                               std::bind( &Body::getState, bodyUndergoingAcceleration ),
-                                                               std::bind( &GravityFieldModel::getGravitationalParameter, gravityField ),
-                                                               std::bind( &Body::getState, bodyExertingAcceleration ) );
+                                                               [bodyUndergoingAcceleration]( ) { return bodyUndergoingAcceleration->getState( ); },
+                                                               [gravityField]( ) { return gravityField->getGravitationalParameter( ); },
+                                                               [bodyExertingAcceleration]( ) { return bodyExertingAcceleration->getState( ); } );
         }
     }
 
@@ -1518,7 +1503,7 @@ std::shared_ptr< propulsion::ThrustAcceleration > createThrustAcceleratioModel(
     else
     {
         thrustDirectionWrapper = std::make_shared< propulsion::OrientationBasedThrustDirectionCalculator >(
-                std::bind( &Body::getCurrentRotationToGlobalFrame, bodies.at( nameOfBodyUndergoingThrust ) ) );
+                [thrustBody = bodies.at( nameOfBodyUndergoingThrust )]( ) { return thrustBody->getCurrentRotationToGlobalFrame( ); } );
         directionUpdateSettings[ propagators::body_rotational_state_update ].push_back( nameOfBodyUndergoingThrust );
     }
 
@@ -1559,7 +1544,7 @@ std::shared_ptr< propulsion::ThrustAcceleration > createThrustAcceleratioModel(
 
     return std::make_shared< propulsion::ThrustAcceleration >( engineModelsForAcceleration,
                                                                thrustDirectionWrapper,
-                                                               std::bind( &Body::getBodyMass, bodies.at( nameOfBodyUndergoingThrust ) ),
+                                                               [thrustBody = bodies.at( nameOfBodyUndergoingThrust )]( ) { return thrustBody->getBodyMass( ); },
                                                                totalUpdateSettings );
 }
 
@@ -1591,8 +1576,9 @@ std::shared_ptr< gravitation::DirectTidalDissipationAcceleration > createDirectT
         }
         else
         {
+            auto gfUndergoing = bodyUndergoingAcceleration->getGravityFieldModel( );
             gravitationalParameterFunctionOfBodyUndergoingTide =
-                    std::bind( &GravityFieldModel::getGravitationalParameter, bodyUndergoingAcceleration->getGravityFieldModel( ) );
+                    [gfUndergoing]( ) { return gfUndergoing->getGravitationalParameter( ); };
         }
     }
     else
@@ -1604,8 +1590,9 @@ std::shared_ptr< gravitation::DirectTidalDissipationAcceleration > createDirectT
         }
         else
         {
+            auto gfExerting = bodyExertingAcceleration->getGravityFieldModel( );
             gravitationalParameterFunctionOfBodyExertingTide =
-                    std::bind( &GravityFieldModel::getGravitationalParameter, bodyExertingAcceleration->getGravityFieldModel( ) );
+                    [gfExerting]( ) { return gfExerting->getGravitationalParameter( ); };
         }
 
         if( bodyUndergoingAcceleration->getGravityFieldModel( ) == nullptr )
@@ -1615,8 +1602,9 @@ std::shared_ptr< gravitation::DirectTidalDissipationAcceleration > createDirectT
         }
         else
         {
+            auto gfUndergoing = bodyUndergoingAcceleration->getGravityFieldModel( );
             gravitationalParameterFunctionOfBodyUndergoingTide =
-                    std::bind( &GravityFieldModel::getGravitationalParameter, bodyUndergoingAcceleration->getGravityFieldModel( ) );
+                    [gfUndergoing]( ) { return gfUndergoing->getGravitationalParameter( ); };
         }
     }
 
@@ -1655,13 +1643,13 @@ std::shared_ptr< gravitation::DirectTidalDissipationAcceleration > createDirectT
     if( tidalAccelerationSettings->useTideRaisedOnPlanet_ )
     {
         std::function< Eigen::Vector3d( ) > planetAngularVelocityVectorFunction =
-                std::bind( &Body::getCurrentAngularVelocityVectorInGlobalFrame, bodyExertingAcceleration );
+                [bodyExertingAcceleration]( ) { return bodyExertingAcceleration->getCurrentAngularVelocityVectorInGlobalFrame( ); };
 
         // Create direct tidal model from tidal time lag directly
         if( std::isnan( tidalAccelerationSettings->inverseTidalQualityFactor_ ) && std::isnan( tidalAccelerationSettings->tidalPeriod_ ) )
         {
-            return std::make_shared< DirectTidalDissipationAcceleration >( std::bind( &Body::getState, bodyUndergoingAcceleration ),
-                                                                           std::bind( &Body::getState, bodyExertingAcceleration ),
+            return std::make_shared< DirectTidalDissipationAcceleration >( [bodyUndergoingAcceleration]( ) { return bodyUndergoingAcceleration->getState( ); },
+                                                                           [bodyExertingAcceleration]( ) { return bodyExertingAcceleration->getState( ); },
                                                                            gravitationalParameterFunctionOfBodyUndergoingTide,
                                                                            planetAngularVelocityVectorFunction,
                                                                            tidalAccelerationSettings->k2LoveNumber_,
@@ -1672,8 +1660,8 @@ std::shared_ptr< gravitation::DirectTidalDissipationAcceleration > createDirectT
         // Create direct tidal model from Q and T
         else
         {
-            return std::make_shared< DirectTidalDissipationAcceleration >( std::bind( &Body::getState, bodyUndergoingAcceleration ),
-                                                                           std::bind( &Body::getState, bodyExertingAcceleration ),
+            return std::make_shared< DirectTidalDissipationAcceleration >( [bodyUndergoingAcceleration]( ) { return bodyUndergoingAcceleration->getState( ); },
+                                                                           [bodyExertingAcceleration]( ) { return bodyExertingAcceleration->getState( ); },
                                                                            gravitationalParameterFunctionOfBodyUndergoingTide,
                                                                            planetAngularVelocityVectorFunction,
                                                                            tidalAccelerationSettings->k2LoveNumber_,
@@ -1689,8 +1677,8 @@ std::shared_ptr< gravitation::DirectTidalDissipationAcceleration > createDirectT
         // Create direct tidal model from tidal time lag directly
         if( std::isnan( tidalAccelerationSettings->inverseTidalQualityFactor_ ) && std::isnan( tidalAccelerationSettings->tidalPeriod_ ) )
         {
-            return std::make_shared< DirectTidalDissipationAcceleration >( std::bind( &Body::getState, bodyUndergoingAcceleration ),
-                                                                           std::bind( &Body::getState, bodyExertingAcceleration ),
+            return std::make_shared< DirectTidalDissipationAcceleration >( [bodyUndergoingAcceleration]( ) { return bodyUndergoingAcceleration->getState( ); },
+                                                                           [bodyExertingAcceleration]( ) { return bodyExertingAcceleration->getState( ); },
                                                                            gravitationalParameterFunctionOfBodyExertingTide,
                                                                            gravitationalParameterFunctionOfBodyUndergoingTide,
                                                                            tidalAccelerationSettings->k2LoveNumber_,
@@ -1701,8 +1689,8 @@ std::shared_ptr< gravitation::DirectTidalDissipationAcceleration > createDirectT
         // Create direct tidal model from Q and T
         else
         {
-            return std::make_shared< DirectTidalDissipationAcceleration >( std::bind( &Body::getState, bodyUndergoingAcceleration ),
-                                                                           std::bind( &Body::getState, bodyExertingAcceleration ),
+            return std::make_shared< DirectTidalDissipationAcceleration >( [bodyUndergoingAcceleration]( ) { return bodyUndergoingAcceleration->getState( ); },
+                                                                           [bodyExertingAcceleration]( ) { return bodyExertingAcceleration->getState( ); },
                                                                            gravitationalParameterFunctionOfBodyExertingTide,
                                                                            gravitationalParameterFunctionOfBodyUndergoingTide,
                                                                            tidalAccelerationSettings->k2LoveNumber_,
@@ -1716,13 +1704,13 @@ std::shared_ptr< gravitation::DirectTidalDissipationAcceleration > createDirectT
     else
     {
         std::function< Eigen::Vector3d( ) > moonAngularVelocityVectorFunction =
-                std::bind( &Body::getCurrentAngularVelocityVectorInGlobalFrame, bodyExertingAcceleration );
+                [bodyExertingAcceleration]( ) { return bodyExertingAcceleration->getCurrentAngularVelocityVectorInGlobalFrame( ); };
 
         // Create direct tidal model from tidal time lag directly
         if( std::isnan( tidalAccelerationSettings->inverseTidalQualityFactor_ ) && std::isnan( tidalAccelerationSettings->tidalPeriod_ ) )
         {
-            return std::make_shared< DirectTidalDissipationAcceleration >( std::bind( &Body::getState, bodyUndergoingAcceleration ),
-                                                                           std::bind( &Body::getState, bodyExertingAcceleration ),
+            return std::make_shared< DirectTidalDissipationAcceleration >( [bodyUndergoingAcceleration]( ) { return bodyUndergoingAcceleration->getState( ); },
+                                                                           [bodyExertingAcceleration]( ) { return bodyExertingAcceleration->getState( ); },
                                                                            gravitationalParameterFunctionOfBodyExertingTide,
                                                                            gravitationalParameterFunctionOfBodyUndergoingTide,
                                                                            moonAngularVelocityVectorFunction,
@@ -1734,8 +1722,8 @@ std::shared_ptr< gravitation::DirectTidalDissipationAcceleration > createDirectT
         // Create direct tidal model from Q and T
         else
         {
-            return std::make_shared< DirectTidalDissipationAcceleration >( std::bind( &Body::getState, bodyUndergoingAcceleration ),
-                                                                           std::bind( &Body::getState, bodyExertingAcceleration ),
+            return std::make_shared< DirectTidalDissipationAcceleration >( [bodyUndergoingAcceleration]( ) { return bodyUndergoingAcceleration->getState( ); },
+                                                                           [bodyExertingAcceleration]( ) { return bodyExertingAcceleration->getState( ); },
                                                                            gravitationalParameterFunctionOfBodyExertingTide,
                                                                            gravitationalParameterFunctionOfBodyUndergoingTide,
                                                                            moonAngularVelocityVectorFunction,
@@ -1973,8 +1961,9 @@ void addEihAccelerations( const SystemOfBodies& bodies,
     std::vector< std::function< Eigen::Matrix< double, 6, 1 >( ) > > bodyStateFunctions;
     for( unsigned int i = 0; i < eihExertingBodies.size( ); i++ )
     {
-        gravitationalParameterFunction.push_back( std::bind( &Body::getGravitationalParameter, bodies.at( eihExertingBodies.at( i ) ) ) );
-        bodyStateFunctions.push_back( std::bind( &Body::getState, bodies.at( eihExertingBodies.at( i ) ) ) );
+        auto eihBody = bodies.at( eihExertingBodies.at( i ) );
+        gravitationalParameterFunction.push_back( [eihBody]( ) { return eihBody->getGravitationalParameter( ); } );
+        bodyStateFunctions.push_back( [eihBody]( ) { return eihBody->getState( ); } );
     }
 
     std::shared_ptr< relativity::EinsteinInfeldHoffmannEquations > eihEquations =
@@ -1983,8 +1972,8 @@ void addEihAccelerations( const SystemOfBodies& bodies,
                     eihExertingBodies,
                     gravitationalParameterFunction,
                     bodyStateFunctions,
-                    std::bind( &relativity::PPNParameterSet::getParameterGamma, relativity::ppnParameterSet ),
-                    std::bind( &relativity::PPNParameterSet::getParameterBeta, relativity::ppnParameterSet ) );
+                    [ppnSet = relativity::ppnParameterSet]( ) { return ppnSet->getParameterGamma( ); },
+                    [ppnSet = relativity::ppnParameterSet]( ) { return ppnSet->getParameterBeta( ); } );
 
     for( unsigned int i = 0; i < eihUndergoingBodies.size( ); i++ )
     {

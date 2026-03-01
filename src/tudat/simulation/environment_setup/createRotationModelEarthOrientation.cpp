@@ -53,8 +53,7 @@ std::shared_ptr< ephemerides::RotationalEphemeris > createGcrsToItrsRotationMode
                             gcrsToItrsRotationSettings->getPolarMotionCorrectionSettings( )->minimumAmplitude_,
                             gcrsToItrsRotationSettings->getPolarMotionCorrectionSettings( )->amplitudesFiles_,
                             gcrsToItrsRotationSettings->getPolarMotionCorrectionSettings( )->argumentMultipliersFile_,
-                            std::bind( &sofa_interface::calculateApproximateDelaunayFundamentalArgumentsWithGmst,
-                                       std::placeholders::_1 ),
+                            [](const double time) { return sofa_interface::calculateApproximateDelaunayFundamentalArgumentsWithGmst( time ); },
                             gcrsToItrsRotationSettings->getShortTermInterpolatorSettings( ) );
 
     // Create full polar motion calculator
@@ -75,8 +74,7 @@ std::shared_ptr< ephemerides::RotationalEphemeris > createGcrsToItrsRotationMode
                     gcrsToItrsRotationSettings->getUt1CorrectionSettings( )->minimumAmplitude_,
                     gcrsToItrsRotationSettings->getUt1CorrectionSettings( )->amplitudesFiles_,
                     gcrsToItrsRotationSettings->getUt1CorrectionSettings( )->argumentMultipliersFile_,
-                    std::bind( &sofa_interface::calculateApproximateDelaunayFundamentalArgumentsWithGmst,
-                               std::placeholders::_1 ),
+                    [](const double time) { return sofa_interface::calculateApproximateDelaunayFundamentalArgumentsWithGmst( time ); },
                     gcrsToItrsRotationSettings->getShortTermInterpolatorSettings( ) );
 
     std::shared_ptr< interpolators::OneDimensionalInterpolator< double, double > > dailyUtcUt1CorrectionInterpolator =

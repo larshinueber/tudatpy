@@ -134,14 +134,16 @@ std::shared_ptr< DopplerProperTimeRateInterface > createOneWayDopplerProperTimeC
                     else
                     {
                         // Retrieve gravitational parameter
-                        gravitationalParameterFunctions.push_back( std::bind( &gravitation::GravityFieldModel::getGravitationalParameter,
-                                                                              bodies.at( currentBodyName )->getGravityFieldModel( ) ) );
+                        gravitationalParameterFunctions.push_back(
+                                [gravField = bodies.at( currentBodyName )->getGravityFieldModel( )]() {
+                                    return gravField->getGravitationalParameter();
+                                } );
                     }
 
                     perturbingBodyStateFunctions.push_back(
-                            std::bind( &simulation_setup::Body::getStateInBaseFrameFromEphemeris< double, double >,
-                                       bodies.at( currentBodyName ),
-                                       std::placeholders::_1 ) );
+                            [body = bodies.at( currentBodyName )]( const double time ) {
+                                return body->getStateInBaseFrameFromEphemeris< double, double >( time );
+                            } );
                 }
                 properTimeRateInterface = std::make_shared< DirectFirstOrderDopplerProperTimeRateInterface >(
                         linkEndForCalculator,
@@ -1713,9 +1715,9 @@ public:
                 // Create observation model
                 observationModel = std::make_shared< PositionObservationModel< ObservationScalarType, TimeType > >(
                         linkEnds,
-                        std::bind( &simulation_setup::Body::getStateInBaseFrameFromEphemeris< ObservationScalarType, TimeType >,
-                                   bodies.at( linkEnds.at( observed_body ).bodyName_ ),
-                                   std::placeholders::_1 ),
+                        [body = bodies.at( linkEnds.at( observed_body ).bodyName_ )]( const TimeType time ) {
+                            return body->getStateInBaseFrameFromEphemeris< ObservationScalarType, TimeType >( time );
+                        },
                         observationBias );
 
                 break;
@@ -1763,12 +1765,12 @@ public:
                 // Create observation model
                 observationModel = std::make_shared< RelativePositionObservationModel< ObservationScalarType, TimeType > >(
                         linkEnds,
-                        std::bind( &simulation_setup::Body::getStateInBaseFrameFromEphemeris< ObservationScalarType, TimeType >,
-                                   bodies.at( linkEnds.at( observed_body ).bodyName_ ),
-                                   std::placeholders::_1 ),
-                        std::bind( &simulation_setup::Body::getStateInBaseFrameFromEphemeris< ObservationScalarType, TimeType >,
-                                   bodies.at( linkEnds.at( observer ).bodyName_ ),
-                                   std::placeholders::_1 ),
+                        [body = bodies.at( linkEnds.at( observed_body ).bodyName_ )]( const TimeType time ) {
+                            return body->getStateInBaseFrameFromEphemeris< ObservationScalarType, TimeType >( time );
+                        },
+                        [body = bodies.at( linkEnds.at( observer ).bodyName_ )]( const TimeType time ) {
+                            return body->getStateInBaseFrameFromEphemeris< ObservationScalarType, TimeType >( time );
+                        },
                         observationBias );
                 break;
             }
@@ -1813,9 +1815,10 @@ public:
                 }
                 else
                 {
-                    toBodyFixedFrameFunction = std::bind( &ephemerides::RotationalEphemeris::getRotationToTargetFrameTemplated< TimeType >,
-                                                          bodies.at( linkEnds.at( observed_body ).bodyName_ )->getRotationalEphemeris( ),
-                                                          std::placeholders::_1 );
+                    toBodyFixedFrameFunction = [rotEph = bodies.at( linkEnds.at( observed_body ).bodyName_ )->getRotationalEphemeris( )](
+                            const TimeType time ) {
+                        return rotEph->getRotationToTargetFrameTemplated< TimeType >( time );
+                    };
                 }
 
                 // Create observation model
@@ -1859,9 +1862,9 @@ public:
                 // Create observation model
                 observationModel = std::make_shared< VelocityObservationModel< ObservationScalarType, TimeType > >(
                         linkEnds,
-                        std::bind( &simulation_setup::Body::getStateInBaseFrameFromEphemeris< ObservationScalarType, TimeType >,
-                                   bodies.at( linkEnds.at( observed_body ).bodyName_ ),
-                                   std::placeholders::_1 ),
+                        [body = bodies.at( linkEnds.at( observed_body ).bodyName_ )]( const TimeType time ) {
+                            return body->getStateInBaseFrameFromEphemeris< ObservationScalarType, TimeType >( time );
+                        },
                         observationBias );
 
                 break;

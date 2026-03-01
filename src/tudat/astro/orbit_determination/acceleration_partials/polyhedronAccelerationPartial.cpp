@@ -28,17 +28,14 @@ PolyhedronGravityPartial::PolyhedronGravityPartial(
     volumeFunction_( accelerationModel->getVolumeFunction( ) ), polyhedronCache_( accelerationModel->getPolyhedronCache( ) ),
     facetDyads_( accelerationModel->getFacetDyadsFunction( )( ) ), edgeDyads_( accelerationModel->getEdgeDyadsFunction( )( ) ),
     positionFunctionOfAcceleratedBody_(
-            std::bind( &gravitation::PolyhedronGravitationalAccelerationModel::getCurrentPositionOfBodySubjectToAcceleration,
-                       accelerationModel ) ),
+            [accelerationModel]() { return accelerationModel->getCurrentPositionOfBodySubjectToAcceleration(); } ),
     positionFunctionOfAcceleratingBody_(
-            std::bind( &gravitation::PolyhedronGravitationalAccelerationModel::getCurrentPositionOfBodyExertingAcceleration,
-                       accelerationModel ) ),
+            [accelerationModel]() { return accelerationModel->getCurrentPositionOfBodyExertingAcceleration(); } ),
     fromBodyFixedToIntegrationFrameRotation_(
-            std::bind( &gravitation::PolyhedronGravitationalAccelerationModel::getCurrentRotationToIntegrationFrameMatrix,
-                       accelerationModel ) ),
-    accelerationFunction_( std::bind( &gravitation::PolyhedronGravitationalAccelerationModel::getAcceleration, accelerationModel ) ),
+            [accelerationModel]() { return accelerationModel->getCurrentRotationToIntegrationFrameMatrix(); } ),
+    accelerationFunction_( [accelerationModel]() { return accelerationModel->getAcceleration(); } ),
     updateFunction_(
-            std::bind( &gravitation::PolyhedronGravitationalAccelerationModel::updateMembers, accelerationModel, std::placeholders::_1 ) ),
+            [accelerationModel](const double time) { accelerationModel->updateMembers(time); } ),
     rotationMatrixPartials_( rotationMatrixPartials )
 { }
 

@@ -138,7 +138,7 @@ std::shared_ptr< RotationMatrixPartial > createRotationMatrixPartialsWrtStatePar
 
             // Create rotation matrix partial object
             rotationMatrixPartial = std::make_shared< RotationMatrixPartialWrtQuaternion >(
-                    std::bind( &Body::getCurrentRotationToGlobalFrame, currentBody ) );
+                    [currentBody]() { return currentBody->getCurrentRotationToGlobalFrame(); } );
             break;
 
         default:

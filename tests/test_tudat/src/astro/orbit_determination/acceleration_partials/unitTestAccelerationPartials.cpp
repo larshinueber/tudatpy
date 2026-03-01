@@ -105,10 +105,10 @@ BOOST_AUTO_TEST_CASE( testPanelledRadiationPressureAccelerationPartials )
         vehicle->setCurrentRotationalStateToLocalFrameFromEphemeris( 0.0 );
 
         // Create links to set and get state functions of bodies.
-        std::function< void( Eigen::Vector6d ) > sunStateSetFunction = std::bind( &Body::setState, sun, std::placeholders::_1 );
-        std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction = std::bind( &Body::setState, vehicle, std::placeholders::_1 );
-        std::function< Eigen::Vector6d( ) > sunStateGetFunction = std::bind( &Body::getState, sun );
-        std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = std::bind( &Body::getState, vehicle );
+        std::function< void( Eigen::Vector6d ) > sunStateSetFunction = [sun](const Eigen::Vector6d& state) { sun->setState(state); };
+        std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction = [vehicle](const Eigen::Vector6d& state) { vehicle->setState(state); };
+        std::function< Eigen::Vector6d( ) > sunStateGetFunction = [sun]() { return sun->getState(); };
+        std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = [vehicle]() { return vehicle->getState(); };
 
         double specularReflectivity = 0.5;
         double diffuseReflectivity = 0.1;
@@ -249,10 +249,9 @@ BOOST_AUTO_TEST_CASE( testPanelledRadiationPressureAccelerationPartials )
         velocityPerturbation << 0.1, 0.1, 0.1;
 
         // Calculate numerical partials.
-        std::function< void( const double ) > updateFunction1 = std::bind(
-                &RadiationPressureTargetModel::updateMembers, vehicle->getRadiationPressureTargetModel( ), std::placeholders::_1 );
+        std::function< void( const double ) > updateFunction1 = [rptModel = vehicle->getRadiationPressureTargetModel()](const double t) { rptModel->updateMembers(t); };
         std::function< void( const double ) > updateFunction2 =
-                std::bind( &RadiationSourceModel::updateMembers, sun->getRadiationSourceModel( ), std::placeholders::_1 );
+                [rsModel = sun->getRadiationSourceModel()](const double t) { rsModel->updateMembers(t); };
         std::function< void( ) > updateFunction = [ = ]( ) {
             updateFunction2( 0.0 );
             updateFunction1( 0.0 );
@@ -375,10 +374,10 @@ BOOST_AUTO_TEST_CASE( testCentralGravityPartials )
     velocityPerturbation << 1.0, 1.0, 1.0;
 
     // Create state access/modification functions for bodies.
-    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = std::bind( &Body::setState, earth, std::placeholders::_1 );
-    std::function< void( Eigen::Vector6d ) > sunStateSetFunction = std::bind( &Body::setState, sun, std::placeholders::_1 );
-    std::function< Eigen::Vector6d( ) > earthStateGetFunction = std::bind( &Body::getState, earth );
-    std::function< Eigen::Vector6d( ) > sunStateGetFunction = std::bind( &Body::getState, sun );
+    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = [earth](const Eigen::Vector6d& state) { earth->setState(state); };
+    std::function< void( Eigen::Vector6d ) > sunStateSetFunction = [sun](const Eigen::Vector6d& state) { sun->setState(state); };
+    std::function< Eigen::Vector6d( ) > earthStateGetFunction = [earth]() { return earth->getState(); };
+    std::function< Eigen::Vector6d( ) > sunStateGetFunction = [sun]() { return sun->getState(); };
 
     // Calculate numerical partials.
     testPartialWrtEarthPosition = calculateAccelerationWrtStatePartials(
@@ -428,10 +427,10 @@ BOOST_AUTO_TEST_CASE( testCannonballRadiationPressureAccelerationPartials )
     vehicle->setState( getBodyCartesianStateAtEpoch( "Earth", "SSB", "J2000", "NONE", 1.0E6 ) );
 
     // Create links to set and get state functions of bodies.
-    std::function< void( Eigen::Vector6d ) > sunStateSetFunction = std::bind( &Body::setState, sun, std::placeholders::_1 );
-    std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction = std::bind( &Body::setState, vehicle, std::placeholders::_1 );
-    std::function< Eigen::Vector6d( ) > sunStateGetFunction = std::bind( &Body::getState, sun );
-    std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = std::bind( &Body::getState, vehicle );
+    std::function< void( Eigen::Vector6d ) > sunStateSetFunction = [sun](const Eigen::Vector6d& state) { sun->setState(state); };
+    std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction = [vehicle](const Eigen::Vector6d& state) { vehicle->setState(state); };
+    std::function< Eigen::Vector6d( ) > sunStateGetFunction = [sun]() { return sun->getState(); };
+    std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = [vehicle]() { return vehicle->getState(); };
     bodies.at( "Sun" )->setRadiationSourceModel(
             createRadiationSourceModel( getDefaultRadiationSourceModelSettings( "Sun", TUDAT_NAN, TUDAT_NAN ), "Sun", bodies ) );
 
@@ -586,7 +585,7 @@ BOOST_AUTO_TEST_CASE( testCannonballRadiationPressureAccelerationPartials )
     velocityPerturbation << 1.0, 1.0, 1.0;
 
     // Calculate numerical partials.
-    std::function< void( ) > updateFunction = std::bind( &RadiationPressureTargetModel::updateMembers, radiationPressureInterface, 0.0 );
+    std::function< void( ) > updateFunction = [radiationPressureInterface]() { radiationPressureInterface->updateMembers(0.0); };
     testPartialWrtSunPosition = calculateAccelerationWrtStatePartials(
             sunStateSetFunction, accelerationModel, sun->getState( ), positionPerturbation, 0, updateFunction );
     testPartialWrtVehiclePosition = calculateAccelerationWrtStatePartials(
@@ -705,9 +704,9 @@ BOOST_AUTO_TEST_CASE( testThirdBodyGravityPartials )
     velocityPerturbation << 1.0, 1.0, 1.0;
 
     // Create state access/modification functions for bodies.
-    std::function< void( Eigen::Vector6d ) > moonStateSetFunction = std::bind( &Body::setState, moon, std::placeholders::_1 );
-    std::function< void( Eigen::Vector6d ) > sunStateSetFunction = std::bind( &Body::setState, sun, std::placeholders::_1 );
-    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = std::bind( &Body::setState, earth, std::placeholders::_1 );
+    std::function< void( Eigen::Vector6d ) > moonStateSetFunction = [moon](const Eigen::Vector6d& state) { moon->setState(state); };
+    std::function< void( Eigen::Vector6d ) > sunStateSetFunction = [sun](const Eigen::Vector6d& state) { sun->setState(state); };
+    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = [earth](const Eigen::Vector6d& state) { earth->setState(state); };
 
     // Calculate numerical partials.
     testPartialWrtMoonPosition = calculateAccelerationWrtStatePartials(
@@ -862,7 +861,7 @@ BOOST_AUTO_TEST_CASE( testAerodynamicAccelerationPartials )
     Eigen::Matrix3d testPartialWrtEarthVelocity = Eigen::Matrix3d::Zero( );
 
     std::function< void( ) > environmentUpdateFunction =
-            std::bind( &updateFlightConditionsWithPerturbedState, bodies.at( "Vehicle" )->getFlightConditions( ), 0.0 );
+            [flightConditions = bodies.at( "Vehicle" )->getFlightConditions()]() { updateFlightConditionsWithPerturbedState(flightConditions, 0.0); };
 
     // Declare perturbations in position for numerical partial/
     Eigen::Vector3d positionPerturbation;
@@ -872,11 +871,11 @@ BOOST_AUTO_TEST_CASE( testAerodynamicAccelerationPartials )
 
     // Create state access/modification functions for bodies.
     std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction =
-            std::bind( &Body::setState, bodies.at( "Vehicle" ), std::placeholders::_1 );
+            [vehicleBody = bodies.at( "Vehicle" )](const Eigen::Vector6d& state) { vehicleBody->setState(state); };
     std::function< void( Eigen::Vector6d ) > earthStateSetFunction =
-            std::bind( &Body::setState, bodies.at( "Earth" ), std::placeholders::_1 );
-    std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = std::bind( &Body::getState, bodies.at( "Vehicle" ) );
-    std::function< Eigen::Vector6d( ) > earthStateGetFunction = std::bind( &Body::getState, bodies.at( "Earth" ) );
+            [earthBody = bodies.at( "Earth" )](const Eigen::Vector6d& state) { earthBody->setState(state); };
+    std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = [vehicleBody = bodies.at( "Vehicle" )]() { return vehicleBody->getState(); };
+    std::function< Eigen::Vector6d( ) > earthStateGetFunction = [earthBody = bodies.at( "Earth" )]() { return earthBody->getState(); };
 
     // Calculate numerical partials.
     testPartialWrtVehiclePosition = calculateAccelerationWrtStatePartials( vehicleStateSetFunction,
@@ -1028,10 +1027,10 @@ BOOST_AUTO_TEST_CASE( testRelativisticAccelerationPartial )
     std::shared_ptr< Body > vehicle = std::make_shared< Body >( );
 
     // Create links to set and get state functions of bodies.
-    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = std::bind( &Body::setState, earth, std::placeholders::_1 );
-    std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction = std::bind( &Body::setState, vehicle, std::placeholders::_1 );
-    std::function< Eigen::Vector6d( ) > earthStateGetFunction = std::bind( &Body::getState, earth );
-    std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = std::bind( &Body::getState, vehicle );
+    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = [earth](const Eigen::Vector6d& state) { earth->setState(state); };
+    std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction = [vehicle](const Eigen::Vector6d& state) { vehicle->setState(state); };
+    std::function< Eigen::Vector6d( ) > earthStateGetFunction = [earth]() { return earth->getState(); };
+    std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = [vehicle]() { return vehicle->getState(); };
 
     // Load spice kernel.
     spice_interface::loadStandardSpiceKernels( );
@@ -1055,12 +1054,12 @@ BOOST_AUTO_TEST_CASE( testRelativisticAccelerationPartial )
     earth->setGravityFieldModel( earthGravityField );
 
     // Create acceleration model.
-    std::function< double( ) > ppnParameterGammaFunction = std::bind( &PPNParameterSet::getParameterGamma, ppnParameterSet );
-    std::function< double( ) > ppnParameterBetaFunction = std::bind( &PPNParameterSet::getParameterBeta, ppnParameterSet );
+    std::function< double( ) > ppnParameterGammaFunction = [ppnParameterSet]() { return ppnParameterSet->getParameterGamma(); };
+    std::function< double( ) > ppnParameterBetaFunction = [ppnParameterSet]() { return ppnParameterSet->getParameterBeta(); };
     std::shared_ptr< RelativisticAccelerationCorrection > accelerationModel = std::make_shared< RelativisticAccelerationCorrection >(
-            std::bind( &Body::getState, vehicle ),
-            std::bind( &Body::getState, earth ),
-            std::bind( &GravityFieldModel::getGravitationalParameter, earthGravityField ),
+            [vehicle]() { return vehicle->getState(); },
+            [earth]() { return earth->getState(); },
+            [earthGravityField]() { return earthGravityField->getGravitationalParameter(); },
             ppnParameterGammaFunction,
             ppnParameterBetaFunction );
 
@@ -1140,10 +1139,10 @@ BOOST_AUTO_TEST_CASE( testEmpiricalAccelerationPartial )
     std::shared_ptr< Body > vehicle = std::make_shared< Body >( );
 
     // Create links to set and get state functions of bodies.
-    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = std::bind( &Body::setState, earth, std::placeholders::_1 );
-    std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction = std::bind( &Body::setState, vehicle, std::placeholders::_1 );
-    std::function< Eigen::Vector6d( ) > earthStateGetFunction = std::bind( &Body::getState, earth );
-    std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = std::bind( &Body::getState, vehicle );
+    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = [earth](const Eigen::Vector6d& state) { earth->setState(state); };
+    std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction = [vehicle](const Eigen::Vector6d& state) { vehicle->setState(state); };
+    std::function< Eigen::Vector6d( ) > earthStateGetFunction = [earth]() { return earth->getState(); };
+    std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = [vehicle]() { return vehicle->getState(); };
 
     // Load spice kernel.
     spice_interface::loadStandardSpiceKernels( );
@@ -1187,9 +1186,9 @@ BOOST_AUTO_TEST_CASE( testEmpiricalAccelerationPartial )
             std::make_shared< EmpiricalAcceleration >( constantAcceleration,
                                                        sineAcceleration,
                                                        cosineAcceleration,
-                                                       std::bind( &Body::getState, vehicle ),
-                                                       std::bind( &GravityFieldModel::getGravitationalParameter, earthGravityField ),
-                                                       std::bind( &Body::getState, earth ) );
+                                                       [vehicle]() { return vehicle->getState(); },
+                                                       [earthGravityField]() { return earthGravityField->getGravitationalParameter(); },
+                                                       [earth]() { return earth->getState(); } );
 
     // Create acceleration partial object.
     std::shared_ptr< EmpiricalAccelerationPartial > accelerationPartial =
@@ -1379,10 +1378,10 @@ BOOST_AUTO_TEST_CASE( testDirectDissipationAccelerationPartial )
     std::shared_ptr< Body > io = std::make_shared< Body >( );
 
     // Create links to set and get state functions of bodies.
-    std::function< void( Eigen::Vector6d ) > ioStateSetFunction = std::bind( &Body::setState, io, std::placeholders::_1 );
-    std::function< void( Eigen::Vector6d ) > jupiterStateSetFunction = std::bind( &Body::setState, jupiter, std::placeholders::_1 );
-    std::function< Eigen::Vector6d( ) > ioStateGetFunction = std::bind( &Body::getState, io );
-    std::function< Eigen::Vector6d( ) > jupiterStateGetFunction = std::bind( &Body::getState, jupiter );
+    std::function< void( Eigen::Vector6d ) > ioStateSetFunction = [io](const Eigen::Vector6d& state) { io->setState(state); };
+    std::function< void( Eigen::Vector6d ) > jupiterStateSetFunction = [jupiter](const Eigen::Vector6d& state) { jupiter->setState(state); };
+    std::function< Eigen::Vector6d( ) > ioStateGetFunction = [io]() { return io->getState(); };
+    std::function< Eigen::Vector6d( ) > jupiterStateGetFunction = [jupiter]() { return jupiter->getState(); };
 
     // Load spice kernel.
     spice_interface::loadStandardSpiceKernels( );
@@ -1560,12 +1559,12 @@ BOOST_AUTO_TEST_CASE( testPanelledSurfaceRadiationPressureAccelerationPartials )
     earth->setCurrentRotationalStateToLocalFrameFromEphemeris( 0.0 );
 
     // Create links to set and get state functions of bodies.
-    std::function< void( Eigen::Vector6d ) > sunStateSetFunction = std::bind( &Body::setState, sun, std::placeholders::_1 );
-    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = std::bind( &Body::setState, earth, std::placeholders::_1 );
-    std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction = std::bind( &Body::setState, vehicle, std::placeholders::_1 );
-    std::function< Eigen::Vector6d( ) > sunStateGetFunction = std::bind( &Body::getState, sun );
-    std::function< Eigen::Vector6d( ) > earthStateGetFunction = std::bind( &Body::getState, earth );
-    std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = std::bind( &Body::getState, vehicle );
+    std::function< void( Eigen::Vector6d ) > sunStateSetFunction = [sun](const Eigen::Vector6d& state) { sun->setState(state); };
+    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = [earth](const Eigen::Vector6d& state) { earth->setState(state); };
+    std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction = [vehicle](const Eigen::Vector6d& state) { vehicle->setState(state); };
+    std::function< Eigen::Vector6d( ) > sunStateGetFunction = [sun]() { return sun->getState(); };
+    std::function< Eigen::Vector6d( ) > earthStateGetFunction = [earth]() { return earth->getState(); };
+    std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = [vehicle]() { return vehicle->getState(); };
     bodies.at( "Sun" )->setRadiationSourceModel(
             createRadiationSourceModel( getDefaultRadiationSourceModelSettings( "Sun", TUDAT_NAN, TUDAT_NAN ), "Sun", bodies ) );
     bodies.at( "Sun" )->getRadiationSourceModel( )->updateMembers( 1.0E7 );
@@ -1640,7 +1639,7 @@ BOOST_AUTO_TEST_CASE( testPanelledSurfaceRadiationPressureAccelerationPartials )
     velocityPerturbation << 1.0, 1.0, 1.0;
 
     // Calculate numerical partials.
-    std::function< void( ) > updateFunction = std::bind( &RadiationPressureTargetModel::updateMembers, radiationPressureInterface, 0.0 );
+    std::function< void( ) > updateFunction = [radiationPressureInterface]() { radiationPressureInterface->updateMembers(0.0); };
     testPartialWrtEarthPosition = calculateAccelerationWrtStatePartials(
             earthStateSetFunction, accelerationModel, earth->getState( ), positionPerturbation, 0, updateFunction );
     testPartialWrtVehiclePosition = calculateAccelerationWrtStatePartials(
@@ -1767,7 +1766,7 @@ BOOST_AUTO_TEST_CASE( testThrustPartials )
         double massPerturbation = 0.01;
 
         // Create state access/modification functions for bodies.
-        std::function< void( double ) > massSetFunction = std::bind( &Body::setConstantBodyMass, vehicle, std::placeholders::_1 );
+        std::function< void( double ) > massSetFunction = [vehicle](double mass) { vehicle->setConstantBodyMass(mass); };
 
         // Calculate numerical partials.
         testPartialWrtMass = calculateAccelerationWrtMassPartials( massSetFunction, thrustAcceleration, vehicleMass, massPerturbation );
@@ -1859,10 +1858,10 @@ BOOST_AUTO_TEST_CASE( testYarkovskyPartials )
     velocityPerturbation << 1.0, 1.0, 1.0;
 
     // Create state access/modification functions for bodies.
-    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = std::bind( &Body::setState, earth, std::placeholders::_1 );
-    std::function< void( Eigen::Vector6d ) > sunStateSetFunction = std::bind( &Body::setState, sun, std::placeholders::_1 );
-    std::function< Eigen::Vector6d( ) > earthStateGetFunction = std::bind( &Body::getState, earth );
-    std::function< Eigen::Vector6d( ) > sunStateGetFunction = std::bind( &Body::getState, sun );
+    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = [earth](const Eigen::Vector6d& state) { earth->setState(state); };
+    std::function< void( Eigen::Vector6d ) > sunStateSetFunction = [sun](const Eigen::Vector6d& state) { sun->setState(state); };
+    std::function< Eigen::Vector6d( ) > earthStateGetFunction = [earth]() { return earth->getState(); };
+    std::function< Eigen::Vector6d( ) > sunStateGetFunction = [sun]() { return sun->getState(); };
 
     // Calculate numerical partials.
     testPartialWrtEarthPosition = calculateAccelerationWrtStatePartials(
@@ -2028,10 +2027,10 @@ BOOST_AUTO_TEST_CASE( testRTGPartials )
     velocityPerturbation << 1.0, 1.0, 1.0;
 
     // Create state access/modification functions for bodies.
-    std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction = std::bind( &Body::setState, vehicle, std::placeholders::_1 );
-    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = std::bind( &Body::setState, earth, std::placeholders::_1 );
-    std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = std::bind( &Body::getState, vehicle );
-    std::function< Eigen::Vector6d( ) > earthStateGetFunction = std::bind( &Body::getState, earth );
+    std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction = [vehicle](const Eigen::Vector6d& state) { vehicle->setState(state); };
+    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = [earth](const Eigen::Vector6d& state) { earth->setState(state); };
+    std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = [vehicle]() { return vehicle->getState(); };
+    std::function< Eigen::Vector6d( ) > earthStateGetFunction = [earth]() { return earth->getState(); };
 
     // Calculate numerical partials.
     testPartialWrtVehiclePosition = calculateAccelerationWrtStatePartials(
@@ -2170,7 +2169,7 @@ BOOST_AUTO_TEST_CASE( test_ExponentialAtmosphereParameters )
     std::vector< Eigen::Vector3d > testPartialsWrtScaleHeight;
 
     std::function< void( ) > environmentUpdateFunction =
-            std::bind( &updateFlightConditionsWithPerturbedState, bodies.at( "Vehicle" )->getFlightConditions( ), 0.0 );
+            [flightConditions = bodies.at( "Vehicle" )->getFlightConditions()]() { updateFlightConditionsWithPerturbedState(flightConditions, 0.0); };
 
     for( unsigned int i = 0; i < testTimes.size( ); i++ )
     {

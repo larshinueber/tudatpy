@@ -44,13 +44,9 @@ BOOST_AUTO_TEST_CASE( test_halleyRootFinder_testFunction1 )
 
     // The termination condition.
     HalleyRootFinder< double >::TerminationFunction terminationConditionFunction =
-            std::bind( &RootAbsoluteToleranceTerminationCondition< double >::checkTerminationCondition,
-                       std::make_shared< RootAbsoluteToleranceTerminationCondition< double > >( testFunction->getTrueRootAccuracy( ) ),
-                       std::placeholders::_1,
-                       std::placeholders::_2,
-                       std::placeholders::_3,
-                       std::placeholders::_4,
-                       std::placeholders::_5 );
+            [cond = std::make_shared< RootAbsoluteToleranceTerminationCondition< double > >( testFunction->getTrueRootAccuracy( ) )]
+            ( const auto& a, const auto& b, const auto& c, const auto& d, const auto& e )
+            { return cond->checkTerminationCondition( a, b, c, d, e ); };
 
     // Test Halley object.
     HalleyRootFinder< double > halleyRootFinder( terminationConditionFunction );
@@ -71,13 +67,9 @@ BOOST_AUTO_TEST_CASE( test_halleyRootFinder_testFunction2 )
 
     // The termination condition.
     HalleyRootFinder<>::TerminationFunction terminationConditionFunction =
-            std::bind( &RootAbsoluteToleranceTerminationCondition< double >::checkTerminationCondition,
-                       std::make_shared< RootAbsoluteToleranceTerminationCondition< double > >( testFunction->getTrueRootAccuracy( ) ),
-                       std::placeholders::_1,
-                       std::placeholders::_2,
-                       std::placeholders::_3,
-                       std::placeholders::_4,
-                       std::placeholders::_5 );
+            [cond = std::make_shared< RootAbsoluteToleranceTerminationCondition< double > >( testFunction->getTrueRootAccuracy( ) )]
+            ( const auto& a, const auto& b, const auto& c, const auto& d, const auto& e )
+            { return cond->checkTerminationCondition( a, b, c, d, e ); };
 
     // Test Halley object.
     HalleyRootFinder<> halleyRootFinder( terminationConditionFunction );
@@ -98,13 +90,9 @@ BOOST_AUTO_TEST_CASE( test_halleyRootFinder_testFunction3 )
 
     // The termination condition.
     HalleyRootFinder<>::TerminationFunction terminationConditionFunction =
-            std::bind( &RootAbsoluteToleranceTerminationCondition< double >::checkTerminationCondition,
-                       std::make_shared< RootAbsoluteToleranceTerminationCondition< double > >( testFunction->getTrueRootAccuracy( ) ),
-                       std::placeholders::_1,
-                       std::placeholders::_2,
-                       std::placeholders::_3,
-                       std::placeholders::_4,
-                       std::placeholders::_5 );
+            [cond = std::make_shared< RootAbsoluteToleranceTerminationCondition< double > >( testFunction->getTrueRootAccuracy( ) )]
+            ( const auto& a, const auto& b, const auto& c, const auto& d, const auto& e )
+            { return cond->checkTerminationCondition( a, b, c, d, e ); };
 
     // Test Halley object.
     HalleyRootFinder<> halleyRootFinder( terminationConditionFunction );
@@ -128,13 +116,9 @@ BOOST_AUTO_TEST_CASE( test_halleyRootFinder_testFunctionWithZeroRoot )
 
     // The termination condition.
     HalleyRootFinder<>::TerminationFunction terminationConditionFunction =
-            std::bind( &RootAbsoluteToleranceTerminationCondition< double >::checkTerminationCondition,
-                       std::make_shared< RootAbsoluteToleranceTerminationCondition< double > >( 1.0e-150 ),
-                       std::placeholders::_1,
-                       std::placeholders::_2,
-                       std::placeholders::_3,
-                       std::placeholders::_4,
-                       std::placeholders::_5 );
+            [cond = std::make_shared< RootAbsoluteToleranceTerminationCondition< double > >( 1.0e-150 )]
+            ( const auto& a, const auto& b, const auto& c, const auto& d, const auto& e )
+            { return cond->checkTerminationCondition( a, b, c, d, e ); };
 
     // Test Halley object.
     HalleyRootFinder<> halleyRootFinder( terminationConditionFunction );

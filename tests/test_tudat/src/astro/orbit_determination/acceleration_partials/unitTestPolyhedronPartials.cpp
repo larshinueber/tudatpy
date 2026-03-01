@@ -121,11 +121,11 @@ BOOST_AUTO_TEST_CASE( testPolyhedronAccelerationPartial )
 
     // Create state access/modification functions for bodies.
     std::function< void( Eigen::Vector6d ) > earthStateSetFunction =
-            std::bind( &simulation_setup::Body::setState, earth, std::placeholders::_1 );
+            [earth](const Eigen::Vector6d& state) { earth->setState(state); };
     std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction =
-            std::bind( &simulation_setup::Body::setState, vehicle, std::placeholders::_1 );
-    std::function< Eigen::Vector6d( ) > earthStateGetFunction = std::bind( &simulation_setup::Body::getState, earth );
-    std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = std::bind( &simulation_setup::Body::getState, vehicle );
+            [vehicle](const Eigen::Vector6d& state) { vehicle->setState(state); };
+    std::function< Eigen::Vector6d( ) > earthStateGetFunction = [earth]() { return earth->getState(); };
+    std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = [vehicle]() { return vehicle->getState(); };
 
     // Create list of estimatable parameters settings
     std::vector< std::shared_ptr< estimatable_parameters::EstimatableParameterSettings > > parameterNames;
@@ -244,11 +244,11 @@ BOOST_AUTO_TEST_CASE( testPolyhedronAccelerationPartialWithSynchronousRotation )
 
     // Create state access/modification functions for bodies.
     std::function< void( Eigen::Vector6d ) > earthStateSetFunction =
-            std::bind( &simulation_setup::Body::setState, earth, std::placeholders::_1 );
+            [earth](const Eigen::Vector6d& state) { earth->setState(state); };
     std::function< void( Eigen::Vector6d ) > moonStateSetFunction =
-            std::bind( &simulation_setup::Body::setState, moon, std::placeholders::_1 );
-    std::function< Eigen::Vector6d( ) > earthStateGetFunction = std::bind( &simulation_setup::Body::getState, earth );
-    std::function< Eigen::Vector6d( ) > moonStateGetFunction = std::bind( &simulation_setup::Body::getState, moon );
+            [moon](const Eigen::Vector6d& state) { moon->setState(state); };
+    std::function< Eigen::Vector6d( ) > earthStateGetFunction = [earth]() { return earth->getState(); };
+    std::function< Eigen::Vector6d( ) > moonStateGetFunction = [moon]() { return moon->getState(); };
 
     // Define estimated parameters
     std::vector< std::shared_ptr< estimatable_parameters::EstimatableParameterSettings > > parameterNames;
@@ -280,7 +280,7 @@ BOOST_AUTO_TEST_CASE( testPolyhedronAccelerationPartialWithSynchronousRotation )
 
     // Calculate numerical partials.
     std::function< void( ) > updateFunction =
-            std::bind( &simulation_setup::Body::setCurrentRotationToLocalFrameFromEphemeris, bodies.at( "Earth" ), testTime );
+            [earthBody = bodies.at( "Earth" ), testTime]() { earthBody->setCurrentRotationToLocalFrameFromEphemeris(testTime); };
 
     testPartialWrtMoonPosition = acceleration_partials::calculateAccelerationWrtStatePartials(
             moonStateSetFunction, gravitationalAcceleration, moon->getState( ), positionPerturbation, 0, updateFunction );

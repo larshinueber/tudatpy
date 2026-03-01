@@ -218,8 +218,8 @@ private:
     void setCoefficientInterfaceClosure( )
     {
         coefficientInterface_->setTimeDependentCoefficientClosure(
-                std::bind( &ArcWiseConstantDragCoefficient::getCurrentCoefficients, this ),
-                std::bind( &ArcWiseConstantDragCoefficient::updateCurrentCoefficients, this, std::placeholders::_1 ) );
+                [this]() { return this->getCurrentCoefficients( ); },
+                [this]( const double t ) { this->updateCurrentCoefficients( t ); } );
     }
 
     //! Object containing the drag coefficient to be estimated.

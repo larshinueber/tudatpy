@@ -53,14 +53,11 @@ public:
                          isStateDerivativeDependentOnIntegratedAdditionalStateTypes( stateReferencePoint, integratedStateType ) )
                 {
                     partialFunction =
-                            std::make_pair( std::bind( &MassRatePartial::wrtTranslationalStateOfBody, this, std::placeholders::_1 ), 6 );
+                            std::make_pair( [this]( Eigen::Block< Eigen::MatrixXd > block ) { this->wrtTranslationalStateOfBody( block ); }, 6 );
                 }
                 else if( isStateDerivativeDependentOnIntegratedAdditionalStateTypes( stateReferencePoint, integratedStateType ) )
                 {
-                    partialFunction = std::make_pair( std::bind( &MassRatePartial::wrtTranslationalStateOfAdditionalBody,
-                                                                 this,
-                                                                 std::placeholders::_1,
-                                                                 stateReferencePoint.first ),
+                    partialFunction = std::make_pair( [this, bodyName = stateReferencePoint.first]( Eigen::Block< Eigen::MatrixXd > block ) { this->wrtTranslationalStateOfAdditionalBody( block, bodyName ); },
                                                       6 );
                 }
                 break;
@@ -79,7 +76,7 @@ public:
                 }
                 else if( isMassRatePartialWrtMassNonZero( ) )
                 {
-                    partialFunction = std::make_pair( std::bind( &MassRatePartial::wrtMassOfBody, this, std::placeholders::_1 ), 1 );
+                    partialFunction = std::make_pair( [this]( Eigen::Block< Eigen::MatrixXd > block ) { this->wrtMassOfBody( block ); }, 1 );
                 }
                 break;
             }

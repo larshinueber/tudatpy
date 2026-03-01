@@ -235,7 +235,7 @@ BOOST_AUTO_TEST_CASE( test_ephemerisSetup )
         double speed = 5000.0;
 
         std::shared_ptr< EphemerisSettings > customEphemerisSettings = std::make_shared< CustomEphemerisSettings >(
-                std::bind( &computeCustomState, std::placeholders::_1, angularVelocity, radius, speed ), "Earth", "J2000" );
+                [angularVelocity, radius, speed]( const double t ) { return computeCustomState( t, angularVelocity, radius, speed ); }, "Earth", "J2000" );
         std::shared_ptr< ephemerides::Ephemeris > customEphemeris = createBodyEphemeris( customEphemerisSettings, "Satellite" );
 
         double testTime = 4.0E8;

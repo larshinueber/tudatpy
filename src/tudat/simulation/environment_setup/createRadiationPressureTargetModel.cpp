@@ -181,8 +181,8 @@ std::vector< std::shared_ptr< electromagnetism::RadiationPressureTargetModel > >
                 if( it.first != "" )
                 {
                     segmentFixedPanels[ it.first ] = it.second;
-                    segmentFixedToBodyFixedRotations[ it.first ] = std::bind(
-                            &system_models::VehicleSystems::getPartRotationToBaseFrame, bodies.at( body )->getVehicleSystems( ), it.first );
+                    segmentFixedToBodyFixedRotations[ it.first ] = [vehicleSystems = bodies.at( body )->getVehicleSystems( ), partName = it.first]() {
+                            return vehicleSystems->getPartRotationToBaseFrame( partName ); };
                 }
                 else
                 {

@@ -109,7 +109,7 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > RelativisticAccelera
         {
             case estimatable_parameters::gravitational_parameter:
                 partialFunction =
-                        std::bind( &RelativisticAccelerationPartial::wrtGravitationalParameterOfCentralBody, this, std::placeholders::_1 );
+                        [this](Eigen::MatrixXd& m) { this->wrtGravitationalParameterOfCentralBody(m); };
                 numberOfRows = 1;
                 break;
             default:
@@ -122,11 +122,11 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > RelativisticAccelera
         switch( parameter->getParameterName( ).first )
         {
             case estimatable_parameters::ppn_parameter_gamma:
-                partialFunction = std::bind( &RelativisticAccelerationPartial::wrtPpnParameterGamma, this, std::placeholders::_1 );
+                partialFunction = [this](Eigen::MatrixXd& m) { this->wrtPpnParameterGamma(m); };
                 numberOfRows = 1;
                 break;
             case estimatable_parameters::ppn_parameter_beta:
-                partialFunction = std::bind( &RelativisticAccelerationPartial::wrtPpnParameterBeta, this, std::placeholders::_1 );
+                partialFunction = [this](Eigen::MatrixXd& m) { this->wrtPpnParameterBeta(m); };
                 numberOfRows = 1;
                 break;
             default:

@@ -69,14 +69,11 @@ std::shared_ptr< LightTimeCorrection > createLightTimeCorrections( const std::sh
                     {
                         // Set state function.
                         perturbingBodyStateFunctions.push_back(
-                                std::bind( &simulation_setup::Body::getStateInBaseFrameFromEphemeris< double, double >,
-                                           bodies.at( perturbingBodies[ i ] ),
-                                           std::placeholders::_1 ) );
+                                [body = bodies.at( perturbingBodies[ i ] )]( const double time ) { return body->getStateInBaseFrameFromEphemeris< double, double >( time ); } );
 
                         // Set gravitational parameter function.
                         perturbingBodyGravitationalParameterFunctions.push_back(
-                                std::bind( &gravitation::GravityFieldModel::getGravitationalParameter,
-                                           bodies.at( perturbingBodies[ i ] )->getGravityFieldModel( ) ) );
+                                [gravityModel = bodies.at( perturbingBodies[ i ] )->getGravityFieldModel( )]( ) { return gravityModel->getGravitationalParameter( ); } );
                     }
                 }
 
@@ -87,7 +84,7 @@ std::shared_ptr< LightTimeCorrection > createLightTimeCorrections( const std::sh
                         perturbingBodies,
                         transmitter.bodyName_,
                         receiver.bodyName_,
-                        std::bind( &relativity::PPNParameterSet::getParameterGamma, relativity::ppnParameterSet ),
+                        [ppnParams = relativity::ppnParameterSet]( ) { return ppnParams->getParameterGamma( ); },
                         std::dynamic_pointer_cast< FirstOrderRelativisticLightTimeCorrectionSettings >( correctionSettings )
                                 ->getBendingFlag( ) );
             }
@@ -231,10 +228,9 @@ std::shared_ptr< LightTimeCorrection > createLightTimeCorrections( const std::sh
 
                 // Using nominal geodetic position, i.e. ignoring station motion
                 std::function< Eigen::Vector3d( double ) > groundStationGeodeticPositionFunction =
-                        std::bind( &ground_stations::GroundStationState::getNominalGeodeticPosition,
-                                   bodies.getBody( groundStation.bodyName_ )
-                                           ->getGroundStation( groundStation.stationName_ )
-                                           ->getNominalStationState( ) );
+                        [stationState = bodies.getBody( groundStation.bodyName_ )
+                                                ->getGroundStation( groundStation.stationName_ )
+                                                ->getNominalStationState( )]( const double ) { return stationState->getNominalGeodeticPosition( ); };
 
                 std::function< double( const double ) > waterVaporPartialPressureFunction;
                 if( troposphericCorrectionSettings->getWaterVaporPartialPressureModelType( ) == tabulated )
@@ -318,10 +314,9 @@ std::shared_ptr< LightTimeCorrection > createLightTimeCorrections( const std::sh
 
                 // Get geodetic position function
                 std::function< Eigen::Vector3d( double ) > groundStationGeodeticPositionFunction =
-                        std::bind( &ground_stations::GroundStationState::getNominalGeodeticPosition,
-                                   bodies.getBody( groundStation.bodyName_ )
-                                           ->getGroundStation( groundStation.stationName_ )
-                                           ->getNominalStationState( ) );
+                        [stationState = bodies.getBody( groundStation.bodyName_ )
+                                                ->getGroundStation( groundStation.stationName_ )
+                                                ->getNominalStationState( )]( const double ) { return stationState->getNominalGeodeticPosition( ); };
 
                 // Get tropospheric data
                 std::shared_ptr< ground_stations::StationTroposphereData > troposphereData =
@@ -484,26 +479,19 @@ std::shared_ptr< LightTimeCorrection > createLightTimeCorrections( const std::sh
 
                 // Create ionospheric correction
                 std::function< double( Eigen::Vector3d, double ) > elevationFunction =
-                        std::bind( &ground_stations::PointingAnglesCalculator::calculateElevationAngleFromInertialVector,
-                                   bodies.getBody( groundStation.bodyName_ )
-                                           ->getGroundStation( groundStation.stationName_ )
-                                           ->getPointingAnglesCalculator( ),
-                                   std::placeholders::_1,
-                                   std::placeholders::_2 );
+                        [pointingCalc = bodies.getBody( groundStation.bodyName_ )
+                                                ->getGroundStation( groundStation.stationName_ )
+                                                ->getPointingAnglesCalculator( )]( const Eigen::Vector3d& inertialVector, const double time ) { return pointingCalc->calculateElevationAngleFromInertialVector( inertialVector, time ); };
                 std::function< double( Eigen::Vector3d, double ) > azimuthFunction =
-                        std::bind( &ground_stations::PointingAnglesCalculator::calculateAzimuthAngleFromInertialVector,
-                                   bodies.getBody( groundStation.bodyName_ )
-                                           ->getGroundStation( groundStation.stationName_ )
-                                           ->getPointingAnglesCalculator( ),
-                                   std::placeholders::_1,
-                                   std::placeholders::_2 );
+                        [pointingCalc = bodies.getBody( groundStation.bodyName_ )
+                                                ->getGroundStation( groundStation.stationName_ )
+                                                ->getPointingAnglesCalculator( )]( const Eigen::Vector3d& inertialVector, const double time ) { return pointingCalc->calculateAzimuthAngleFromInertialVector( inertialVector, time ); };
 
                 // Nominal geodetic position, i.e. ignoring station motion
                 std::function< Eigen::Vector3d( double ) > groundStationGeodeticPositionFunction =
-                        std::bind( &ground_stations::GroundStationState::getNominalGeodeticPosition,
-                                   bodies.getBody( groundStation.bodyName_ )
-                                           ->getGroundStation( groundStation.stationName_ )
-                                           ->getNominalStationState( ) );
+                        [stationState = bodies.getBody( groundStation.bodyName_ )
+                                                ->getGroundStation( groundStation.stationName_ )
+                                                ->getNominalStationState( )]( const double ) { return stationState->getNominalGeodeticPosition( ); };
 
                 // Get equatorial radius
                 double equatorialRadius;
@@ -581,26 +569,19 @@ std::shared_ptr< LightTimeCorrection > createLightTimeCorrections( const std::sh
 
                 // Create ionospheric correction
                 std::function< double( Eigen::Vector3d, double ) > elevationFunction =
-                        std::bind( &ground_stations::PointingAnglesCalculator::calculateElevationAngleFromInertialVector,
-                                   bodies.getBody( groundStation.bodyName_ )
-                                           ->getGroundStation( groundStation.stationName_ )
-                                           ->getPointingAnglesCalculator( ),
-                                   std::placeholders::_1,
-                                   std::placeholders::_2 );
+                        [pointingCalc = bodies.getBody( groundStation.bodyName_ )
+                                                ->getGroundStation( groundStation.stationName_ )
+                                                ->getPointingAnglesCalculator( )]( const Eigen::Vector3d& inertialVector, const double time ) { return pointingCalc->calculateElevationAngleFromInertialVector( inertialVector, time ); };
                 std::function< double( Eigen::Vector3d, double ) > azimuthFunction =
-                        std::bind( &ground_stations::PointingAnglesCalculator::calculateAzimuthAngleFromInertialVector,
-                                   bodies.getBody( groundStation.bodyName_ )
-                                           ->getGroundStation( groundStation.stationName_ )
-                                           ->getPointingAnglesCalculator( ),
-                                   std::placeholders::_1,
-                                   std::placeholders::_2 );
+                        [pointingCalc = bodies.getBody( groundStation.bodyName_ )
+                                                ->getGroundStation( groundStation.stationName_ )
+                                                ->getPointingAnglesCalculator( )]( const Eigen::Vector3d& inertialVector, const double time ) { return pointingCalc->calculateAzimuthAngleFromInertialVector( inertialVector, time ); };
 
                 // Nominal geodetic position, i.e. ignoring station motion
                 std::function< Eigen::Vector3d( double ) > groundStationGeodeticPositionFunction =
-                        std::bind( &ground_stations::GroundStationState::getNominalGeodeticPosition,
-                                   bodies.getBody( groundStation.bodyName_ )
-                                           ->getGroundStation( groundStation.stationName_ )
-                                           ->getNominalStationState( ) );
+                        [stationState = bodies.getBody( groundStation.bodyName_ )
+                                                ->getGroundStation( groundStation.stationName_ )
+                                                ->getNominalStationState( )]( const double ) { return stationState->getNominalGeodeticPosition( ); };
 
                 // Get equatorial radius
                 double equatorialRadius;
@@ -652,9 +633,7 @@ std::shared_ptr< LightTimeCorrection > createLightTimeCorrections( const std::sh
             std::string sunBodyName = "Sun";  // coronaCorrectionSettings->getSunBodyName( );
 
             std::function< Eigen::Vector6d( const double ) > sunStateFunction =
-                    std::bind( &simulation_setup::Body::getStateInBaseFrameFromEphemeris< double, double >,
-                               bodies.at( sunBodyName ),
-                               std::placeholders::_1 );
+                    [body = bodies.at( sunBodyName )]( const double time ) { return body->getStateInBaseFrameFromEphemeris< double, double >( time ); };
 
             std::shared_ptr< basic_astrodynamics::BodyShapeModel > sunShapeModel = bodies.at( sunBodyName )->getShapeModel( );
             if( sunShapeModel == nullptr )
@@ -708,12 +687,9 @@ std::shared_ptr< TroposhericElevationMapping > createTroposphericElevationMappin
     {
         case TroposphericMappingModel::simplified_chao: {
             std::function< double( Eigen::Vector3d, double ) > elevationFunction =
-                    std::bind( &ground_stations::PointingAnglesCalculator::calculateElevationAngleFromInertialVector,
-                               bodies.getBody( groundStation.bodyName_ )
-                                       ->getGroundStation( groundStation.stationName_ )
-                                       ->getPointingAnglesCalculator( ),
-                               std::placeholders::_1,
-                               std::placeholders::_2 );
+                    [pointingCalc = bodies.getBody( groundStation.bodyName_ )
+                                            ->getGroundStation( groundStation.stationName_ )
+                                            ->getPointingAnglesCalculator( )]( const Eigen::Vector3d& inertialVector, const double time ) { return pointingCalc->calculateElevationAngleFromInertialVector( inertialVector, time ); };
 
             troposphericMappingModel = std::make_shared< SimplifiedChaoTroposphericMapping >( elevationFunction, isUplinkCorrection );
 
@@ -721,17 +697,13 @@ std::shared_ptr< TroposhericElevationMapping > createTroposphericElevationMappin
         }
         case TroposphericMappingModel::niell: {
             std::function< double( Eigen::Vector3d, double ) > elevationFunction =
-                    std::bind( &ground_stations::PointingAnglesCalculator::calculateElevationAngleFromInertialVector,
-                               bodies.getBody( groundStation.bodyName_ )
-                                       ->getGroundStation( groundStation.stationName_ )
-                                       ->getPointingAnglesCalculator( ),
-                               std::placeholders::_1,
-                               std::placeholders::_2 );
+                    [pointingCalc = bodies.getBody( groundStation.bodyName_ )
+                                            ->getGroundStation( groundStation.stationName_ )
+                                            ->getPointingAnglesCalculator( )]( const Eigen::Vector3d& inertialVector, const double time ) { return pointingCalc->calculateElevationAngleFromInertialVector( inertialVector, time ); };
 
             // Using nominal geodetic position, i.e. ignoring station motion
-            std::function< Eigen::Vector3d( double ) > groundStationGeodeticPositionFunction = std::bind(
-                    &ground_stations::GroundStationState::getNominalGeodeticPosition,
-                    bodies.getBody( groundStation.bodyName_ )->getGroundStation( groundStation.stationName_ )->getNominalStationState( ) );
+            std::function< Eigen::Vector3d( double ) > groundStationGeodeticPositionFunction =
+                    [stationState = bodies.getBody( groundStation.bodyName_ )->getGroundStation( groundStation.stationName_ )->getNominalStationState( )]( const double ) { return stationState->getNominalGeodeticPosition( ); };
 
             troposphericMappingModel = std::make_shared< NiellTroposphericMapping >(
                     elevationFunction, groundStationGeodeticPositionFunction, isUplinkCorrection );
@@ -740,24 +712,17 @@ std::shared_ptr< TroposhericElevationMapping > createTroposphericElevationMappin
         }
         case TroposphericMappingModel::vmf3: {
             std::function< double( Eigen::Vector3d, double ) > elevationFunction =
-                    std::bind( &ground_stations::PointingAnglesCalculator::calculateElevationAngleFromInertialVector,
-                               bodies.getBody( groundStation.bodyName_ )
-                                       ->getGroundStation( groundStation.stationName_ )
-                                       ->getPointingAnglesCalculator( ),
-                               std::placeholders::_1,
-                               std::placeholders::_2 );
+                    [pointingCalc = bodies.getBody( groundStation.bodyName_ )
+                                            ->getGroundStation( groundStation.stationName_ )
+                                            ->getPointingAnglesCalculator( )]( const Eigen::Vector3d& inertialVector, const double time ) { return pointingCalc->calculateElevationAngleFromInertialVector( inertialVector, time ); };
 
             std::function< double( Eigen::Vector3d, double ) > azimuthFunction =
-                    std::bind( &ground_stations::PointingAnglesCalculator::calculateAzimuthAngleFromInertialVector,
-                               bodies.getBody( groundStation.bodyName_ )
-                                       ->getGroundStation( groundStation.stationName_ )
-                                       ->getPointingAnglesCalculator( ),
-                               std::placeholders::_1,
-                               std::placeholders::_2 );
+                    [pointingCalc = bodies.getBody( groundStation.bodyName_ )
+                                            ->getGroundStation( groundStation.stationName_ )
+                                            ->getPointingAnglesCalculator( )]( const Eigen::Vector3d& inertialVector, const double time ) { return pointingCalc->calculateAzimuthAngleFromInertialVector( inertialVector, time ); };
 
-            std::function< Eigen::Vector3d( double ) > groundStationGeodeticPositionFunction = std::bind(
-                    &ground_stations::GroundStationState::getNominalGeodeticPosition,
-                    bodies.getBody( groundStation.bodyName_ )->getGroundStation( groundStation.stationName_ )->getNominalStationState( ) );
+            std::function< Eigen::Vector3d( double ) > groundStationGeodeticPositionFunction =
+                    [stationState = bodies.getBody( groundStation.bodyName_ )->getGroundStation( groundStation.stationName_ )->getNominalStationState( )]( const double ) { return stationState->getNominalGeodeticPosition( ); };
 
             troposphericMappingModel = std::make_shared< VMF3MappingModel >(
                     elevationFunction, azimuthFunction, groundStationGeodeticPositionFunction, isUplinkCorrection );

@@ -322,12 +322,8 @@ public:
         // Create piecewise constant interpolator for empirical acceleration
         empiricalAccelerationInterpolator_ = std::make_shared< interpolators::PiecewiseConstantInterpolator< double, Eigen::Matrix3d > >(
                 arcStartTimeList_, empiricalAccelerationList_ );
-        typedef interpolators::OneDimensionalInterpolator< double, Eigen::Matrix3d > LocalInterpolator;
-
         empiricalAccelerationFunction_ =
-                std::bind( static_cast< Eigen::Matrix3d ( LocalInterpolator::* )( const double ) >( &LocalInterpolator::interpolate ),
-                           empiricalAccelerationInterpolator_,
-                           std::placeholders::_1 );
+                [interp = empiricalAccelerationInterpolator_]( const double time ) { return interp->interpolate( time ); };
     }
 
     //! Destructor

@@ -82,26 +82,29 @@ public:
             dynamicsStateDerivative_ = std::make_shared< DynamicsStateDerivativeModel< TimeType, StateScalarType > >(
                     createStateDerivativeModels< StateScalarType, TimeType >(
                             propagatorSettings_, bodies_, propagatorSettings_->getInitialTime( ) ),
-                    std::bind( &EnvironmentUpdater< StateScalarType, TimeType >::updateEnvironment,
-                               environmentUpdater_,
-                               std::placeholders::_1,
-                               std::placeholders::_2,
-                               std::placeholders::_3 ) );
+                    [environmentUpdater = environmentUpdater_](
+                            const TimeType time,
+                            const std::unordered_map< IntegratedStateType, Eigen::Matrix< StateScalarType, Eigen::Dynamic, 1 > >& states,
+                            const std::vector< IntegratedStateType >& integratedStateTypes ) {
+                        environmentUpdater->updateEnvironment( time, states, integratedStateTypes );
+                    } );
         }
         else
         {
             dynamicsStateDerivative_ = std::make_shared< DynamicsStateDerivativeModel< TimeType, StateScalarType > >(
                     predefinedStateDerivativeModels.stateDerivativeModels_,
-                    std::bind( &EnvironmentUpdater< StateScalarType, TimeType >::updateEnvironment,
-                               environmentUpdater_,
-                               std::placeholders::_1,
-                               std::placeholders::_2,
-                               std::placeholders::_3 ) );
+                    [environmentUpdater = environmentUpdater_](
+                            const TimeType time,
+                            const std::unordered_map< IntegratedStateType, Eigen::Matrix< StateScalarType, Eigen::Dynamic, 1 > >& states,
+                            const std::vector< IntegratedStateType >& integratedStateTypes ) {
+                        environmentUpdater->updateEnvironment( time, states, integratedStateTypes );
+                    } );
         }
-        stateDerivativeFunction_ = std::bind( &DynamicsStateDerivativeModel< TimeType, StateScalarType >::computeStateDerivative,
-                                              dynamicsStateDerivative_,
-                                              std::placeholders::_1,
-                                              std::placeholders::_2 );
+        stateDerivativeFunction_ = [dynamicsStateDerivative = dynamicsStateDerivative_](
+                const TimeType time,
+                const Eigen::Matrix< StateScalarType, Eigen::Dynamic, Eigen::Dynamic >& state ) {
+            return dynamicsStateDerivative->computeStateDerivative( time, state );
+        };
 
         // Create object that determines if the propagation is to be terminated
         propagationTerminationCondition_ =
@@ -156,10 +159,11 @@ public:
         propagationResults_ = std::make_shared< SingleArcSimulationResults< StateScalarType, TimeType > >(
                 integratedStateAndBodyList,
                 propagatorSettings_->getOutputSettingsWithCheck( ),
-                std::bind( &DynamicsStateDerivativeModel< TimeType, StateScalarType >::convertNumericalStateSolutionsToOutputSolutions,
-                           dynamicsStateDerivative_,
-                           std::placeholders::_1,
-                           std::placeholders::_2 ),
+                [dynamicsStateDerivative = dynamicsStateDerivative_](
+                        std::map< TimeType, Eigen::Matrix< StateScalarType, Eigen::Dynamic, 1 > >& numericalSolution,
+                        const std::map< TimeType, Eigen::Matrix< StateScalarType, Eigen::Dynamic, 1 > >& rawSolution ) {
+                    dynamicsStateDerivative->convertNumericalStateSolutionsToOutputSolutions( numericalSolution, rawSolution );
+                },
                 dependentVariableInterface,
                 sequentialPropagation_ );
 

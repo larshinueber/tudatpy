@@ -399,15 +399,11 @@ double HodographicShapingLeg::computeThirdFixedCoefficientAxialVelocity( const E
 
     // Define angular velocity due to the third component of the composite function only.
     std::function< double( const double ) > derivativePolarAngleDueToThirdComponent =
-            std::bind( &HodographicShapingLeg::computeDerivativePolarAngleDueToThirdComponent, this, std::placeholders::_1, matrixK );
+            [this, matrixK](const double a) { return computeDerivativePolarAngleDueToThirdComponent(a, matrixK); };
 
     // Define the angular velocity due to all the other components of the composite function, once combined.
     std::function< double( const double ) > derivativePolarAngleDueToOtherComponents =
-            std::bind( &HodographicShapingLeg::computeDerivativePolarAngleDueToOtherComponents,
-                       this,
-                       std::placeholders::_1,
-                       matrixL,
-                       freeCoefficients );
+            [this, matrixL, freeCoefficients](const double a) { return computeDerivativePolarAngleDueToOtherComponents(a, matrixL, freeCoefficients); };
 
     // Define numerical quadratures.
     std::shared_ptr< numerical_quadrature::NumericalQuadrature< double, double > > integratorPolarAngleDueToThirdComponent =
@@ -465,7 +461,7 @@ double HodographicShapingLeg::computeCurrentPolarAngle( const double timeSinceDe
 {
     // Define the derivative of the polar angle, ie angular velocity function, as a function of time.
     std::function< double( const double ) > derivativeFunctionPolarAngle =
-            std::bind( &HodographicShapingLeg::evaluateDerivativePolarAngleWrtTime, this, std::placeholders::_1 );
+            [this](const double a) { return evaluateDerivativePolarAngleWrtTime(a); };
 
     // Define numerical quadrature.
     std::shared_ptr< numerical_quadrature::NumericalQuadrature< double, double > > quadrature =
@@ -595,7 +591,7 @@ double HodographicShapingLeg::computeDeltaV( )
 {
     // Define the derivative of the deltaV, ie thrust acceleration function, as a function of time.
     std::function< double( const double ) > derivativeFunctionDeltaV =
-            std::bind( &HodographicShapingLeg::computeThrustAccelerationMagnitude, this, std::placeholders::_1 );
+            [this](const double a) { return computeThrustAccelerationMagnitude(a); };
 
     // Define numerical quadrature.
     std::shared_ptr< numerical_quadrature::NumericalQuadrature< double, double > > quadrature =

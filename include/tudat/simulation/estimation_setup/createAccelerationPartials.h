@@ -73,17 +73,18 @@ std::shared_ptr< estimatable_parameters::CustomAccelerationPartialCalculator > c
             throw std::runtime_error( "Error when creating custom numerical acceleration partial. Could not find body " + bodyName );
         }
 
-        std::function< Eigen::Vector6d( ) > bodyStateGetFunction = std::bind( &Body::getState, bodies.at( bodyName ) );
+        std::function< Eigen::Vector6d( ) > bodyStateGetFunction = [body = bodies.at( bodyName )]() { return body->getState(); };
         std::function< void( const Eigen::Vector6d& ) > bodyStateSetFunction =
-                std::bind( &Body::setState, bodies.at( bodyName ), std::placeholders::_1 );
+                [body = bodies.at( bodyName )]( const Eigen::Vector6d& state ) { body->setState( state ); };
 
         std::function< void( const double ) > environmentUpdateFunction =
-                std::bind( &propagators::EnvironmentUpdater< double, double >::updateEnvironment,
-                           std::make_shared< propagators::EnvironmentUpdater< double, double > >(
-                                   bodies, numericalCustomPartialSettings->environmentUpdateSettings_ ),
-                           std::placeholders::_1,
-                           std::unordered_map< propagators::IntegratedStateType, Eigen::VectorXd >( ),
-                           std::vector< propagators::IntegratedStateType >( ) );
+                [updater = std::make_shared< propagators::EnvironmentUpdater< double, double > >(
+                        bodies, numericalCustomPartialSettings->environmentUpdateSettings_ )]( const double time ) {
+                    updater->updateEnvironment(
+                            time,
+                            std::unordered_map< propagators::IntegratedStateType, Eigen::VectorXd >( ),
+                            std::vector< propagators::IntegratedStateType >( ) );
+                };
 
         customPartialCalculator = std::make_shared< estimatable_parameters::NumericalAccelerationPartialWrtStateCalculator >(
                 numericalCustomPartialSettings->parameterPerturbation_,
@@ -728,8 +729,8 @@ std::shared_ptr< acceleration_partials::AccelerationPartial > createAnalyticalAc
                     accelerationPartial = std::make_shared< AerodynamicAccelerationPartial >(
                             aerodynamicAcceleration,
                             flightConditions,
-                            std::bind( &Body::getState, acceleratedBody.second ),
-                            std::bind( &Body::setState, acceleratedBody.second, std::placeholders::_1 ),
+                            [body = acceleratedBody.second]() { return body->getState(); },
+                            [body = acceleratedBody.second]( const Eigen::Vector6d& state ) { body->setState( state ); },
                             acceleratedBody.first,
                             acceleratingBody.first );
                 }

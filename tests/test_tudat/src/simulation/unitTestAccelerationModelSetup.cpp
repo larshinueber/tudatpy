@@ -106,15 +106,15 @@ BOOST_AUTO_TEST_CASE( test_centralGravityModelSetup )
     // Create accelerations manually (point mass inertial).
     std::shared_ptr< basic_astrodynamics::AccelerationModel< Eigen::Vector3d > > manualSunAcceleration =
             std::make_shared< gravitation::CentralGravitationalAccelerationModel<> >(
-                    std::bind( &Body::getPositionByReference, bodies.at( "Mars" ), std::placeholders::_1 ),
+                    [body = bodies.at( "Mars" )](Eigen::Vector3d& position) { body->getPositionByReference(position); },
                     spice_interface::getBodyGravitationalParameter( "Sun" ),
-                    std::bind( &Body::getPositionByReference, bodies.at( "Sun" ), std::placeholders::_1 ) );
+                    [body = bodies.at( "Sun" )](Eigen::Vector3d& position) { body->getPositionByReference(position); } );
 
     std::shared_ptr< basic_astrodynamics::AccelerationModel< Eigen::Vector3d > > manualJupiterAcceleration =
             std::make_shared< gravitation::CentralGravitationalAccelerationModel<> >(
-                    std::bind( &Body::getPositionByReference, bodies.at( "Mars" ), std::placeholders::_1 ),
+                    [body = bodies.at( "Mars" )](Eigen::Vector3d& position) { body->getPositionByReference(position); },
                     spice_interface::getBodyGravitationalParameter( "Jupiter" ),
-                    std::bind( &Body::getPositionByReference, bodies.at( "Jupiter" ), std::placeholders::_1 ) );
+                    [body = bodies.at( "Jupiter" )](Eigen::Vector3d& position) { body->getPositionByReference(position); } );
 
     // Test equivalence of two acceleration models.
     TUDAT_CHECK_MATRIX_CLOSE_FRACTION( ( basic_astrodynamics::updateAndGetAcceleration( sunAcceleration ) ),
@@ -135,22 +135,22 @@ BOOST_AUTO_TEST_CASE( test_centralGravityModelSetup )
     // Manually create Sun's acceleration on Mars, which now include's Mars'gravitational parameter,
     // since the integration is done w.r.t. the Sun, not the barycenter.
     manualSunAcceleration = std::make_shared< gravitation::CentralGravitationalAccelerationModel<> >(
-            std::bind( &Body::getPositionByReference, bodies.at( "Mars" ), std::placeholders::_1 ),
+            [body = bodies.at( "Mars" )](Eigen::Vector3d& position) { body->getPositionByReference(position); },
             spice_interface::getBodyGravitationalParameter( "Sun" ) + spice_interface::getBodyGravitationalParameter( "Mars" ),
-            std::bind( &Body::getPositionByReference, bodies.at( "Sun" ), std::placeholders::_1 ) );
+            [body = bodies.at( "Sun" )](Eigen::Vector3d& position) { body->getPositionByReference(position); } );
 
     // Manually create Jupiter's acceleration on Mars, which now a third body acceleration,
     // with the Sun the central body.
     manualJupiterAcceleration =
             std::make_shared< gravitation::ThirdBodyAcceleration< gravitation::CentralGravitationalAccelerationModel<> > >(
                     std::make_shared< gravitation::CentralGravitationalAccelerationModel<> >(
-                            std::bind( &Body::getPositionByReference, bodies.at( "Mars" ), std::placeholders::_1 ),
+                            [body = bodies.at( "Mars" )](Eigen::Vector3d& position) { body->getPositionByReference(position); },
                             spice_interface::getBodyGravitationalParameter( "Jupiter" ),
-                            std::bind( &Body::getPositionByReference, bodies.at( "Jupiter" ), std::placeholders::_1 ) ),
+                            [body = bodies.at( "Jupiter" )](Eigen::Vector3d& position) { body->getPositionByReference(position); } ),
                     std::make_shared< gravitation::CentralGravitationalAccelerationModel<> >(
-                            std::bind( &Body::getPositionByReference, bodies.at( "Sun" ), std::placeholders::_1 ),
+                            [body = bodies.at( "Sun" )](Eigen::Vector3d& position) { body->getPositionByReference(position); },
                             spice_interface::getBodyGravitationalParameter( "Jupiter" ),
-                            std::bind( &Body::getPositionByReference, bodies.at( "Jupiter" ), std::placeholders::_1 ) ),
+                            [body = bodies.at( "Jupiter" )](Eigen::Vector3d& position) { body->getPositionByReference(position); } ),
                     "Jupiter" );
 
     // Test equivalence of two acceleration models.
@@ -277,12 +277,12 @@ BOOST_AUTO_TEST_CASE( test_shGravityModelSetup )
     // Manually create acceleration model.
     std::shared_ptr< basic_astrodynamics::AccelerationModel< Eigen::Vector3d > > manualAcceleration =
             std::make_shared< gravitation::SphericalHarmonicsGravitationalAccelerationModel >(
-                    std::bind( &Body::getPositionByReference, bodies.at( "Vehicle" ), std::placeholders::_1 ),
+                    [body = bodies.at( "Vehicle" )](Eigen::Vector3d& position) { body->getPositionByReference(position); },
                     gravitationalParameter,
                     planetaryRadius,
                     cosineCoefficients,
                     sineCoefficients,
-                    std::bind( &Body::getPositionByReference, bodies.at( "Earth" ), std::placeholders::_1 ) );
+                    [body = bodies.at( "Earth" )](Eigen::Vector3d& position) { body->getPositionByReference(position); } );
 
     // Test equivalence of two acceleration models.
     TUDAT_CHECK_MATRIX_CLOSE_FRACTION( ( basic_astrodynamics::updateAndGetAcceleration( manualAcceleration ) ),
@@ -299,12 +299,12 @@ BOOST_AUTO_TEST_CASE( test_shGravityModelSetup )
 
     // Manually create acceleration.
     manualAcceleration = std::make_shared< gravitation::SphericalHarmonicsGravitationalAccelerationModel >(
-            std::bind( &Body::getPositionByReference, bodies.at( "Vehicle" ), std::placeholders::_1 ),
+            [body = bodies.at( "Vehicle" )](Eigen::Vector3d& position) { body->getPositionByReference(position); },
             gravitationalParameter * 1.1,
             planetaryRadius,
             cosineCoefficients,
             sineCoefficients,
-            std::bind( &Body::getPositionByReference, bodies.at( "Earth" ), std::placeholders::_1 ) );
+            [body = bodies.at( "Earth" )](Eigen::Vector3d& position) { body->getPositionByReference(position); } );
 
     // Test equivalence of two acceleration models.
     TUDAT_CHECK_MATRIX_CLOSE_FRACTION( ( basic_astrodynamics::updateAndGetAcceleration( manualAcceleration ) ),
@@ -367,7 +367,7 @@ BOOST_AUTO_TEST_CASE( test_polyhedronGravityModelSetup )
 
     std::shared_ptr< basic_astrodynamics::AccelerationModel< Eigen::Vector3d > > manualAcceleration =
             std::make_shared< gravitation::PolyhedronGravitationalAccelerationModel >(
-                    std::bind( &Body::getPositionByReference, bodies.at( "Vehicle" ), std::placeholders::_1 ),
+                    [body = bodies.at( "Vehicle" )](Eigen::Vector3d& position) { body->getPositionByReference(position); },
                     gravitationalParameter,
                     volume,
                     verticesCoordinates,
@@ -375,7 +375,7 @@ BOOST_AUTO_TEST_CASE( test_polyhedronGravityModelSetup )
                     manualGravityField.getVerticesDefiningEachEdge( ),
                     manualGravityField.getFacetDyads( ),
                     manualGravityField.getEdgeDyads( ),
-                    std::bind( &Body::getPositionByReference, bodies.at( "Earth" ), std::placeholders::_1 ) );
+                    [body = bodies.at( "Earth" )](Eigen::Vector3d& position) { body->getPositionByReference(position); } );
 
     // Test equivalence of two acceleration models.
     TUDAT_CHECK_MATRIX_CLOSE_FRACTION( ( basic_astrodynamics::updateAndGetAcceleration( manualAcceleration ) ),
@@ -391,7 +391,7 @@ BOOST_AUTO_TEST_CASE( test_polyhedronGravityModelSetup )
 
     // Manually create acceleration.
     manualAcceleration = std::make_shared< gravitation::PolyhedronGravitationalAccelerationModel >(
-            std::bind( &Body::getPositionByReference, bodies.at( "Vehicle" ), std::placeholders::_1 ),
+            [body = bodies.at( "Vehicle" )](Eigen::Vector3d& position) { body->getPositionByReference(position); },
             gravitationalParameter * 1.1,
             volume,
             verticesCoordinates,
@@ -399,7 +399,7 @@ BOOST_AUTO_TEST_CASE( test_polyhedronGravityModelSetup )
             manualGravityField.getVerticesDefiningEachEdge( ),
             manualGravityField.getFacetDyads( ),
             manualGravityField.getEdgeDyads( ),
-            std::bind( &Body::getPositionByReference, bodies.at( "Earth" ), std::placeholders::_1 ) );
+            [body = bodies.at( "Earth" )](Eigen::Vector3d& position) { body->getPositionByReference(position); } );
 
     // Test equivalence of two acceleration models.
     TUDAT_CHECK_MATRIX_CLOSE_FRACTION( ( basic_astrodynamics::updateAndGetAcceleration( manualAcceleration ) ),

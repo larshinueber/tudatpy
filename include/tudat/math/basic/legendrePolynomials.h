@@ -647,12 +647,9 @@ double computeGeodesyLegendrePolynomialVertical( const int degree,
 
 //! Predefine boost function for geodesy-normalized Legendre polynomial.
 static const LegendreCache::LegendrePolynomialFunction geodesyNormalizedLegendrePolynomialFunction =
-        std::bind( &computeGeodesyLegendrePolynomialFromCache, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 );
+        []( int degree, int order, LegendreCache& cache ) { return computeGeodesyLegendrePolynomialFromCache( degree, order, cache ); };
 static const LegendreCache::LegendrePolynomialFunction geodesyNormalizedLegendrePolynomialFunctionWithoutCheck =
-        std::bind( &computeGeodesyLegendrePolynomialFromCacheWithoutCheck,
-                   std::placeholders::_1,
-                   std::placeholders::_2,
-                   std::placeholders::_3 );
+        []( int degree, int order, LegendreCache& cache ) { return computeGeodesyLegendrePolynomialFromCacheWithoutCheck( degree, order, cache ); };
 
 //! Function to calculate the normalization factor for Legendre polynomials to geodesy-normalized.
 /*!
@@ -668,9 +665,9 @@ double calculateLegendreGeodesyNormalizationFactor( const int degree, const int 
 
 //! Predefine boost function for unnormalized Legendre polynomial.
 const LegendreCache::LegendrePolynomialFunction regularLegendrePolynomialFunction =
-        std::bind( &computeLegendrePolynomialFromCache, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 );
+        []( int degree, int order, LegendreCache& cache ) { return computeLegendrePolynomialFromCache( degree, order, cache ); };
 const LegendreCache::LegendrePolynomialFunction regularLegendrePolynomialFunctionWithoutCheck =
-        std::bind( &computeLegendrePolynomialFromCacheWithoutCheck, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 );
+        []( int degree, int order, LegendreCache& cache ) { return computeLegendrePolynomialFromCacheWithoutCheck( degree, order, cache ); };
 
 //! Function to convert unnormalized to geodesy-normalized (4-pi normalized) spherical harmonic coefficients
 /*!

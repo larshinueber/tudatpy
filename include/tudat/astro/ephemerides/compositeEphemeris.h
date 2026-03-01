@@ -344,24 +344,30 @@ std::shared_ptr< Ephemeris > createReferencePointCompositeEphemeris(
     // Cast state fucntion of body (global) and reference point (local) into correct form.
     std::map< int, std::function< StateType( const TimeType& ) > > referencePointEphemerisVector;
     referencePointEphemerisVector[ 2 ] =
-            std::bind( &Ephemeris::getTemplatedStateFromEphemeris< StateScalarType, TimeType >, bodyEphemeris, std::placeholders::_1 );
-    referencePointEphemerisVector[ 0 ] = std::bind( &convertStateFunctionStateScalarOutput< double, StateScalarType, TimeType, 6 >,
-                                                    referencePointRelativeStateFunction,
-                                                    std::placeholders::_1 );
+            [bodyEphemeris](const TimeType& t) -> StateType {
+                return bodyEphemeris->template getTemplatedStateFromEphemeris< StateScalarType, TimeType >( t );
+            };
+    referencePointEphemerisVector[ 0 ] = [referencePointRelativeStateFunction](const TimeType& t) -> StateType {
+                                                return convertStateFunctionStateScalarOutput< double, StateScalarType, TimeType, 6 >(
+                                                    referencePointRelativeStateFunction, t );
+                                            };
 
     // Crate rotation functions from local to global frame.
     std::function< Eigen::Quaterniond( const TimeType ) > rotationToFrameFunction =
-            std::bind( &RotationalEphemeris::getRotationToBaseFrameTemplated< TimeType >, bodyRotationModel, std::placeholders::_1 );
-    std::function< Eigen::Matrix3d( const TimeType ) > rotationMatrixToFrameDerivativeFunction = std::bind(
-            &RotationalEphemeris::getDerivativeOfRotationToBaseFrameTemplated< TimeType >, bodyRotationModel, std::placeholders::_1 );
+            [bodyRotationModel](const TimeType t) {
+                return bodyRotationModel->template getRotationToBaseFrameTemplated< TimeType >( t );
+            };
+    std::function< Eigen::Matrix3d( const TimeType ) > rotationMatrixToFrameDerivativeFunction =
+            [bodyRotationModel](const TimeType t) {
+                return bodyRotationModel->template getDerivativeOfRotationToBaseFrameTemplated< TimeType >( t );
+            };
 
     // Create ephemeris
     std::map< int, std::function< StateType( const TimeType, const StateType& ) > > referencePointRotationVector;
-    referencePointRotationVector[ 1 ] = std::bind( transformStateToFrameFromRotationTimeFunctions< StateScalarType, TimeType >,
-                                                   std::placeholders::_2,
-                                                   std::placeholders::_1,
-                                                   rotationToFrameFunction,
-                                                   rotationMatrixToFrameDerivativeFunction );
+    referencePointRotationVector[ 1 ] = [rotationToFrameFunction, rotationMatrixToFrameDerivativeFunction](const TimeType t, const StateType& state) -> StateType {
+                                                   return transformStateToFrameFromRotationTimeFunctions< StateScalarType, TimeType >(
+                                                       state, t, rotationToFrameFunction, rotationMatrixToFrameDerivativeFunction );
+                                               };
 
     return std::make_shared< CompositeEphemeris< TimeType, StateScalarType > >(
             referencePointEphemerisVector, referencePointRotationVector, "SSB", "ECLIPJ2000" );

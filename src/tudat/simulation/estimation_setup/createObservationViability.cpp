@@ -117,9 +117,7 @@ std::shared_ptr< BodyAvoidanceAngleCalculator > createBodyAvoidanceAngleCalculat
 
     // Create state function of body to be avoided.
     std::function< Eigen::Vector6d( const double ) > stateFunctionOfBodyToAvoid =
-            std::bind( &simulation_setup::Body::getStateInBaseFrameFromEphemeris< double, double >,
-                       bodies.at( observationViabilitySettings->getStringParameter( ) ),
-                       std::placeholders::_1 );
+            [body = bodies.at( observationViabilitySettings->getStringParameter( ) )]( const double time ) { return body->getStateInBaseFrameFromEphemeris< double, double >( time ); };
 
     // Create check object
     double bodyAvoidanceAngle = observationViabilitySettings->getDoubleParameter( );
@@ -150,9 +148,7 @@ std::shared_ptr< OccultationCalculator > createOccultationCalculator(
 
     // Create state function of occulting body.
     std::function< Eigen::Vector6d( const double ) > stateOfOccultingBody =
-            std::bind( &simulation_setup::Body::getStateInBaseFrameFromEphemeris< double, double >,
-                       bodies.at( observationViabilitySettings->getStringParameter( ) ),
-                       std::placeholders::_1 );
+            [body = bodies.at( observationViabilitySettings->getStringParameter( ) )]( const double time ) { return body->getStateInBaseFrameFromEphemeris< double, double >( time ); };
 
     // Create check object
     if( bodies.at( observationViabilitySettings->getStringParameter( ) )->getShapeModel( ) == nullptr )

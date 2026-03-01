@@ -77,15 +77,9 @@ public:
         AtmosphereModel( true, true ), solarActivityContainer_( solarActivityData ), useIdealGasLaw_( useIdealGasLaw ),
         useAnomalousOxygen_( useAnomalousOxygen )
     {
-        nrlmsise00InputFunction_ = std::bind( &tudat::aerodynamics::nrlmsiseInputFunction,
-                                              std::placeholders::_1,
-                                              std::placeholders::_2,
-                                              std::placeholders::_3,
-                                              std::placeholders::_4,
-                                              solarActivityContainer_,
-                                              false,
-                                              TUDAT_NAN,
-                                              useStormConditions ? -1 : 1 );
+        nrlmsise00InputFunction_ = [solarActivityContainer = solarActivityContainer_, useStormConditions]( double alt, double lon, double lat, double time ) {
+            return tudat::aerodynamics::nrlmsiseInputFunction( alt, lon, lat, time, solarActivityContainer, false, TUDAT_NAN, useStormConditions ? -1 : 1 );
+        };
 
         resetHashKey( );
         specificHeatRatio_ = 1.4;

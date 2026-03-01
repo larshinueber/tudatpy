@@ -161,7 +161,7 @@ private:
     //! Function to create the function that defines the system model.
     /*!
      *  Function to create the function that defines the system model. The output of this function is then bound
-     *  to the systemFunction_ variable, via the std::bind command.
+     *  to the systemFunction_ variable, via a lambda.
      *  \param currentTime Scalar representing the current time.
      *  \param currentStateVector Vector representing the current state.
      *  \return Vector representing the estimated state.
@@ -174,7 +174,7 @@ private:
     //! Function to create the function that defines the system model.
     /*!
      *  Function to create the function that defines the system model. The output of this function is then bound
-     *  to the measurementFunction_ variable, via the std::bind command.
+     *  to the measurementFunction_ variable, via a lambda.
      *  \param currentTime Scalar representing the current time.
      *  \param currentStateVector Vector representing the current state.
      *  \return Vector representing the estimated measurement.

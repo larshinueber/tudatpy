@@ -91,9 +91,9 @@ BOOST_AUTO_TEST_CASE( testTwoBodyMassPropagation )
     // Create mass rate models.
     std::map< std::string, std::vector< std::shared_ptr< basic_astrodynamics::MassRateModel > > > massRateModels;
     massRateModels[ "Vehicle1" ].push_back(
-            std::make_shared< basic_astrodynamics::CustomMassRateModel >( std::bind( &getDummyMassRate1, bodies ) ) );
+            std::make_shared< basic_astrodynamics::CustomMassRateModel >( [bodies]( const double ) { return getDummyMassRate1( bodies ); } ) );
     massRateModels[ "Vehicle2" ].push_back(
-            std::make_shared< basic_astrodynamics::CustomMassRateModel >( std::bind( &getDummyMassRate2, bodies ) ) );
+            std::make_shared< basic_astrodynamics::CustomMassRateModel >( [bodies]( const double ) { return getDummyMassRate2( bodies ); } ) );
     bodies.at( "Earth" )->setEphemeris( std::make_shared< ephemerides::ConstantEphemeris >( []( ) { return Eigen::Vector6d::Zero( ); } ) );
     bodies.at( "Vehicle1" )
             ->setEphemeris( std::make_shared< ephemerides::ConstantEphemeris >( []( ) { return Eigen::Vector6d::Zero( ); }, "Earth" ) );

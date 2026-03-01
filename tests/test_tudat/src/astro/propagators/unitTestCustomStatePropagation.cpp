@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_CASE( testSingleCustomStatePropagation )
     double initialCustomState = 500.0;
     std::shared_ptr< CustomStatePropagatorSettings< double > > propagatorSettings =
             std::make_shared< CustomStatePropagatorSettings< double > >(
-                    std::bind( &getDummyCustomState1, std::placeholders::_1, std::placeholders::_2 ),
+                    []( const double time, const double state ) { return getDummyCustomState1( time, state ); },
                     initialCustomState,
                     std::make_shared< PropagationTimeTerminationSettings >( 1000.0 ) );
 
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE( testSingleCustomStatePropagation2 )
     double initialCustomState = 500.0;
     std::shared_ptr< CustomStatePropagatorSettings< double > > propagatorSettings =
             std::make_shared< CustomStatePropagatorSettings< double > >(
-                    std::bind( &getDummyCustomState2, std::placeholders::_1, std::placeholders::_2 ),
+                    []( const double time, const double state ) { return getDummyCustomState2( time, state ); },
                     initialCustomState,
                     std::make_shared< PropagationTimeTerminationSettings >( 1000.0 ) );
 
@@ -135,7 +135,7 @@ BOOST_AUTO_TEST_CASE( testSingleCustomStatePropagation3 )
     double initialCustomState = 500.0;
     std::shared_ptr< CustomStatePropagatorSettings< double > > propagatorSettings =
             std::make_shared< CustomStatePropagatorSettings< double > >(
-                    std::bind( &getDummyCustomState3, std::placeholders::_1, std::placeholders::_2 ),
+                    []( const double time, const double state ) { return getDummyCustomState3( time, state ); },
                     initialCustomState,
                     std::make_shared< PropagationTimeTerminationSettings >( 1000.0 ) );
 
@@ -166,7 +166,7 @@ BOOST_AUTO_TEST_CASE( testSingleCustomStatePropagation4 )
     double initialCustomState = 500.0;
     std::shared_ptr< CustomStatePropagatorSettings< double > > propagatorSettings =
             std::make_shared< CustomStatePropagatorSettings< double > >(
-                    std::bind( &getDummyCustomState4, std::placeholders::_1, std::placeholders::_2 ),
+                    []( const double time, const double state ) { return getDummyCustomState4( time, state ); },
                     initialCustomState,
                     std::make_shared< PropagationTimeTerminationSettings >( 100.0 ) );
 
@@ -276,7 +276,7 @@ BOOST_AUTO_TEST_CASE( testMultiTypeCustomStatePropagation )
     double initialCustomState = 500.0;
     std::shared_ptr< SingleArcPropagatorSettings< double > > customPropagatorSettings =
             std::make_shared< CustomStatePropagatorSettings< double > >(
-                    std::bind( &getDummyCustomState1, std::placeholders::_1, std::placeholders::_2 ),
+                    []( const double time, const double state ) { return getDummyCustomState1( time, state ); },
                     initialCustomState,
                     std::make_shared< PropagationTimeTerminationSettings >( 1000.0 ) );
 

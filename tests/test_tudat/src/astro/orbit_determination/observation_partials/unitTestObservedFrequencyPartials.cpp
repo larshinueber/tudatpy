@@ -204,7 +204,7 @@ BOOST_AUTO_TEST_CASE( testFrequencyDopplerPartialsDirect )
     LinearStateWrapper stateWrapper( referenceTime,
                                      spice_interface::getBodyCartesianStateAtEpoch( "JUICE", "Earth", "J2000", "None", referenceTime ) );
     bodySettings.get( spacecraftName )->ephemerisSettings = customEphemerisSettings(
-            std::bind( &LinearStateWrapper::getLinearState, &stateWrapper, std::placeholders::_1 ), "Earth", "J2000" );
+            [&stateWrapper]( const double t ) { return stateWrapper.getLinearState( t ); }, "Earth", "J2000" );
 
     // Create bodies
     SystemOfBodies bodies = createSystemOfBodies( bodySettings );

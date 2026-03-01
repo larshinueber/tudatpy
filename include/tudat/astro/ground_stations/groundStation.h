@@ -134,7 +134,7 @@ public:
             throw std::runtime_error( "Error when getting temperature function from ground station " + stationId_ +
                                       ": function is not defined." );
         }
-        return std::bind( &StationMeteoData::getTemperature, meteoData_, std::placeholders::_1 );
+        return [meteoData = meteoData_](const double time) { return meteoData->getTemperature(time); };
     }
 
     std::function< double( const double time ) > getPressureFunction( )
@@ -144,7 +144,7 @@ public:
             throw std::runtime_error( "Error when getting pressure function from ground station " + stationId_ +
                                       ": function is not defined." );
         }
-        return std::bind( &StationMeteoData::getPressure, meteoData_, std::placeholders::_1 );
+        return [meteoData = meteoData_](const double time) { return meteoData->getPressure(time); };
     }
 
     std::function< double( const double time ) > getWaterVaporPartialPressureFunction( )
@@ -154,7 +154,7 @@ public:
             throw std::runtime_error( "Error when getting water vapor partial pressure function from ground station " + stationId_ +
                                       ": function is not defined." );
         }
-        return std::bind( &StationMeteoData::getWaterVaporPartialPressure, meteoData_, std::placeholders::_1 );
+        return [meteoData = meteoData_](const double time) { return meteoData->getWaterVaporPartialPressure(time); };
     }
 
     std::function< double( const double time ) > getRelativeHumidityFunction( )
@@ -164,7 +164,7 @@ public:
             throw std::runtime_error( "Error when getting relative humidity function from ground station " + stationId_ +
                                       ": function is not defined." );
         }
-        return std::bind( &StationMeteoData::getRelativeHumidity, meteoData_, std::placeholders::_1 );
+        return [meteoData = meteoData_](const double time) { return meteoData->getRelativeHumidity(time); };
     }
 
     std::function< double( const double time ) > getDewPointFunction( )
@@ -174,7 +174,7 @@ public:
             throw std::runtime_error( "Error when getting dew point function from ground station " + stationId_ +
                                       ": function is not defined." );
         }
-        return std::bind( &StationMeteoData::getDewPointTemperature, meteoData_, std::placeholders::_1 );
+        return [meteoData = meteoData_](const double time) { return meteoData->getDewPointTemperature(time); };
     }
 
     //! Function to retrieve container object with hardware systems present on/in body

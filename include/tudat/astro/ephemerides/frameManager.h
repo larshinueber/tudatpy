@@ -102,9 +102,9 @@ public:
                 for( unsigned int i = 0; i < ephemerisList.size( ); i++ )
                 {
                     totalEphemerisList[ i ] =
-                            std::make_pair( std::bind( &Ephemeris::getTemplatedStateFromEphemeris< StateScalarType, TimeType >,
-                                                       ephemerisList[ i ],
-                                                       std::placeholders::_1 ),
+                            std::make_pair( [ephemeris = ephemerisList[ i ]](const TimeType& t) -> StateType {
+                                                return ephemeris->template getTemplatedStateFromEphemeris< StateScalarType, TimeType >( t );
+                                            },
                                             false );
                 }
             }
@@ -116,9 +116,9 @@ public:
                 for( unsigned int i = 0; i < ephemerisList.size( ); i++ )
                 {
                     totalEphemerisList[ i ] =
-                            std::make_pair( std::bind( &Ephemeris::getTemplatedStateFromEphemeris< StateScalarType, TimeType >,
-                                                       ephemerisList[ i ],
-                                                       std::placeholders::_1 ),
+                            std::make_pair( [ephemeris = ephemerisList[ i ]](const TimeType& t) -> StateType {
+                                                return ephemeris->template getTemplatedStateFromEphemeris< StateScalarType, TimeType >( t );
+                                            },
                                             true );
                 }
             }
@@ -131,9 +131,9 @@ public:
                 for( unsigned int i = 0; i < ephemerisList.size( ); i++ )
                 {
                     totalEphemerisList[ i ] =
-                            std::make_pair( std::bind( &Ephemeris::getTemplatedStateFromEphemeris< StateScalarType, TimeType >,
-                                                       ephemerisList[ i ],
-                                                       std::placeholders::_1 ),
+                            std::make_pair( [ephemeris = ephemerisList[ i ]](const TimeType& t) -> StateType {
+                                                return ephemeris->template getTemplatedStateFromEphemeris< StateScalarType, TimeType >( t );
+                                            },
                                             true );
                 }
                 int firstListSize = ephemerisList.size( );
@@ -144,9 +144,9 @@ public:
                 for( unsigned int i = 0; i < ephemerisList.size( ); i++ )
                 {
                     totalEphemerisList[ i + firstListSize ] =
-                            std::make_pair( std::bind( &Ephemeris::getTemplatedStateFromEphemeris< StateScalarType, TimeType >,
-                                                       ephemerisList[ i ],
-                                                       std::placeholders::_1 ),
+                            std::make_pair( [ephemeris = ephemerisList[ i ]](const TimeType& t) -> StateType {
+                                                return ephemeris->template getTemplatedStateFromEphemeris< StateScalarType, TimeType >( t );
+                                            },
                                             false );
                 }
             }
@@ -262,10 +262,10 @@ getTranslationFunctionsFromIntegrationFrameToEphemerisFrame( const std::vector< 
             if( centralBodies.at( i ) != frameManager->getBaseFrameNameOfBody( bodiesToIntegrate.at( i ) ) )
             {
                 translationFunctionMap[ bodiesToIntegrate.at( i ) ] =
-                        std::bind( &ephemerides::Ephemeris::getTemplatedStateFromEphemeris< StateScalarType, TimeType >,
-                                   frameManager->getEphemeris< StateScalarType, TimeType >(
-                                           centralBodies.at( i ), frameManager->getBaseFrameNameOfBody( bodiesToIntegrate.at( i ) ) ),
-                                   std::placeholders::_1 );
+                        [ephemeris = frameManager->getEphemeris< StateScalarType, TimeType >(
+                                centralBodies.at( i ), frameManager->getBaseFrameNameOfBody( bodiesToIntegrate.at( i ) ) )](const TimeType t) {
+                            return ephemeris->template getTemplatedStateFromEphemeris< StateScalarType, TimeType >( t );
+                        };
             }
         }
     }

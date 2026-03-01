@@ -195,12 +195,14 @@ public:
         variationalPropagationResults_ =
                 std::make_shared< HybridArcResults >( singleArcSolver_->getSingleArcVariationalPropagationResults( ),
                                                       originalMultiArcSolver_->getMultiArcVariationalPropagationResults( ) );
-        initialStatesFromSingleArcPropagation_ = std::bind( &getInitialStatesOfBodiesFromFrameManager< TimeType, StateScalarType >,
-                                                            singleArcPropagationSettings->bodiesToIntegrate_,
-                                                            singleArcPropagationSettings->centralBodies_,
-                                                            bodies,
-                                                            std::placeholders::_1,
-                                                            createFrameManager( bodies.getMap( ) ) );
+        initialStatesFromSingleArcPropagation_ = [
+                bodiesToIntegrate = singleArcPropagationSettings->bodiesToIntegrate_,
+                centralBodies = singleArcPropagationSettings->centralBodies_,
+                bodies,
+                frameManager = createFrameManager( bodies.getMap( ) )]( const TimeType time ) {
+            return getInitialStatesOfBodiesFromFrameManager< TimeType, StateScalarType >(
+                    bodiesToIntegrate, centralBodies, bodies, time, frameManager );
+        };
 
         // Propagate dynamical equations if requested
         if( integrateEquationsOnCreation )

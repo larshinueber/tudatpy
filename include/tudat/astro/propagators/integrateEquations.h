@@ -99,10 +99,10 @@ void getFinalStateForExactDependentVariableTerminationCondition(
 
     // Function for which the root (zero value) occurs at the required end time/state
     std::function< TimeStepType( TimeStepType ) > dependentVariableErrorFunction =
-            std::bind( &getTerminationDependentVariableErrorForGivenTimeStep< StateType, TimeType, TimeStepType >,
-                       std::placeholders::_1,
-                       integrator,
-                       dependentVariableTerminationCondition );
+            [integrator, dependentVariableTerminationCondition]( TimeStepType timeStep ) {
+                return getTerminationDependentVariableErrorForGivenTimeStep< StateType, TimeType, TimeStepType >(
+                        timeStep, integrator, dependentVariableTerminationCondition );
+            };
 
     // Create root finder.
     bool increasingTime = static_cast< double >( lastTime - secondToLastTime ) > 0.0;
@@ -744,11 +744,9 @@ void integrateEquations(
         const std::shared_ptr< DynamicsStateDerivativeModel< TimeType, typename StateType::Scalar > > stateDerivativeModel = nullptr )
 {
     std::function< bool( const double, const double, const Eigen::MatrixXd& ) > stopPropagationFunction =
-            std::bind( &PropagationTerminationCondition::checkStopCondition,
-                       propagationTerminationCondition,
-                       std::placeholders::_1,
-                       std::placeholders::_2,
-                       std::placeholders::_3 );
+            [propagationTerminationCondition]( const double time, const double cpuTime, const Eigen::MatrixXd& state ) {
+                return propagationTerminationCondition->checkStopCondition( time, cpuTime, state );
+            };
 
     // Create numerical integrator.
     std::shared_ptr<

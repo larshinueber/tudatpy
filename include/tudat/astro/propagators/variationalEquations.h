@@ -362,13 +362,9 @@ private:
                 // Add to list.
                 functionListOfBody.insert( std::pair< std::pair< int, int >, std::function< void( Eigen::Block< Eigen::MatrixXd > ) > >(
                         indexPair,
-                        std::bind( static_cast< void ( orbit_determination::StateDerivativePartial::* )(
-                                           const std::shared_ptr< estimatable_parameters::EstimatableParameter< CurrentParameterType > >,
-                                           Eigen::Block< Eigen::MatrixXd > ) >(
-                                           &orbit_determination::StateDerivativePartial::getCurrentParameterPartial ),
-                                   partialObject,
-                                   parameterIterator->second,
-                                   std::placeholders::_1 ) ) );
+                        [partialObject, param = parameterIterator->second]( Eigen::Block< Eigen::MatrixXd > block ) {
+                            partialObject->getCurrentParameterPartial( param, block );
+                        } ) );
             }
         }
     }

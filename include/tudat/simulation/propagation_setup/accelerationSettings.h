@@ -595,7 +595,9 @@ public:
                                 const std::function< double( const double ) > scalingFunction ):
         AccelerationSettings( basic_astrodynamics::custom_acceleration ),
         accelerationFunction_(
-                std::bind( &applyAccelerationScalingFunction, accelerationFunction, scalingFunction, std::placeholders::_1 ) )
+                [accelerationFunction, scalingFunction]( const double time ) {
+                    return applyAccelerationScalingFunction( accelerationFunction, scalingFunction, time );
+                } )
     { }
 
     std::function< Eigen::Vector3d( const double ) > accelerationFunction_;

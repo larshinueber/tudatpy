@@ -166,7 +166,7 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > MomentumWheelDesatur
     {
         // If parameter is desaturation deltaV values, check and create dependency function .
         partialFunctionPair =
-                std::make_pair( std::bind( &MomentumWheelDesaturationPartial::wrtDesaturationDeltaVValues, this, std::placeholders::_1 ),
+                std::make_pair( [this](Eigen::MatrixXd& m) { this->wrtDesaturationDeltaVValues(m); },
                                 parameter->getParameterSize( ) );
     }
     else

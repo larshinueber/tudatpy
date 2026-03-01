@@ -68,11 +68,8 @@ double evaluatePolynomialSquareRootSumBetweenFrequencyNodes( const std::map< dou
 std::function< double( const double ) > createSpectralDensityFunctionFromTabulatedData(
         const std::map< double, double > spectralDensityMap )
 {
-    typedef interpolators::OneDimensionalInterpolator< double, double > LocalInterpolator;
-
-    return std::bind( static_cast< double ( LocalInterpolator::* )( const double ) >( &LocalInterpolator::interpolate ),
-                      std::make_shared< interpolators::LinearInterpolator< double, double > >( spectralDensityMap ),
-                      std::placeholders::_1 );
+    auto interpolator = std::make_shared< interpolators::LinearInterpolator< double, double > >( spectralDensityMap );
+    return [interpolator](const double x) { return interpolator->interpolate(x); };
 }
 
 std::pair< std::vector< double >, double > generateAmplitudeSpectrumNoise(
@@ -155,7 +152,7 @@ std::pair< std::vector< double >, double > generatePowerSpectrumNoise(
     return generateAmplitudeSpectrumNoise(
             maximumFrequency,
             numberOfFrequencySamples,
-            std::bind( &evaluateAmplitudeSpectralDensity, powerSpectalDensityFunction, std::placeholders::_1 ),
+            [powerSpectalDensityFunction](const double frequency) { return evaluateAmplitudeSpectralDensity(powerSpectalDensityFunction, frequency); },
             seed );
 }
 
@@ -179,7 +176,7 @@ std::pair< std::vector< double >, double > generatePowerLawNoise( const double m
 {
     return generateAmplitudeSpectrumNoise( maximumFrequency,
                                            numberOfFrequencySamples,
-                                           std::bind( &evaluatePolynomialSquareRootSum, powersAndUnitAmplitudes, std::placeholders::_1 ),
+                                           [&powersAndUnitAmplitudes](const double frequency) { return evaluatePolynomialSquareRootSum(powersAndUnitAmplitudes, frequency); },
                                            seed );
 }
 
@@ -192,8 +189,7 @@ std::pair< std::vector< double >, double > generatePowerLawNoise( const double m
     return generateAmplitudeSpectrumNoise(
             maximumFrequency,
             numberOfFrequencySamples,
-            std::bind(
-                    &evaluatePolynomialSquareRootSumBetweenFrequencyNodes, powersAndUnitAmplitudes, frequencyNodes, std::placeholders::_1 ),
+            [&powersAndUnitAmplitudes, frequencyNodes](const double frequency) { return evaluatePolynomialSquareRootSumBetweenFrequencyNodes(powersAndUnitAmplitudes, frequencyNodes, frequency); },
             seed );
 }
 

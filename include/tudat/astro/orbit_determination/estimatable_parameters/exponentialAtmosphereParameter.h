@@ -227,12 +227,8 @@ public:
         parameterInterpolator_ =
                 std::make_shared< interpolators::PiecewiseConstantInterpolator< double, double > >( timeLimits_, fullParameterValues_ );
 
-        typedef interpolators::OneDimensionalInterpolator< double, double > LocalInterpolator;
-
         exponentialAtmosphereModel_->setParameterFunction(
-                std::bind( static_cast< double ( LocalInterpolator::* )( const double ) >( &LocalInterpolator::interpolate ),
-                           parameterInterpolator_,
-                           std::placeholders::_1 ),
+                [interp = parameterInterpolator_]( const double time ) { return interp->interpolate( time ); },
                 parameterType );
     }
 

@@ -31,15 +31,15 @@ FlightConditions::FlightConditions( const std::shared_ptr< basic_astrodynamics::
 {
     // Link body-state function.
     bodyCenteredPseudoBodyFixedStateFunction_ =
-            std::bind( &reference_frames::AerodynamicAngleCalculator::getCurrentAirspeedBasedBodyFixedState, aerodynamicAngleCalculator_ );
+            [calc = aerodynamicAngleCalculator_]() { return calc->getCurrentAirspeedBasedBodyFixedState(); };
 
     // Check if given body shape is an oblate spheroid and set geodetic latitude function if so
     if( std::dynamic_pointer_cast< basic_astrodynamics::OblateSpheroidBodyShapeModel >( shapeModel ) != nullptr )
     {
-        geodeticLatitudeFunction_ = std::bind( &basic_astrodynamics::OblateSpheroidBodyShapeModel::getGeodeticLatitude,
-                                               std::dynamic_pointer_cast< basic_astrodynamics::OblateSpheroidBodyShapeModel >( shapeModel ),
-                                               std::placeholders::_1,
-                                               1.0E-4 );
+        geodeticLatitudeFunction_ = [model = std::dynamic_pointer_cast< basic_astrodynamics::OblateSpheroidBodyShapeModel >( shapeModel )](
+                                             const auto& bodyFixedPosition) {
+            return model->getGeodeticLatitude(bodyFixedPosition, 1.0E-4);
+        };
     }
     scalarFlightConditions_.resize( 13 );
     isScalarFlightConditionComputed_ = allScalarFlightConditionsUncomputed;

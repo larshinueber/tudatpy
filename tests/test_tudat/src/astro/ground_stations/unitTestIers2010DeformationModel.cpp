@@ -93,16 +93,14 @@ BOOST_AUTO_TEST_CASE( test_Iers2012DeformationModel )
     Eigen::Quaterniond orientationQuaternion = Eigen::Quaterniond( orientationMatrix );
 
     std::function< Eigen::Quaterniond( const double ) > rotationEphemeris =
-            std::bind( &RotationalEphemeris::getRotationToTargetFrame,
-                       std::make_shared< ConstantRotationalEphemeris >( orientationQuaternion ),
-                       std::placeholders::_1 );
+            [eph = std::make_shared< ConstantRotationalEphemeris >( orientationQuaternion )](const double time) { return eph->getRotationToTargetFrame(time); };
 
     std::function< Eigen::Vector6d( const double ) > earthEphemeris =
-            std::bind( &Ephemeris::getCartesianState, std::make_shared< ConstantEphemeris >( earthState ), std::placeholders::_1 );
+            [eph = std::make_shared< ConstantEphemeris >( earthState )](const double time) { return eph->getCartesianState(time); };
     std::function< Eigen::Vector6d( const double ) > sunEphemeris =
-            std::bind( &Ephemeris::getCartesianState, std::make_shared< ConstantEphemeris >( sunState ), std::placeholders::_1 );
+            [eph = std::make_shared< ConstantEphemeris >( sunState )](const double time) { return eph->getCartesianState(time); };
     std::function< Eigen::Vector6d( const double ) > moonEphemeris =
-            std::bind( &Ephemeris::getCartesianState, std::make_shared< ConstantEphemeris >( moonState ), std::placeholders::_1 );
+            [eph = std::make_shared< ConstantEphemeris >( moonState )](const double time) { return eph->getCartesianState(time); };
 
     std::vector< std::function< Eigen::Vector6d( const double ) > > ephemerides;
     ephemerides.resize( 2 );
@@ -253,7 +251,7 @@ BOOST_AUTO_TEST_CASE( test_Iers2012DeformationModel )
                 correctionLoveAndShidaNumbers,
                 tudat::paths::getEarthDeformationDataFilesPath( ) + "/diurnalDisplacementFrequencyDependence2.txt",
                 "",
-                std::bind( &calculateFundamentalArgumentsIersCode, std::placeholders::_1 ) );
+                [](const double time) { return calculateFundamentalArgumentsIersCode(time); } );
         expectedDeformation << 0.4193085327321284701E-02, 0.1456681241014607395E-02, 0.5123366597450316508E-02;
         calculatedDeformation = deformationModel->calculateDisplacement( evaluationTime, siteState.segment( 0, 3 ) );
 
@@ -275,7 +273,7 @@ BOOST_AUTO_TEST_CASE( test_Iers2012DeformationModel )
                 correctionLoveAndShidaNumbers,
                 "",
                 tudat::paths::getEarthDeformationDataFilesPath( ) + "/longPeriodDisplacementFrequencyDependence.txt",
-                std::bind( &calculateFundamentalArgumentsIersCode, std::placeholders::_1 ) );
+                [](const double time) { return calculateFundamentalArgumentsIersCode(time); } );
 
         expectedDeformation << -0.9780962849562107762E-04, -0.2236349699932734273E-04, 0.3561945821351565926E-03;
         calculatedDeformation = deformationModel->calculateDisplacement( evaluationTime, siteState.segment( 0, 3 ) );
@@ -316,7 +314,7 @@ BOOST_AUTO_TEST_CASE( test_Iers2012DeformationModel )
                 correctionLoveAndShidaNumbers,
                 tudat::paths::getEarthDeformationDataFilesPath( ) + "/diurnalDisplacementFrequencyDependence2.txt",
                 tudat::paths::getEarthDeformationDataFilesPath( ) + "/longPeriodDisplacementFrequencyDependence.txt",
-                std::bind( &calculateFundamentalArgumentsIersCode, std::placeholders::_1 ) );
+                [](const double time) { return calculateFundamentalArgumentsIersCode(time); } );
 
         evaluationTime = 292852800.0;
         expectedDeformation << 0.7700420357108125891E-01, 0.6304056321824967613E-01, 0.5516568152597246810E-01;
@@ -340,11 +338,11 @@ BOOST_AUTO_TEST_CASE( test_Iers2012DeformationModel )
             moonState( 2 ) = 120548075.939;
 
             earthEphemeris =
-                    std::bind( &Ephemeris::getCartesianState, std::make_shared< ConstantEphemeris >( earthState ), std::placeholders::_1 );
+                    [eph = std::make_shared< ConstantEphemeris >( earthState )](const double time) { return eph->getCartesianState(time); };
             sunEphemeris =
-                    std::bind( &Ephemeris::getCartesianState, std::make_shared< ConstantEphemeris >( sunState ), std::placeholders::_1 );
+                    [eph = std::make_shared< ConstantEphemeris >( sunState )](const double time) { return eph->getCartesianState(time); };
             moonEphemeris =
-                    std::bind( &Ephemeris::getCartesianState, std::make_shared< ConstantEphemeris >( moonState ), std::placeholders::_1 );
+                    [eph = std::make_shared< ConstantEphemeris >( moonState )](const double time) { return eph->getCartesianState(time); };
 
             ephemerides[ 0 ] = moonEphemeris;
             ephemerides[ 1 ] = sunEphemeris;
@@ -364,7 +362,7 @@ BOOST_AUTO_TEST_CASE( test_Iers2012DeformationModel )
                         correctionLoveAndShidaNumbers,
                         tudat::paths::getEarthDeformationDataFilesPath( ) + "/diurnalDisplacementFrequencyDependence2.txt",
                         tudat::paths::getEarthDeformationDataFilesPath( ) + "/longPeriodDisplacementFrequencyDependence.txt",
-                        std::bind( &calculateFundamentalArgumentsIersCode, std::placeholders::_1 ) );
+                        [](const double time) { return calculateFundamentalArgumentsIersCode(time); } );
             }
             else
             {
@@ -376,7 +374,7 @@ BOOST_AUTO_TEST_CASE( test_Iers2012DeformationModel )
                         boost::lambda::constant( 1.0 ),
                         lunarMassFunction,
                         solarMassFunction,
-                        std::bind( &calculateFundamentalArgumentsIersCode, std::placeholders::_1 ) );
+                        [](const double time) { return calculateFundamentalArgumentsIersCode(time); } );
             }
             evaluationTime = 395409600.0;
             expectedDeformation << -0.2036831479592075833E-01, 0.5658254776225972449E-01, -0.7597679676871742227E-01;

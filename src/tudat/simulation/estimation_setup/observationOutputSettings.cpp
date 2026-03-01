@@ -486,12 +486,12 @@ std::function< bool( const ObservableType observableType ) > getIsObservableType
     switch( variableType )
     {
         case integration_time_dependent_variable: {
-            isObservableTypeCompatibleFunction = std::bind( &observation_models::isObservableOfIntegratedType, std::placeholders::_1 );
+            isObservableTypeCompatibleFunction = []( const ObservableType observableType ) { return observation_models::isObservableOfIntegratedType( observableType ); };
             break;
         }
         case retransmission_delays_dependent_variable: {
             isObservableTypeCompatibleFunction =
-                    std::bind( &observation_models::observableCanHaveRetransmissionDelay, std::placeholders::_1 );
+                    []( const ObservableType observableType ) { return observation_models::observableCanHaveRetransmissionDelay( observableType ); };
             break;
         }
         default:

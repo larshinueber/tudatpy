@@ -49,12 +49,10 @@ public:
     //    {
     //        using namespace interpolators;
 
-    //        // Set function binding to interpolator.
-    //        functionToGetRotationAngles = std::bind(
-    //                    static_cast< Eigen::Vector6d(
-    //                        interpolators::OneDimensionalInterpolator< double, Eigen::Vector6d >::* )( const double )>
-    //                    ( &interpolators::OneDimensionalInterpolator< double, Eigen::Vector6d >::interpolate ), anglesInterpolator,
-    //                    std::placeholders::_1 );
+    //        // Set function using lambda to interpolator.
+    //        functionToGetRotationAngles = [anglesInterpolator]( const double t ) {
+    //            return anglesInterpolator->interpolate( t );
+    //        };
     //    }
 
     //! Constructor taking class calculating earth orientation angles directly
@@ -72,10 +70,9 @@ public:
 
     {
         functionToGetRotationAngles =
-                std::bind( &earth_orientation::EarthOrientationAnglesCalculator::getRotationAnglesFromItrsToGcrs< double >,
-                           anglesCalculator,
-                           std::placeholders::_1,
-                           inputTimeScale );
+                [anglesCalculator, inputTimeScale](const double& t) {
+                    return anglesCalculator->getRotationAnglesFromItrsToGcrs< double >( t, inputTimeScale );
+                };
 
         if( baseFrame == "J2000" )
         {

@@ -199,9 +199,7 @@ BOOST_AUTO_TEST_CASE( testObservationNoiseModels )
         std::function< double( ) > inputFreeNoiseFunction = createBoostContinuousRandomVariableGeneratorFunction(
                 normal_boost_distribution, { constantOffset, constantStandardDeviation }, 0.0 );
         std::function< double( const double ) > noiseFunction =
-                std::bind( &utilities::evaluateFunctionWithoutInputArgumentDependency< double, const double >,
-                           inputFreeNoiseFunction,
-                           std::placeholders::_1 );
+                [inputFreeNoiseFunction](const double t) { return utilities::evaluateFunctionWithoutInputArgumentDependency< double, const double >(inputFreeNoiseFunction, t); };
 
         // Simulate noisy observables
         addNoiseFunctionToObservationSimulationSettings( measurementSimulationInput, noiseFunction );
@@ -255,12 +253,10 @@ BOOST_AUTO_TEST_CASE( testObservationNoiseModels )
              typeIterator++ )
         {
             std::function< double( const double ) > noiseFunction =
-                    std::bind( &utilities::evaluateFunctionWithoutInputArgumentDependency< double, const double >,
-                               createBoostContinuousRandomVariableGeneratorFunction(
+                    [fn = createBoostContinuousRandomVariableGeneratorFunction(
                                        normal_boost_distribution,
                                        { constantOffsets.at( typeIterator->first ), constantStandardDeviations.at( typeIterator->first ) },
-                                       0.0 ),
-                               std::placeholders::_1 );
+                                       0.0 )](const double t) { return utilities::evaluateFunctionWithoutInputArgumentDependency< double, const double >(fn, t); };
 
             addNoiseFunctionToObservationSimulationSettings( measurementSimulationInput, noiseFunction, typeIterator->first );
         }
@@ -336,13 +332,11 @@ BOOST_AUTO_TEST_CASE( testObservationNoiseModels )
                  linkEndIterator++ )
             {
                 std::function< double( const double ) > noiseFunction =
-                        std::bind( &utilities::evaluateFunctionWithoutInputArgumentDependency< double, const double >,
-                                   createBoostContinuousRandomVariableGeneratorFunction(
+                        [fn = createBoostContinuousRandomVariableGeneratorFunction(
                                            normal_boost_distribution,
                                            { constantOffsetsPerStation.at( typeIterator->first ).at( linkEndIterator->first ),
                                              constantStandardDeviationsStation.at( typeIterator->first ).at( linkEndIterator->first ) },
-                                           0.0 ),
-                                   std::placeholders::_1 );
+                                           0.0 )](const double t) { return utilities::evaluateFunctionWithoutInputArgumentDependency< double, const double >(fn, t); };
 
                 addNoiseFunctionToObservationSimulationSettings(
                         measurementSimulationInput, noiseFunction, typeIterator->first, linkEndIterator->first );

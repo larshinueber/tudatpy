@@ -97,13 +97,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTestFunctions )
     double tolerance = 1.0E-15;
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -135,13 +131,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTestFunctions )
 BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTestHashing )
 {
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -204,13 +196,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest1 )
                                                2.667273209336E+04, 1.250539943561E+03, 1.241416130019E+03 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -247,13 +235,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest2 )
                                                6.956681955942E+03, 1.166754383757E+03, 1.161710451887E+03 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -294,13 +278,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest3 )
                                                2.374394151990E+04, 1.239892111717E+03, 1.239890640133E+03 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -342,13 +322,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest4 )
                                                2.819879355928E-42, 1.027318464900E+03, 2.068877764036E+02 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -390,13 +366,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest5 )
                                                1.264445941761E+03, 1.212396152121E+03, 1.208135425212E+03 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -438,13 +410,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest6 )
                                                2.667273209336E+04, 1.220146417915E+03, 1.212712083212E+03 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -486,13 +454,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest7 )
                                                2.667273209336E+04, 1.116385376043E+03, 1.112998568217E+03 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -534,13 +498,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest8 )
                                                9.121814875991E+03, 1.031247440715E+03, 1.024848492213E+03 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -582,13 +542,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest9 )
                                                2.667273209336E+04, 1.306052042027E+03, 1.293374040390E+03 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -630,13 +586,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest10 )
                                                2.805444837126E+04, 1.361868020785E+03, 1.347389183730E+03 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -678,13 +630,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest11 )
                                                0.000000000000E+00, 1.027318464900E+03, 2.814647576632E+02 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -726,13 +674,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest12 )
                                                0.000000000000E+00, 1.027318464900E+03, 2.274179808273E+02 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -774,13 +718,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest13 )
                                                0.000000000000E+00, 1.027318464900E+03, 2.374389145877E+02 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -822,13 +762,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest14 )
                                                0.000000000000E+00, 1.027318464900E+03, 2.795551129541E+02 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -870,13 +806,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest15 )
                                                0.000000000000E+00, 1.027318464900E+03, 2.190732313642E+02 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -918,13 +850,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest16 )
                                                2.667273209336E+04, 1.426411662282E+03, 1.408607795553E+03 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -967,13 +895,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest17 )
                                                2.415245929649E-42, 1.027318464900E+03, 1.934071062577E+02 };
 
     // Create the model
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -1010,13 +934,9 @@ BOOST_AUTO_TEST_CASE( testNRLMSISE00AtmosphereTest17 )
 BOOST_AUTO_TEST_CASE( testSpeedOfSound )
 {
     // Construct model with default properties
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -1061,13 +981,9 @@ BOOST_AUTO_TEST_CASE( testSpeedOfSound )
 BOOST_AUTO_TEST_CASE( testMolarMass )
 {
     // Construct model with default properties
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 
@@ -1094,13 +1010,9 @@ BOOST_AUTO_TEST_CASE( testMolarMass )
 BOOST_AUTO_TEST_CASE( testMeanFreePath )
 {
     // Construct model with default properties
-    NRLMSISE00Atmosphere model( std::bind( &nrlmsiseTestFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4,
-                                           false,
-                                           false ),
+    NRLMSISE00Atmosphere model( [](double altitude, double longitude, double latitude, double time) {
+                                    return nrlmsiseTestFunction(altitude, longitude, latitude, time, false, false);
+                                },
                                 true,
                                 false );
 

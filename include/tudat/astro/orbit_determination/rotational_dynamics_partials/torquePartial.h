@@ -101,19 +101,16 @@ public:
                 else if( stateReferencePoint.first == bodyUndergoingTorque_ )
                 {
                     partialFunction = std::make_pair(
-                            std::bind( &TorquePartial::wrtRotationalStateOfAcceleratedBody, this, std::placeholders::_1 ), 7 );
+                            [this]( Eigen::Block< Eigen::MatrixXd > block ) { this->wrtRotationalStateOfAcceleratedBody( block ); }, 7 );
                 }
                 else if( stateReferencePoint.first == bodyExertingTorque_ )
                 {
                     partialFunction = std::make_pair(
-                            std::bind( &TorquePartial::wrtRotationalStateOfAcceleratingBody, this, std::placeholders::_1 ), 7 );
+                            [this]( Eigen::Block< Eigen::MatrixXd > block ) { this->wrtRotationalStateOfAcceleratingBody( block ); }, 7 );
                 }
                 else if( isTorquePartialWrtAdditionalBodyNonNull( stateReferencePoint.first ) )
                 {
-                    partialFunction = std::make_pair( std::bind( &TorquePartial::wrtRotationalStateOfAdditionalBody,
-                                                                 this,
-                                                                 std::placeholders::_1,
-                                                                 stateReferencePoint.first ),
+                    partialFunction = std::make_pair( [this, bodyName = stateReferencePoint.first]( Eigen::Block< Eigen::MatrixXd > block ) { this->wrtRotationalStateOfAdditionalBody( block, bodyName ); },
                                                       3 );
                 }
                 break;
@@ -126,11 +123,7 @@ public:
                 }
                 else if( isStateDerivativeDependentOnIntegratedAdditionalStateTypes( stateReferencePoint, integratedStateType ) )
                 {
-                    partialFunction = std::make_pair( std::bind( &TorquePartial::wrtNonRotationalStateOfAdditionalBody,
-                                                                 this,
-                                                                 std::placeholders::_1,
-                                                                 stateReferencePoint,
-                                                                 integratedStateType ),
+                    partialFunction = std::make_pair( [this, stateReferencePoint, integratedStateType]( Eigen::Block< Eigen::MatrixXd > block ) { this->wrtNonRotationalStateOfAdditionalBody( block, stateReferencePoint, integratedStateType ); },
                                                       1 );
                 }
             }

@@ -89,14 +89,12 @@ CustomConstantTemperatureAtmosphere::CustomConstantTemperatureAtmosphere(
             }
 
             // Set density function
-            densityFunction_ = std::bind( &exponentialAtmosphereModel,
-                                          std::placeholders::_1,
-                                          std::placeholders::_2,
-                                          std::placeholders::_3,
-                                          std::placeholders::_4,
-                                          modelSpecificParameters.at( 0 ),
-                                          modelSpecificParameters.at( 1 ),
-                                          modelSpecificParameters.at( 2 ) );
+            densityFunction_ = [modelSpecificParameters](const double altitude, const double longitude, const double latitude, const double time) {
+                return exponentialAtmosphereModel(altitude, longitude, latitude, time,
+                                                  modelSpecificParameters.at( 0 ),
+                                                  modelSpecificParameters.at( 1 ),
+                                                  modelSpecificParameters.at( 2 ));
+            };
             break;
         }
         case three_wave_atmosphere_model: {
@@ -111,16 +109,14 @@ CustomConstantTemperatureAtmosphere::CustomConstantTemperatureAtmosphere(
             }
 
             // Set density function
-            densityFunction_ = std::bind( &threeWaveAtmosphereModel,
-                                          std::placeholders::_1,
-                                          std::placeholders::_2,
-                                          std::placeholders::_3,
-                                          std::placeholders::_4,
-                                          modelSpecificParameters.at( 0 ),
-                                          modelSpecificParameters.at( 1 ),
-                                          modelSpecificParameters.at( 2 ),
-                                          modelSpecificParameters.at( 3 ),
-                                          modelSpecificParameters.at( 4 ) );
+            densityFunction_ = [modelSpecificParameters](const double altitude, const double longitude, const double latitude, const double time) {
+                return threeWaveAtmosphereModel(altitude, longitude, latitude, time,
+                                                modelSpecificParameters.at( 0 ),
+                                                modelSpecificParameters.at( 1 ),
+                                                modelSpecificParameters.at( 2 ),
+                                                modelSpecificParameters.at( 3 ),
+                                                modelSpecificParameters.at( 4 ));
+            };
             break;
         }
         case three_term_atmosphere_model: {
@@ -141,15 +137,13 @@ CustomConstantTemperatureAtmosphere::CustomConstantTemperatureAtmosphere(
             modelWeights.push_back( modelSpecificParameters.at( 5 ) );
 
             // Set density function
-            densityFunction_ = std::bind( &threeTermAtmosphereModel,
-                                          std::placeholders::_1,
-                                          std::placeholders::_2,
-                                          std::placeholders::_3,
-                                          std::placeholders::_4,
-                                          modelSpecificParameters.at( 0 ),
-                                          modelSpecificParameters.at( 1 ),
-                                          modelSpecificParameters.at( 2 ),
-                                          modelWeights );
+            densityFunction_ = [modelSpecificParameters, modelWeights](const double altitude, const double longitude, const double latitude, const double time) {
+                return threeTermAtmosphereModel(altitude, longitude, latitude, time,
+                                                modelSpecificParameters.at( 0 ),
+                                                modelSpecificParameters.at( 1 ),
+                                                modelSpecificParameters.at( 2 ),
+                                                modelWeights);
+            };
             break;
         }
         default:

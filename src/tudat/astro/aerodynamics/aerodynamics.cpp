@@ -479,7 +479,9 @@ double computeEquilibriumFayRiddellHeatFlux( const double airDensity,
     double adiabaticWallTemperature = computeAdiabaticWallTemperature( airTemperature, machNumber );
 
     std::function< double( const double ) > heatTransferFunction =
-            std::bind( &computeFayRiddellHeatFlux, airDensity, airSpeed, airTemperature, noseRadius, std::placeholders::_1 );
+            [airDensity, airSpeed, airTemperature, noseRadius](const double wallTemperature) {
+                return computeFayRiddellHeatFlux(airDensity, airSpeed, airTemperature, noseRadius, wallTemperature);
+            };
 
     return computeEquilibriumHeatflux( heatTransferFunction, wallEmissivity, adiabaticWallTemperature );
 }

@@ -98,11 +98,8 @@ BOOST_AUTO_TEST_CASE( test_customAccelerationModelCreation )
             interpolators::createOneDimensionalInterpolator( customAccelerationMap,
                                                              std::make_shared< interpolators::LagrangeInterpolatorSettings >( 8 ) );
 
-    std::function< Eigen::Vector3d( const double ) > customAccelerationFunction = std::bind(
-            static_cast< Eigen::Vector3d ( interpolators::OneDimensionalInterpolator< double, Eigen::Vector3d >::* )( const double ) >(
-                    &interpolators::OneDimensionalInterpolator< double, Eigen::Vector3d >::interpolate ),
-            customAccelerationInterpolator,
-            std::placeholders::_1 );
+    std::function< Eigen::Vector3d( const double ) > customAccelerationFunction =
+            [customAccelerationInterpolator]( const double t ) { return customAccelerationInterpolator->interpolate( t ); };
 
     std::function< double( const double ) > customAccelerationScalingFunction =
             tudat::simulation_setup::getOccultationFunction( bodies, "Sun", "Earth", "Vehicle" );
@@ -307,11 +304,8 @@ BOOST_AUTO_TEST_CASE( test_customTorqueModelCreation )
             interpolators::createOneDimensionalInterpolator( customTorqueMap,
                                                              std::make_shared< interpolators::LagrangeInterpolatorSettings >( 8 ) );
 
-    std::function< Eigen::Vector3d( const double ) > customTorqueFunction = std::bind(
-            static_cast< Eigen::Vector3d ( interpolators::OneDimensionalInterpolator< double, Eigen::Vector3d >::* )( const double ) >(
-                    &interpolators::OneDimensionalInterpolator< double, Eigen::Vector3d >::interpolate ),
-            customTorqueInterpolator,
-            std::placeholders::_1 );
+    std::function< Eigen::Vector3d( const double ) > customTorqueFunction =
+            [customTorqueInterpolator]( const double t ) { return customTorqueInterpolator->interpolate( t ); };
 
     std::function< double( const double ) > customTorqueScalingFunction =
             tudat::simulation_setup::getOccultationFunction( bodies, "Sun", "Earth", "Vehicle" );

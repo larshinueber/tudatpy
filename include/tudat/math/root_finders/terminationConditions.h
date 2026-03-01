@@ -388,17 +388,14 @@ std::function< bool( DataType, DataType, DataType, DataType, unsigned int ) > cr
         const unsigned int maximumNumberOfIterations = 1000,
         const MaximumIterationHandling maximumIterationHandling = throw_exception )
 {
-    return std::bind( &TerminationCondition< DataType >::checkTerminationCondition,
-                      createTerminationCondition< DataType >( relativeIndependentVariableTolerance,
+    auto condition = createTerminationCondition< DataType >( relativeIndependentVariableTolerance,
                                                               absoluteIndependentVariableTolerance,
                                                               rootFunctionTolerance,
                                                               maximumNumberOfIterations,
-                                                              maximumIterationHandling ),
-                      std::placeholders::_1,
-                      std::placeholders::_2,
-                      std::placeholders::_3,
-                      std::placeholders::_4,
-                      std::placeholders::_5 );
+                                                              maximumIterationHandling );
+    return [condition]( const DataType a, const DataType b, const DataType c, const DataType d, const unsigned int e ) {
+        return condition->checkTerminationCondition( a, b, c, d, e );
+    };
 }
 
 }  // namespace root_finders

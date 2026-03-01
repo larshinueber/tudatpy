@@ -65,8 +65,8 @@ std::function< double( ) > createBoostContinuousRandomVariableGeneratorFunction(
         const std::vector< double >& parameters,
         const double seed )
 {
-    return std::bind( &RandomVariableGenerator< double >::getRandomVariableValue,
-                      createBoostContinuousRandomVariableGenerator( boostDistribution, parameters, seed ) );
+    auto generator = createBoostContinuousRandomVariableGenerator( boostDistribution, parameters, seed );
+    return [generator]() { return generator->getRandomVariableValue(); };
 }
 
 //! Function to create a random number generator from a continuous univariate distribution implemented in boost

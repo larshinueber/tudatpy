@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE( testEquilibriumTemperature )
                 adiabaticWallTemperature = computeAdiabaticWallTemperature( airTemperature, machNumber );
 
                 std::function< double( const double ) > heatTransferFunction =
-                        std::bind( &computeFayRiddellHeatFlux, airDensity, airSpeed, airTemperature, noseRadius, std::placeholders::_1 );
+                        [airDensity, airSpeed, airTemperature, noseRadius]( const double wallTemperature ) { return computeFayRiddellHeatFlux( airDensity, airSpeed, airTemperature, noseRadius, wallTemperature ); };
 
                 equilibriumWallTemperature =
                         computeEquilibiumWallTemperature( heatTransferFunction, wallEmissivity, adiabaticWallTemperature );
@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE( testFayRiddellHeatFluxConsistency )
             adiabaticWallTemperature = computeAdiabaticWallTemperature( airTemperature, machNumber );
 
             std::function< double( const double ) > heatTransferFunction =
-                    std::bind( &computeFayRiddellHeatFlux, airDensity, airSpeed, airTemperature, noseRadius, std::placeholders::_1 );
+                    [airDensity, airSpeed, airTemperature, noseRadius]( const double wallTemperature ) { return computeFayRiddellHeatFlux( airDensity, airSpeed, airTemperature, noseRadius, wallTemperature ); };
 
             heatFlux1 =
                     computeEquilibriumFayRiddellHeatFlux( airDensity, airSpeed, airTemperature, machNumber, noseRadius, wallEmissivity );

@@ -41,7 +41,7 @@ void getOccultingBodiesInformation( const SystemOfBodies& bodies,
             {
                 throw std::runtime_error( "Error, no shape model for " + occultingBodies[ i ] + " when making occulting body settings" );
             }
-            occultingBodyPositions.push_back( std::bind( &Body::getPosition, bodies.at( occultingBodies[ i ] ) ) );
+            occultingBodyPositions.push_back( [body = bodies.at( occultingBodies[ i ] )]() { return body->getPosition(); } );
             occultingBodyRadii.push_back( shapeModel->getAverageRadius( ) );
         }
     }
@@ -62,8 +62,8 @@ void getCentralBodyInformation( const SystemOfBodies& bodies,
     // Retrieve position and velocity functions.
     else
     {
-        centralBodyPosition = std::bind( &Body::getPosition, bodies.at( centralBody ) );
-        centralBodyVelocity = std::bind( &Body::getVelocity, bodies.at( centralBody ) );
+        centralBodyPosition = [body = bodies.at( centralBody )]() { return body->getPosition(); };
+        centralBodyVelocity = [body = bodies.at( centralBody )]() { return body->getVelocity(); };
     }
 }
 
@@ -140,8 +140,8 @@ std::shared_ptr< electromagnetism::RadiationPressureInterface > createRadiationP
                 // Create radiation pressure interface.
                 radiationPressureInterface = std::make_shared< electromagnetism::RadiationPressureInterface >(
                         radiatedPowerFunction,
-                        std::bind( &Body::getPosition, sourceBody ),
-                        std::bind( &Body::getPosition, bodies.at( bodyName ) ),
+                        [sourceBody]() { return sourceBody->getPosition(); },
+                        [body = bodies.at( bodyName )]() { return body->getPosition(); },
                         cannonBallSettings->getRadiationPressureCoefficientFunction( ),
                         cannonBallSettings->getArea( ),
                         occultingBodyPositions,
@@ -154,8 +154,8 @@ std::shared_ptr< electromagnetism::RadiationPressureInterface > createRadiationP
                 // Create radiation pressure interface.
                 radiationPressureInterface = std::make_shared< electromagnetism::RadiationPressureInterface >(
                         radiatedPowerFunction,
-                        std::bind( &Body::getPosition, sourceBody ),
-                        std::bind( &Body::getPosition, bodies.at( bodyName ) ),
+                        [sourceBody]() { return sourceBody->getPosition(); },
+                        [body = bodies.at( bodyName )]() { return body->getPosition(); },
                         cannonBallSettings->getRadiationPressureCoefficient( ),
                         cannonBallSettings->getArea( ),
                         occultingBodyPositions,
@@ -236,13 +236,13 @@ std::shared_ptr< electromagnetism::RadiationPressureInterface > createRadiationP
             //        radiationPressureInterface =
             //                std::make_shared< electromagnetism::PanelledRadiationPressureInterface >(
             //                    radiatedPowerFunction,
-            //                    std::bind( &Body::getPosition, sourceBody ),
-            //                    std::bind( &Body::getPosition, bodies.at( bodyName ) ),
+            //                    [sourceBody]() { return sourceBody->getPosition(); },
+            //                    [body = bodies.at( bodyName )]() { return body->getPosition(); },
             //                    localFrameSurfaceNormalFunctions,
             //                    panelledSettings->getEmissivities( ),
             //                    panelledSettings->getAreas( ),
             //                    panelledSettings->getDiffusionCoefficients( ),
-            //                    std::bind( &Body::getCurrentRotationToGlobalFrame, bodies.at( bodyName ) ),
+            //                    [body = bodies.at( bodyName )]() { return body->getCurrentRotationToGlobalFrame(); },
             //                    occultingBodyPositions, occultingBodyRadii,
             //                    sourceRadius );
             //        break;
@@ -321,9 +321,9 @@ std::shared_ptr< electromagnetism::RadiationPressureInterface > createRadiationP
             //        radiationPressureInterface =
             //            std::make_shared< electromagnetism::SolarSailingRadiationPressureInterface >(
             //                radiatedPowerFunction,
-            //                std::bind( &Body::getPosition, sourceBody ),
-            //                std::bind( &Body::getPosition, bodies.at( bodyName ) ),
-            //                std::bind( &Body::getVelocity, bodies.at( bodyName ) ),
+            //                [sourceBody]() { return sourceBody->getPosition(); },
+            //                [body = bodies.at( bodyName )]() { return body->getPosition(); },
+            //                [body = bodies.at( bodyName )]() { return body->getVelocity(); },
             //                solarSailRadiationSettings->getArea( ),
             //                solarSailRadiationSettings->getConeAngle(),
             //                solarSailRadiationSettings->getClockAngle(),
@@ -351,9 +351,9 @@ std::function< double( const double ) > getOccultationFunction( const SystemOfBo
                                                                 const std::string& occultingBody,
                                                                 const std::string& shadowedBody )
 {
-    std::function< Eigen::Vector3d( ) > sourceBodyPositionFunction = std::bind( &Body::getPosition, bodyMap.at( sourceBody ) );
-    std::function< Eigen::Vector3d( ) > occultingBodyPositionFunction = std::bind( &Body::getPosition, bodyMap.at( occultingBody ) );
-    std::function< Eigen::Vector3d( ) > shadowedBodyPositionFunction = std::bind( &Body::getPosition, bodyMap.at( shadowedBody ) );
+    std::function< Eigen::Vector3d( ) > sourceBodyPositionFunction = [body = bodyMap.at( sourceBody )]() { return body->getPosition(); };
+    std::function< Eigen::Vector3d( ) > occultingBodyPositionFunction = [body = bodyMap.at( occultingBody )]() { return body->getPosition(); };
+    std::function< Eigen::Vector3d( ) > shadowedBodyPositionFunction = [body = bodyMap.at( shadowedBody )]() { return body->getPosition(); };
     double sourceBodyRadius = bodyMap.at( sourceBody )->getShapeModel( )->getAverageRadius( );
     double occultingBodyRadius = bodyMap.at( occultingBody )->getShapeModel( )->getAverageRadius( );
 

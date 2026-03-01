@@ -433,13 +433,11 @@ void solveLambertProblemGooding( const Eigen::Vector3d& cartesianPositionAtDepar
     using basic_mathematics::UnivariateProxy;
     using basic_mathematics::UnivariateProxyPointer;
     UnivariateProxyPointer rootFunction = std::make_shared< UnivariateProxy >(
-            std::bind( &LambertFunctionsGooding::computeLambertFunctionGooding, lambertFunctionsGooding, std::placeholders::_1 ) );
+            [lambertFunctionsGooding](const double x) mutable { return lambertFunctionsGooding.computeLambertFunctionGooding(x); } );
 
     // Add the first derivative of the root function.
     rootFunction->addBinding( -1,
-                              std::bind( &LambertFunctionsGooding::computeFirstDerivativeLambertFunctionGooding,
-                                         lambertFunctionsGooding,
-                                         std::placeholders::_1 ) );
+                              [lambertFunctionsGooding](const double x) mutable { return lambertFunctionsGooding.computeFirstDerivativeLambertFunctionGooding(x); } );
 
     // Initialize the xParameter.
     double xParameter = TUDAT_NAN;

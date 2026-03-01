@@ -100,14 +100,11 @@ public:
                       const unsigned int maxIterations,
                       const DataType initialGuessOfRootOne = 0.5 ):
         RootFinder< DataType >(
-                std::bind( &RootRelativeToleranceTerminationCondition< DataType >::checkTerminationCondition,
-                           std::make_shared< RootRelativeToleranceTerminationCondition< DataType > >( relativeIndependentVariableTolerance,
-                                                                                                      maxIterations ),
-                           std::placeholders::_1,
-                           std::placeholders::_2,
-                           std::placeholders::_3,
-                           std::placeholders::_4,
-                           std::placeholders::_5 ) ),
+                [cond = std::make_shared< RootRelativeToleranceTerminationCondition< DataType > >( relativeIndependentVariableTolerance,
+                                                                                                   maxIterations )](
+                        const DataType a, const DataType b, const DataType c, const DataType d, const unsigned int e ) {
+                    return cond->checkTerminationCondition( a, b, c, d, e );
+                } ),
         initialGuessOfRootOne_( initialGuessOfRootOne )
     { }
 

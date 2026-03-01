@@ -365,7 +365,7 @@ std::shared_ptr< ObservationSimulationSettings< TimeType > > perturbObservationT
         std::transform( perturbedObservationTimes.begin( ),
                         perturbedObservationTimes.end( ),
                         perturbedObservationTimes.begin( ),
-                        std::bind( std::plus< double >( ), std::placeholders::_1, timePerturbation ) );
+                        [timePerturbation]( double t ) { return t + timePerturbation; } );
         newSettings = std::make_shared< TabulatedObservationSimulationSettings< TimeType > >(
                 originalTabulatedSettings->getObservableType( ),
                 originalTabulatedSettings->getLinkEnds( ),
@@ -626,7 +626,9 @@ void addViabilityToObservationSimulationSettings(
         ArgTypes... args )
 {
     std::function< void( const std::shared_ptr< ObservationSimulationSettings< TimeType > > ) > modificationFunction =
-            std::bind( &addViabilityToSingleObservationSimulationSettings< TimeType >, std::placeholders::_1, viabilitySettingsList );
+            [viabilitySettingsList]( const std::shared_ptr< ObservationSimulationSettings< TimeType > > settings ) {
+                addViabilityToSingleObservationSimulationSettings< TimeType >( settings, viabilitySettingsList );
+            };
     modifyObservationSimulationSettings( observationSimulationSettings, modificationFunction, args... );
 }
 
@@ -636,8 +638,10 @@ void addNoiseFunctionToObservationSimulationSettings(
         const std::function< DataType( const double ) > observationNoiseFunction,
         ArgTypes... args )
 {
-    std::function< void( const std::shared_ptr< ObservationSimulationSettings< TimeType > > ) > modificationFunction = std::bind(
-            &addNoiseToSingleObservationSimulationSettings< TimeType, DataType >, std::placeholders::_1, observationNoiseFunction );
+    std::function< void( const std::shared_ptr< ObservationSimulationSettings< TimeType > > ) > modificationFunction =
+            [observationNoiseFunction]( const std::shared_ptr< ObservationSimulationSettings< TimeType > > settings ) {
+                addNoiseToSingleObservationSimulationSettings< TimeType, DataType >( settings, observationNoiseFunction );
+            };
     modifyObservationSimulationSettings( observationSimulationSettings, modificationFunction, args... );
 }
 
@@ -647,8 +651,10 @@ void addGaussianNoiseFunctionToObservationSimulationSettings(
         const double observationNoiseAmplitude,
         ArgTypes... args )
 {
-    std::function< void( const std::shared_ptr< ObservationSimulationSettings< TimeType > > ) > modificationFunction = std::bind(
-            &addGaussianNoiseToSingleObservationSimulationSettings< TimeType >, std::placeholders::_1, observationNoiseAmplitude );
+    std::function< void( const std::shared_ptr< ObservationSimulationSettings< TimeType > > ) > modificationFunction =
+            [observationNoiseAmplitude]( const std::shared_ptr< ObservationSimulationSettings< TimeType > > settings ) {
+                addGaussianNoiseToSingleObservationSimulationSettings< TimeType >( settings, observationNoiseAmplitude );
+            };
     modifyObservationSimulationSettings( observationSimulationSettings, modificationFunction, args... );
 }
 
@@ -659,8 +665,10 @@ void addDependentVariablesToObservationSimulationSettings(
         const SystemOfBodies& bodies,
         ArgTypes... args )
 {
-    std::function< void( const std::shared_ptr< ObservationSimulationSettings< TimeType > > ) > modificationFunction = std::bind(
-            &addDependentVariableToSingleObservationSimulationSettings< TimeType >, std::placeholders::_1, dependentVariableList );
+    std::function< void( const std::shared_ptr< ObservationSimulationSettings< TimeType > > ) > modificationFunction =
+            [dependentVariableList]( const std::shared_ptr< ObservationSimulationSettings< TimeType > > settings ) {
+                addDependentVariableToSingleObservationSimulationSettings< TimeType >( settings, dependentVariableList );
+            };
     modifyObservationSimulationSettings( observationSimulationSettings, modificationFunction, args... );
 }
 
@@ -671,7 +679,10 @@ void addAncillarySettingsToObservationSimulationSettings(
         ArgTypes... args )
 {
     std::function< void( std::shared_ptr< ObservationSimulationSettings< TimeType > > ) > modificationFunction =
-            std::bind( &addAncillarySettingsToSingleObservationSimulationSettings< TimeType >, std::placeholders::_1, ancillarySettings );
+            [ancillarySettings]( std::shared_ptr< ObservationSimulationSettings< TimeType > > settings ) {
+                addAncillarySettingsToSingleObservationSimulationSettings< TimeType >(
+                        settings, const_cast< std::shared_ptr< observation_models::ObservationAncillarySimulationSettings >& >( ancillarySettings ) );
+            };
     modifyObservationSimulationSettings( observationSimulationSettings, modificationFunction, args... );
 }
 

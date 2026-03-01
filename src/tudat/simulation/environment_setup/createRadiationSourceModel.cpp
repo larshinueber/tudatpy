@@ -212,7 +212,7 @@ std::unique_ptr< electromagnetism::SourcePanelRadiosityModelUpdater > createSour
 
         originalSourceModels[ originalSourceBodyName ] = originalIsotropicPointRadiationSourceModel;
         originalSourceBodyShapeModels[ originalSourceBodyName ] = originalSourceBody->getShapeModel( );
-        originalSourcePositionFunctions[ originalSourceBodyName ] = std::bind( &Body::getPosition, originalSourceBody );
+        originalSourcePositionFunctions[ originalSourceBodyName ] = [originalSourceBody]() { return originalSourceBody->getPosition(); };
         originalSourceToSourceOccultationModels[ originalSourceBodyName ] = originalSourceToSourceOccultationModel;
     }
 

@@ -261,8 +261,8 @@ std::shared_ptr< aerodynamics::AerodynamicCoefficientInterface > createUnivariat
 
         // Create aerodynamic coefficient interface.
         return std::make_shared< aerodynamics::CustomAerodynamicCoefficientInterface >(
-                std::bind( &Interpolator< double, Eigen::Vector3d >::interpolate, forceInterpolator, std::placeholders::_1 ),
-                std::bind( &Interpolator< double, Eigen::Vector3d >::interpolate, momentInterpolator, std::placeholders::_1 ),
+                [forceInterpolator](const std::vector< double >& independentVariables) { return forceInterpolator->interpolate( independentVariables ); },
+                [momentInterpolator](const std::vector< double >& independentVariables) { return momentInterpolator->interpolate( independentVariables ); },
                 tabulatedCoefficientSettings->getReferenceLength( ),
                 tabulatedCoefficientSettings->getReferenceArea( ),
                 tabulatedCoefficientSettings->getMomentReferencePoint( ),
@@ -316,7 +316,7 @@ std::shared_ptr< aerodynamics::AerodynamicMomentContributionInterface > createMo
 
     return std::make_shared< aerodynamics::AerodynamicMomentContributionInterface >( coefficientRotationFunction,
                                                                                      armRotationFunction,
-                                                                                     std::bind( &Body::getBodyFixedCenterOfMass, body ),
+                                                                                     [body]() { return body->getBodyFixedCenterOfMass(); },
                                                                                      forceCoefficientFrameId.second );
 }
 

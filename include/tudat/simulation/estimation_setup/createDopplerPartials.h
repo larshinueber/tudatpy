@@ -93,12 +93,14 @@ std::pair< SingleLinkObservationPartialList, std::shared_ptr< PositionPartialSca
         const std::function< double( std::vector< observation_models::FrequencyBands >, double ) > receivedFrequencyFunction =
                 createLinkFrequencyFunction(
                         bodies, twoWayDopplerLinkEnds, observation_models::retransmitter, observation_models::receiver );
-        scalingFactorFunction = std::bind( observation_models::getMeasuredFrequencyDopplerScalingFactor,
-                                           receivedFrequencyFunction,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3,
-                                           std::placeholders::_4 );
+        scalingFactorFunction = [receivedFrequencyFunction](
+                const observation_models::LinkEndType linkEndType,
+                const std::vector< Eigen::Vector6d >& states,
+                const std::vector< double >& times,
+                const std::shared_ptr< observation_models::ObservationAncillarySimulationSettings > ancillarySettings ) {
+            return observation_models::getMeasuredFrequencyDopplerScalingFactor(
+                    receivedFrequencyFunction, linkEndType, states, times, ancillarySettings );
+        };
     }
 
     // Define list of constituent one-way partials.

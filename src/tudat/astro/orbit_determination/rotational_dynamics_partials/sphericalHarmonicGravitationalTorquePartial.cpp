@@ -49,10 +49,9 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > SphericalHarmonicGra
         if( accelerationPartialFunction.second > 0 )
         {
             partialFunctionPair = std::make_pair(
-                    std::bind( &SphericalHarmonicGravitationalTorquePartial::getParameterPartialFromAccelerationPartialFunction,
-                               this,
-                               std::placeholders::_1,
-                               accelerationPartialFunction ),
+                    [this, accelerationPartialFunction](Eigen::MatrixXd& m) {
+                        this->getParameterPartialFromAccelerationPartialFunction(m, accelerationPartialFunction);
+                    },
                     accelerationPartialFunction.second );
         }
     }
@@ -74,10 +73,9 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > SphericalHarmonicGra
         if( accelerationPartialFunction.second > 0 )
         {
             partialFunctionPair = std::make_pair(
-                    std::bind( &SphericalHarmonicGravitationalTorquePartial::getParameterPartialFromAccelerationPartialFunction,
-                               this,
-                               std::placeholders::_1,
-                               accelerationPartialFunction ),
+                    [this, accelerationPartialFunction](Eigen::MatrixXd& m) {
+                        this->getParameterPartialFromAccelerationPartialFunction(m, accelerationPartialFunction);
+                    },
                     accelerationPartialFunction.second );
         }
     }

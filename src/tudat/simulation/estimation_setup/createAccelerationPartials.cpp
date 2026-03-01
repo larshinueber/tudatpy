@@ -40,9 +40,9 @@ std::vector< std::shared_ptr< orbit_determination::TidalLoveNumberPartialInterfa
         {
             // Get state/rotation functions for deformed body
             std::function< Eigen::Vector3d( ) > deformedBodyPositionFunction =
-                    std::bind( &Body::getPosition, bodies.at( acceleratingBodyName ) );
+                    [body = bodies.at( acceleratingBodyName )]( ) { return body->getPosition( ); };
             std::function< Eigen::Quaterniond( ) > rotationToDeformedBodyFrameFrameFunction =
-                    std::bind( &Body::getCurrentRotationToLocalFrame, bodies.at( acceleratingBodyName ) );
+                    [body = bodies.at( acceleratingBodyName )]( ) { return body->getCurrentRotationToLocalFrame( ); };
 
             for( unsigned int i = 0; i < variationObjectList.size( ); i++ )
             {
@@ -53,7 +53,7 @@ std::vector< std::shared_ptr< orbit_determination::TidalLoveNumberPartialInterfa
                     std::vector< std::string > deformingBodies = variationObjectList.at( i )->getDeformingBodies( );
                     for( unsigned int i = 0; i < deformingBodies.size( ); i++ )
                     {
-                        deformingBodyStateFunctions.push_back( std::bind( &Body::getPosition, bodies.at( deformingBodies.at( i ) ) ) );
+                        deformingBodyStateFunctions.push_back( [body = bodies.at( deformingBodies.at( i ) )]( ) { return body->getPosition( ); } );
                     }
                     // Create partial object
                     auto newLoveNumberInterface = std::make_shared< orbit_determination::TidalLoveNumberPartialInterface >(

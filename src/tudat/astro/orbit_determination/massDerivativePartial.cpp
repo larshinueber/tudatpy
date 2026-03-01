@@ -82,22 +82,22 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > FromThrustMassRatePa
         parameter->getParameterName( ).second.first == body_ &&
         engineModelList_.count( parameter->getParameterName( ).second.second ) != 0 )
     {
-        partialFunction = std::make_pair( std::bind( &FromThrustMassRatePartial::wrtEngineThrustMagnitude,
-                                                     this,
-                                                     std::placeholders::_1,
-                                                     parameter->getParameterName( ).second.second ),
-                                          1 );
+        partialFunction = std::make_pair(
+                [this, engineName = parameter->getParameterName( ).second.second](Eigen::MatrixXd& m) {
+                    this->wrtEngineThrustMagnitude(m, engineName);
+                },
+                1 );
     }
 
     else if( parameter->getParameterName( ).first == estimatable_parameters::constant_specific_impulse &&
              parameter->getParameterName( ).second.first == body_ &&
              engineModelList_.count( parameter->getParameterName( ).second.second ) != 0 )
     {
-        partialFunction = std::make_pair( std::bind( &FromThrustMassRatePartial::wrtEngineSpecificImpulse,
-                                                     this,
-                                                     std::placeholders::_1,
-                                                     parameter->getParameterName( ).second.second ),
-                                          1 );
+        partialFunction = std::make_pair(
+                [this, engineName = parameter->getParameterName( ).second.second](Eigen::MatrixXd& m) {
+                    this->wrtEngineSpecificImpulse(m, engineName);
+                },
+                1 );
     }
 
     return partialFunction;

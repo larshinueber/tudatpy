@@ -505,10 +505,10 @@ public:
         loveNumbers_( loveNumbers ), meanForcingCosineTerms_( meanForcingCosineTerms ), meanForcingSineTerms_( meanForcingSineTerms )
     {
         // Set basic deformation functon as function to be evaluated when requesting variations.
-        correctionFunctions.push_back( std::bind( &BasicSolidBodyTideGravityFieldVariations::addBasicSolidBodyTideCorrections,
-                                                  this,
-                                                  std::placeholders::_1,
-                                                  std::placeholders::_2 ) );
+        correctionFunctions.push_back(
+                [this]( Eigen::MatrixXd& cTermCorrections, Eigen::MatrixXd& sTermCorrections ) {
+                    this->addBasicSolidBodyTideCorrections( cTermCorrections, sTermCorrections );
+                } );
 
         // If cosine mean forcing terms are empty map (default), set map values to zero
         if( meanForcingCosineTerms_.empty( ) )
@@ -665,10 +665,10 @@ public:
         loveNumbers_( loveNumbers )
     {
         // Set basic deformation functon as function to be evaluated when requesting variations.
-        correctionFunctions.push_back( std::bind( &ModeCoupledSolidBodyTideGravityFieldVariations::addBasicSolidBodyTideCorrections,
-                                                  this,
-                                                  std::placeholders::_1,
-                                                  std::placeholders::_2 ) );
+        correctionFunctions.push_back(
+                [this]( Eigen::MatrixXd& cTermCorrections, Eigen::MatrixXd& sTermCorrections ) {
+                    this->addBasicSolidBodyTideCorrections( cTermCorrections, sTermCorrections );
+                } );
     }
 
     //! Destructor

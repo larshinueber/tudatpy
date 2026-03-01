@@ -1627,12 +1627,12 @@ std::shared_ptr< aerodynamics::AerodynamicCoefficientInterface > createTabulated
 
     // Create aerodynamic coefficient interface.
     return std::make_shared< aerodynamics::CustomAerodynamicCoefficientInterface >(
-            std::bind( &MultiDimensionalInterpolator< double, Eigen::Vector3d, NumberOfDimensions >::interpolate,
-                       forceInterpolator,
-                       std::placeholders::_1 ),
-            std::bind( &MultiDimensionalInterpolator< double, Eigen::Vector3d, NumberOfDimensions >::interpolate,
-                       momentInterpolator,
-                       std::placeholders::_1 ),
+            [forceInterpolator]( const std::vector< double >& independentVariables ) {
+                return forceInterpolator->interpolate( independentVariables );
+            },
+            [momentInterpolator]( const std::vector< double >& independentVariables ) {
+                return momentInterpolator->interpolate( independentVariables );
+            },
             referenceLength,
             referenceArea,
             momentReferencePoint,

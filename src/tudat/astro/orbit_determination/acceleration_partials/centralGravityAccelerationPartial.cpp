@@ -67,8 +67,9 @@ CentralGravitationPartial::CentralGravitationPartial(
         const std::string acceleratingBody ):
     AccelerationPartial( acceleratedBody, acceleratingBody, gravitationalAcceleration, basic_astrodynamics::point_mass_gravity )
 {
-    accelerationUpdateFunction_ = std::bind(
-            &basic_astrodynamics::AccelerationModel< Eigen::Vector3d >::updateMembers, gravitationalAcceleration, std::placeholders::_1 );
+    accelerationUpdateFunction_ = [gravitationalAcceleration](const double time) {
+        gravitationalAcceleration->updateMembers(time);
+    };
 
     gravitationalParameterFunction_ = gravitationalAcceleration->getGravitationalParameterFunction( );
     centralBodyState_ = gravitationalAcceleration->getStateFunctionOfBodyExertingAcceleration( );
@@ -107,7 +108,7 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > CentralGravitationPa
         // Check if parameter body is central body.
         if( parameterId.second.first == acceleratingBody_ )
         {
-            partialFunction = std::bind( &CentralGravitationPartial::wrtGravitationalParameterOfCentralBody, this, std::placeholders::_1 );
+            partialFunction = [this](Eigen::MatrixXd& m) { this->wrtGravitationalParameterOfCentralBody(m); };
             numberOfColumns = 1;
         }
 
@@ -117,7 +118,7 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > CentralGravitationPa
             if( accelerationUsesMutualAttraction_ )
             {
                 partialFunction =
-                        std::bind( &CentralGravitationPartial::wrtGravitationalParameterOfCentralBody, this, std::placeholders::_1 );
+                        [this](Eigen::MatrixXd& m) { this->wrtGravitationalParameterOfCentralBody(m); };
                 numberOfColumns = 1;
             }
         }

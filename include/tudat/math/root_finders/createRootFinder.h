@@ -156,13 +156,9 @@ std::shared_ptr< RootFinder< DataType > > createRootFinder( const std::shared_pt
                                                     rootFinderSettings->maximumNumberOfIterations_,
                                                     rootFinderSettings->maximumIterationHandling_ );
 
-    auto terminationFunction = std::bind( &TerminationCondition< DataType >::checkTerminationCondition,
-                                          terminationCondition,
-                                          std::placeholders::_1,
-                                          std::placeholders::_2,
-                                          std::placeholders::_3,
-                                          std::placeholders::_4,
-                                          std::placeholders::_5 );
+    auto terminationFunction = [terminationCondition]( const DataType a, const DataType b, const DataType c, const DataType d, const unsigned int e ) {
+        return terminationCondition->checkTerminationCondition( a, b, c, d, e );
+    };
 
     std::shared_ptr< RootFinder< DataType > > rootFinder;
     switch( rootFinderSettings->rootFinderType_ )

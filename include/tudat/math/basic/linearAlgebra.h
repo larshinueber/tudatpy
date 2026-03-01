@@ -125,14 +125,6 @@ double computeNormOfVectorDifference( const Eigen::Vector3d& vector0, const Eige
  */
 double getVectorNorm( const Eigen::Vector3d& vector );
 
-//! Computes the norm of a 3d vector from a vector-returning function.
-/*!
- * Computes the norm of a 3d vector from a vector-returning function.
- * \param vectorFunction Function returning the vector for which the norm is to be computed
- * \return Vector norm
- */
-double getVectorNormFromFunction( const std::function< Eigen::Vector3d( ) > vectorFunction );
-
 //! Flip matrix rows.
 /*!
  * Flips all rows of an Eigen-matrix, i.e., order of rows is reversed.

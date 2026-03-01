@@ -292,28 +292,19 @@ public:
             if( fullEihPartials_->getEihEquations( )->getAcceleratingBodyMap( ).count( parameter->getParameterName( ).second.first ) > 0 )
             {
                 // If parameter is gravitational parameter, check and create dependency function .
-                partialFunctionPair = std::make_pair( std::bind( &EihEquationsPartials::getAccelerationWrtGravitationalParameter,
-                                                                 fullEihPartials_,
-                                                                 std::placeholders::_1,
-                                                                 acceleratedBodyIndex_,
-                                                                 fullEihPartials_->getEihEquations( )->getAcceleratingBodyMap( ).at(
-                                                                         parameter->getParameterName( ).second.first ) ),
+                partialFunctionPair = std::make_pair( [this, muIndex = fullEihPartials_->getEihEquations( )->getAcceleratingBodyMap( ).at( parameter->getParameterName( ).second.first )]( Eigen::MatrixXd& block ) { fullEihPartials_->getAccelerationWrtGravitationalParameter( block, acceleratedBodyIndex_, muIndex ); },
                                                       1 );
             }
         }
         else if( parameter->getParameterName( ).first == estimatable_parameters::ppn_parameter_gamma )
         {
-            partialFunctionPair = std::make_pair( std::bind( &EihEquationsPartials::getAccelerationWrtGamma,
-                                                             fullEihPartials_,
-                                                             std::placeholders::_1,
-                                                             acceleratedBodyIndex_ ),
+            partialFunctionPair = std::make_pair( [this]( Eigen::MatrixXd& block ) { fullEihPartials_->getAccelerationWrtGamma( block, acceleratedBodyIndex_ ); },
                                                   1 );
         }
         else if( parameter->getParameterName( ).first == estimatable_parameters::ppn_parameter_beta )
         {
             partialFunctionPair = std::make_pair(
-                    std::bind(
-                            &EihEquationsPartials::getAccelerationWrtBeta, fullEihPartials_, std::placeholders::_1, acceleratedBodyIndex_ ),
+                    [this]( Eigen::MatrixXd& block ) { fullEihPartials_->getAccelerationWrtBeta( block, acceleratedBodyIndex_ ); },
                     1 );
         }
         else

@@ -61,7 +61,7 @@ public:
             const std::vector< std::string >& amplitudesFiles,
             const std::vector< std::string >& argumentMultipliersFile,
             const std::function< Eigen::Vector6d( const double ) > argumentFunction =
-                    std::bind( &sofa_interface::calculateApproximateDelaunayFundamentalArgumentsWithGmst, std::placeholders::_1 ),
+                    []( const double t ) { return sofa_interface::calculateApproximateDelaunayFundamentalArgumentsWithGmst( t ); },
             const std::shared_ptr< interpolators::InterpolatorGenerationSettings< double > > shortTermInterpolatorSettings = nullptr ):
         argumentFunction_( argumentFunction )
     {
@@ -82,8 +82,8 @@ public:
 
         if( shortTermInterpolatorSettings != nullptr )
         {
-            std::function< OutputType( const double ) > correctionFunction = std::bind(
-                    &ShortPeriodEarthOrientationCorrectionCalculator< OutputType >::getCorrections, this, std::placeholders::_1 );
+            std::function< OutputType( const double ) > correctionFunction =
+                    [this]( const double t ) { return this->getCorrections( t ); };
             correctionInterpolator_ = interpolators::createOneDimensionalInterpolator< double, OutputType >(
                     correctionFunction, shortTermInterpolatorSettings );
         }

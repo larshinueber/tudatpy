@@ -529,9 +529,7 @@ private:
                             if( addUpdate == 1 )
                             {
                                 std::function< void( const TimeType ) > stateSetFunction =
-                                        std::bind( &simulation_setup::Body ::setStateFromEphemeris< StateScalarType, TimeType >,
-                                                   bodyList_.at( currentBodies.at( i ) ),
-                                                   std::placeholders::_1 );
+                                        [body = bodyList_.at( currentBodies.at( i ) )](const TimeType time) { body->template setStateFromEphemeris< StateScalarType, TimeType >( time ); };
 
                                 updateTimeFunctionList[ body_translational_state_update ].push_back(
                                         std::make_pair( currentBodies.at( i ), stateSetFunction ) );
@@ -539,8 +537,7 @@ private:
                                 resetFunctionVector_.push_back(
                                         boost::make_tuple( body_translational_state_update,
                                                            currentBodies.at( i ),
-                                                           std::bind( &simulation_setup::Body::recomputeStateOnNextCall,
-                                                                      bodyList_.at( currentBodies.at( i ) ) ) ) );
+                                                           [body = bodyList_.at( currentBodies.at( i ) )]() { body->recomputeStateOnNextCall(); } ) );
                             }
                             break;
                         }
@@ -567,10 +564,8 @@ private:
                                     //                                 )->getDependentOrientationCalculator( ) != nullptr )
                                 )
                                 {
-                                    std::function< void( const TimeType ) > rotationalStateSetFunction = std::bind(
-                                            &simulation_setup::Body ::setCurrentRotationalStateToLocalFrameFromEphemeris< TimeType >,
-                                            bodyList_.at( currentBodies.at( i ) ),
-                                            std::placeholders::_1 );
+                                    std::function< void( const TimeType ) > rotationalStateSetFunction =
+                                            [body = bodyList_.at( currentBodies.at( i ) )](const TimeType time) { body->template setCurrentRotationalStateToLocalFrameFromEphemeris< TimeType >( time ); };
                                     updateTimeFunctionList[ body_rotational_state_update ].push_back(
                                             std::make_pair( currentBodies.at( i ), rotationalStateSetFunction ) );
                                     if( bodyList_.at( currentBodies.at( i ) )->getRotationalEphemeris( ) != nullptr )
@@ -578,8 +573,7 @@ private:
                                         resetFunctionVector_.push_back( boost::make_tuple(
                                                 body_rotational_state_update,
                                                 currentBodies.at( i ),
-                                                std::bind( &ephemerides::RotationalEphemeris::resetCurrentTime,
-                                                           bodyList_.at( currentBodies.at( i ) )->getRotationalEphemeris( ) ) ) );
+                                                [rotEph = bodyList_.at( currentBodies.at( i ) )->getRotationalEphemeris( )]() { rotEph->resetCurrentTime(); } ) );
                                     }
                                 }
                                 else
@@ -617,28 +611,22 @@ private:
                                 }
                                 updateTimeFunctionList[ body_mass_update ].push_back(
                                         std::make_pair( currentBodies.at( i ),
-                                                        std::bind( &simulation_setup::RigidBodyProperties::updateMass,
-                                                                   bodyList_.at( currentBodies.at( i ) )->getMassProperties( ),
-                                                                   std::placeholders::_1 ) ) );
+                                                        [massProp = bodyList_.at( currentBodies.at( i ) )->getMassProperties( )](const double time) { massProp->updateMass( time ); } ) );
                                 resetFunctionVector_.push_back(
                                         boost::make_tuple( body_mass_update,
                                                            currentBodies.at( i ),
-                                                           std::bind( &simulation_setup::RigidBodyProperties::resetCurrentTime,
-                                                                      bodyList_.at( currentBodies.at( i ) )->getMassProperties( ) ) ) );
+                                                           [massProp = bodyList_.at( currentBodies.at( i ) )->getMassProperties( )]() { massProp->resetCurrentTime(); } ) );
                             }
                             break;
                         }
                         case body_mass_distribution_update: {
                             updateTimeFunctionList[ body_mass_distribution_update ].push_back(
                                     std::make_pair( currentBodies.at( i ),
-                                                    std::bind( &simulation_setup::RigidBodyProperties::updateMassDistribution,
-                                                               bodyList_.at( currentBodies.at( i ) )->getMassProperties( ),
-                                                               std::placeholders::_1 ) ) );
+                                                    [massProp = bodyList_.at( currentBodies.at( i ) )->getMassProperties( )](const double time) { massProp->updateMassDistribution( time ); } ) );
                             resetFunctionVector_.push_back(
                                     boost::make_tuple( body_mass_distribution_update,
                                                        currentBodies.at( i ),
-                                                       std::bind( &simulation_setup::RigidBodyProperties::resetCurrentTime,
-                                                                  bodyList_.at( currentBodies.at( i ) )->getMassProperties( ) ) ) );
+                                                       [massProp = bodyList_.at( currentBodies.at( i ) )->getMassProperties( )]() { massProp->resetCurrentTime(); } ) );
 
                             break;
                         }
@@ -651,9 +639,7 @@ private:
                             {
                                 updateTimeFunctionList[ spherical_harmonic_gravity_field_update ].push_back(
                                         std::make_pair( currentBodies.at( i ),
-                                                        std::bind( &gravitation ::TimeDependentSphericalHarmonicsGravityField ::update,
-                                                                   gravityField,
-                                                                   std::placeholders::_1 ) ) );
+                                                        [gravityField](const double time) { gravityField->update( time ); } ) );
                             }
                             // If no sh field at all, throw eeror.
                             else if( std::dynamic_pointer_cast< gravitation::SphericalHarmonicsGravityField >(
@@ -672,15 +658,12 @@ private:
                             }
                             updateTimeFunctionList[ body_segment_orientation_update ].push_back(
                                     std::make_pair( currentBodies.at( i ),
-                                                    std::bind( &system_models::VehicleSystems::updatePartOrientations,
-                                                               bodyList_.at( currentBodies.at( i ) )->getVehicleSystems( ),
-                                                               std::placeholders::_1 ) ) );
+                                                    [vehicleSys = bodyList_.at( currentBodies.at( i ) )->getVehicleSystems( )](const double time) { vehicleSys->updatePartOrientations( time ); } ) );
 
                             resetFunctionVector_.push_back(
                                     boost::make_tuple( body_segment_orientation_update,
                                                        currentBodies.at( i ),
-                                                       std::bind( &system_models::VehicleSystems::resetTime,
-                                                                  bodyList_.at( currentBodies.at( i ) )->getVehicleSystems( ) ) ) );
+                                                       [vehicleSys = bodyList_.at( currentBodies.at( i ) )->getVehicleSystems( )]() { vehicleSys->resetTime(); } ) );
                             break;
                         }
                         case vehicle_flight_conditions_update: {
@@ -691,15 +674,12 @@ private:
                                 // function to update list.
                                 updateTimeFunctionList[ vehicle_flight_conditions_update ].push_back(
                                         std::make_pair( currentBodies.at( i ),
-                                                        std::bind( &aerodynamics::FlightConditions::updateConditions,
-                                                                   bodyList_.at( currentBodies.at( i ) )->getFlightConditions( ),
-                                                                   std::placeholders::_1 ) ) );
+                                                        [flightCond = bodyList_.at( currentBodies.at( i ) )->getFlightConditions( )](const double time) { flightCond->updateConditions( time ); } ) );
 
                                 resetFunctionVector_.push_back(
                                         boost::make_tuple( vehicle_flight_conditions_update,
                                                            currentBodies.at( i ),
-                                                           std::bind( &aerodynamics::FlightConditions::resetCurrentTime,
-                                                                      bodyList_.at( currentBodies.at( i ) )->getFlightConditions( ) ) ) );
+                                                           [flightCond = bodyList_.at( currentBodies.at( i ) )->getFlightConditions( )]() { flightCond->resetCurrentTime(); } ) );
                             }
                             else
                             {
@@ -718,9 +698,7 @@ private:
                             // If vehicle has radiation source model, add its update function to update list.
                             updateTimeFunctionList[ radiation_source_model_update ].push_back(
                                     std::make_pair( currentBodies.at( i ),
-                                                    std::bind( &electromagnetism::RadiationSourceModel::updateMembers,
-                                                               bodyList_.at( currentBodies.at( i ) )->getRadiationSourceModel( ),
-                                                               std::placeholders::_1 ) ) );
+                                                    [radSource = bodyList_.at( currentBodies.at( i ) )->getRadiationSourceModel( )](const double time) { radSource->updateMembers( time ); } ) );
                             break;
                         }
                         case cannonball_radiation_pressure_target_model_update: {
@@ -738,9 +716,7 @@ private:
                             // If vehicle has radiation pressure target model, add its update function to update list.
                             updateTimeFunctionList[ cannonball_radiation_pressure_target_model_update ].push_back(
                                     std::make_pair( currentBodies.at( i ),
-                                                    std::bind( &electromagnetism::RadiationPressureTargetModel::updateMembers,
-                                                               targetModel,
-                                                               std::placeholders::_1 ) ) );
+                                                    [targetModel](const double time) { targetModel->updateMembers( time ); } ) );
                             break;
                         }
                         case panelled_radiation_pressure_target_model_update: {
@@ -758,9 +734,7 @@ private:
                             // If vehicle has radiation pressure target model, add its update function to update list.
                             updateTimeFunctionList[ panelled_radiation_pressure_target_model_update ].push_back(
                                     std::make_pair( currentBodies.at( i ),
-                                                    std::bind( &electromagnetism::RadiationPressureTargetModel::updateMembers,
-                                                               targetModel,
-                                                               std::placeholders::_1 ) ) );
+                                                    [targetModel](const double time) { targetModel->updateMembers( time ); } ) );
                             break;
                         }
                     }

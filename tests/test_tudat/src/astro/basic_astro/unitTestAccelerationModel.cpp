@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE( test_derived3dAccelerationModel )
     // Create acceleration model using DerivedAccelerationModel class, and pass pointers to
     // functions in body.
     AccelerationModel3dPointer accelerationModel3d = std::make_shared< DerivedAccelerationModel3d >(
-            std::bind( &TestBody3d::getCurrentPosition, body ), std::bind( &TestBody3d::getCurrentTime, body ) );
+            [body]() { return body->getCurrentPosition(); }, [body]() { return body->getCurrentTime(); } );
 
     // Declare container of computed accelerations.
     std::vector< Eigen::Vector3d > computedAccelerations( 3 );

@@ -37,67 +37,6 @@ namespace tudat
 namespace propagators
 {
 
-//! Function to evaluate a function with two input variables (by reference) from function pointers
-/*!
- *  Function to evaluate a function with two input variables (by reference) from function pointers that return these
- *  two input variables.
- *  \param functionToEvaluate Function that is to be evaluated with input from function pointers.
- *  \param firstInput Function returning first input to functionToEvaluate.
- *  \param secondInput Function returning second input to functionToEvaluate.
- *  \return Output from functionToEvaluate, using functions firstInput and secondInput as input.
- */
-template< typename OutputType, typename InputType >
-OutputType evaluateBivariateReferenceFunction( const std::function< OutputType( const InputType&, const InputType& ) > functionToEvaluate,
-                                               const std::function< InputType( ) > firstInput,
-                                               const std::function< InputType( ) > secondInput )
-{
-    return functionToEvaluate( firstInput( ), secondInput( ) );
-}
-
-template< typename OutputType, typename InputType >
-OutputType evaluateReferenceFunction( const std::function< OutputType( const InputType& ) > functionToEvaluate,
-                                      const std::function< InputType( ) > firstInput )
-{
-    return functionToEvaluate( firstInput( ) );
-}
-
-//! Function to evaluate a function with two input variables from function pointers
-/*!
- *  Function to evaluate a function with two input variables from function pointers that return these
- *  two input variables.
- *  \param functionToEvaluate Function that is to be evaluated with input from function pointers.
- *  \param firstInput Function returning first input to functionToEvaluate.
- *  \param secondInput Function returning second input to functionToEvaluate.
- *  \return Output from functionToEvaluate, using functions firstInput and secondInput as input.
- */
-template< typename OutputType, typename InputType >
-OutputType evaluateBivariateFunction( const std::function< OutputType( const InputType, const InputType ) > functionToEvaluate,
-                                      const std::function< InputType( ) > firstInput,
-                                      const std::function< InputType( ) > secondInput )
-{
-    return functionToEvaluate( firstInput( ), secondInput( ) );
-}
-
-//! Function to evaluate a function with three input variables from function pointers
-/*!
- *  Function to evaluate a function with three input variables from function pointers that return these
- *  three input variables.
- *  \param functionToEvaluate Function that is to be evaluated with input from function pointers.
- *  \param firstInput Function returning first input to functionToEvaluate.
- *  \param secondInput Function returning second input to functionToEvaluate.
- *  \param thirdInput Function returning third input to functionToEvaluate.
- *  \return Output from functionToEvaluate, using functions firstInput, secondInput and thirdInput as input.
- */
-template< typename OutputType, typename FirstInputType, typename SecondInputType, typename ThirdInputType >
-OutputType evaluateTrivariateFunction(
-        const std::function< OutputType( const FirstInputType&, const SecondInputType, const ThirdInputType ) > functionToEvaluate,
-        const std::function< FirstInputType( ) > firstInput,
-        const std::function< SecondInputType( ) > secondInput,
-        const std::function< ThirdInputType( ) > thirdInput )
-{
-    return functionToEvaluate( firstInput( ), secondInput( ), thirdInput( ) );
-}
-
 Eigen::VectorXd getNormsOfAccelerationDifferencesFromLists( const std::function< Eigen::VectorXd( ) > firstAccelerationFunction,
                                                             const std::function< Eigen::VectorXd( ) > secondAccelerationFunction );
 
@@ -414,52 +353,47 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
     {
         case relative_position_dependent_variable: {
             // Retrieve functions for positions of two bodies.
-            std::function< Eigen::Vector3d( const Eigen::Vector3d&, const Eigen::Vector3d& ) > functionToEvaluate =
-                    std::bind( &linear_algebra::computeVectorDifference< 3 >, std::placeholders::_1, std::placeholders::_2 );
-            std::function< Eigen::Vector3d( ) > firstInput =
-                    std::bind( &simulation_setup::Body::getPosition, bodies.at( bodyWithProperty ) );
-
-            std::function< Eigen::Vector3d( ) > secondInput;
+            auto bodyA = bodies.at( bodyWithProperty );
             if( secondaryBody != "SSB" )
             {
-                secondInput = std::bind( &simulation_setup::Body::getPosition, bodies.at( secondaryBody ) );
+                auto bodyB = bodies.at( secondaryBody );
+                variableFunction = [bodyA, bodyB]( ) -> Eigen::VectorXd {
+                    return bodyA->getPosition( ) - bodyB->getPosition( );
+                };
             }
             else if( simulation_setup::getGlobalFrameOrigin( bodies ) == "SSB" )
             {
-                secondInput = []( ) { return Eigen::Vector3d::Zero( ); };
+                variableFunction = [bodyA]( ) -> Eigen::VectorXd {
+                    return bodyA->getPosition( );
+                };
             }
             else
             {
                 throw std::runtime_error( "Error, requested state of " + bodyWithProperty + " w.r.t. SSB, but SSB is not frame origin" );
             }
-            variableFunction = std::bind(
-                    &evaluateBivariateReferenceFunction< Eigen::Vector3d, Eigen::Vector3d >, functionToEvaluate, firstInput, secondInput );
             parameterSize = 3;
             break;
         }
         case relative_velocity_dependent_variable: {
             // Retrieve functions for velocities of two bodies.
-            std::function< Eigen::Vector3d( const Eigen::Vector3d&, const Eigen::Vector3d& ) > functionToEvaluate =
-                    std::bind( &linear_algebra::computeVectorDifference< 3 >, std::placeholders::_1, std::placeholders::_2 );
-            std::function< Eigen::Vector3d( ) > firstInput =
-                    std::bind( &simulation_setup::Body::getVelocity, bodies.at( bodyWithProperty ) );
-
-            std::function< Eigen::Vector3d( ) > secondInput;
+            auto bodyA = bodies.at( bodyWithProperty );
             if( secondaryBody != "SSB" )
             {
-                secondInput = std::bind( &simulation_setup::Body::getVelocity, bodies.at( secondaryBody ) );
+                auto bodyB = bodies.at( secondaryBody );
+                variableFunction = [bodyA, bodyB]( ) -> Eigen::VectorXd {
+                    return bodyA->getVelocity( ) - bodyB->getVelocity( );
+                };
             }
             else if( simulation_setup::getGlobalFrameOrigin( bodies ) == "SSB" )
             {
-                secondInput = []( ) { return Eigen::Vector3d::Zero( ); };
+                variableFunction = [bodyA]( ) -> Eigen::VectorXd {
+                    return bodyA->getVelocity( );
+                };
             }
             else
             {
                 throw std::runtime_error( "Error, requested state of " + bodyWithProperty + " w.r.t. SSB, but SSB is not frame origin" );
             }
-
-            variableFunction = std::bind(
-                    &evaluateBivariateReferenceFunction< Eigen::Vector3d, Eigen::Vector3d >, functionToEvaluate, firstInput, secondInput );
             parameterSize = 3;
 
             break;
@@ -469,8 +403,9 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
             std::shared_ptr< NBodyStateDerivative< StateScalarType, TimeType > > nBodyModel =
                     getTranslationalStateDerivativeModelForBody( bodyWithProperty, stateDerivativeModels );
             nBodyModel->setUpdateRemovedAcceleration( dependentVariableSettings->associatedBody_ );
-            variableFunction = std::bind(
-                    &NBodyStateDerivative< StateScalarType, TimeType >::getTotalAccelerationForBody, nBodyModel, bodyWithProperty );
+            variableFunction = [nBodyModel, bodyWithProperty]( ) -> Eigen::VectorXd {
+                return nBodyModel->getTotalAccelerationForBody( bodyWithProperty );
+            };
             parameterSize = 3;
 
             break;
@@ -533,8 +468,10 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                         }
                     }
 
-                    variableFunction = std::bind( &basic_astrodynamics::AccelerationModel3d::getAcceleration,
-                                                  listOfSuitableAccelerationModels.at( 0 ) );
+                    auto model = listOfSuitableAccelerationModels.at( 0 );
+                    variableFunction = [model]( ) -> Eigen::VectorXd {
+                        return model->getAcceleration( );
+                    };
                     parameterSize = 3;
                 }
             }
@@ -566,10 +503,10 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                                     sphericalHarmonicAcceleration );
 
                     directSphericalHarmonicAcceleration->setSaveSphericalHarmonicTermsSeparately( true );
-                    variableFunction = std::bind(
-                            &gravitation::SphericalHarmonicsGravitationalAccelerationModel::getConcatenatedAccelerationComponentNorms,
-                            directSphericalHarmonicAcceleration,
-                            accelerationComponentVariableSettings->componentIndices_ );
+                    auto indices = accelerationComponentVariableSettings->componentIndices_;
+                    variableFunction = [directSphericalHarmonicAcceleration, indices]( ) -> Eigen::VectorXd {
+                        return directSphericalHarmonicAcceleration->getConcatenatedAccelerationComponentNorms( indices );
+                    };
                 }
                 else if( std::dynamic_pointer_cast< gravitation::ThirdBodySphericalHarmonicsGravitationalAccelerationModel >(
                                  sphericalHarmonicAcceleration ) != nullptr )
@@ -583,16 +520,14 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                     thirdBodySphericalHarmonicAcceleration->getAccelerationModelForCentralBody( )->setSaveSphericalHarmonicTermsSeparately(
                             true );
 
-                    std::function< Eigen::VectorXd( ) > directAccelerationsFunction = std::bind(
-                            &gravitation::SphericalHarmonicsGravitationalAccelerationModel::getConcatenatedAccelerationComponents,
-                            thirdBodySphericalHarmonicAcceleration->getAccelerationModelForBodyUndergoingAcceleration( ),
-                            accelerationComponentVariableSettings->componentIndices_ );
-                    std::function< Eigen::VectorXd( ) > centralBodyAccelerationsFunction = std::bind(
-                            &gravitation::SphericalHarmonicsGravitationalAccelerationModel::getConcatenatedAccelerationComponents,
-                            thirdBodySphericalHarmonicAcceleration->getAccelerationModelForCentralBody( ),
-                            accelerationComponentVariableSettings->componentIndices_ );
-                    variableFunction = std::bind(
-                            &getNormsOfAccelerationDifferencesFromLists, directAccelerationsFunction, centralBodyAccelerationsFunction );
+                    auto directModel = thirdBodySphericalHarmonicAcceleration->getAccelerationModelForBodyUndergoingAcceleration( );
+                    auto centralModel = thirdBodySphericalHarmonicAcceleration->getAccelerationModelForCentralBody( );
+                    auto indices = accelerationComponentVariableSettings->componentIndices_;
+                    variableFunction = [directModel, centralModel, indices]( ) -> Eigen::VectorXd {
+                        return getNormsOfAccelerationDifferencesFromLists(
+                            [directModel, indices]( ) -> Eigen::VectorXd { return directModel->getConcatenatedAccelerationComponents( indices ); },
+                            [centralModel, indices]( ) -> Eigen::VectorXd { return centralModel->getConcatenatedAccelerationComponents( indices ); } );
+                    };
                 }
                 else
                 {
@@ -631,10 +566,10 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                                     sphericalHarmonicAcceleration );
 
                     directSphericalHarmonicAcceleration->setSaveSphericalHarmonicTermsSeparately( true );
-                    variableFunction = std::bind(
-                            &gravitation::SphericalHarmonicsGravitationalAccelerationModel::getConcatenatedAccelerationComponents,
-                            directSphericalHarmonicAcceleration,
-                            accelerationComponentVariableSettings->componentIndices_ );
+                    auto indices = accelerationComponentVariableSettings->componentIndices_;
+                    variableFunction = [directSphericalHarmonicAcceleration, indices]( ) -> Eigen::VectorXd {
+                        return directSphericalHarmonicAcceleration->getConcatenatedAccelerationComponents( indices );
+                    };
                 }
                 else if( std::dynamic_pointer_cast< gravitation::ThirdBodySphericalHarmonicsGravitationalAccelerationModel >(
                                  sphericalHarmonicAcceleration ) != nullptr )
@@ -648,17 +583,13 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                     thirdBodySphericalHarmonicAcceleration->getAccelerationModelForCentralBody( )->setSaveSphericalHarmonicTermsSeparately(
                             true );
 
-                    std::function< Eigen::VectorXd( ) > directAccelerationsFunction = std::bind(
-                            &gravitation::SphericalHarmonicsGravitationalAccelerationModel::getConcatenatedAccelerationComponents,
-                            thirdBodySphericalHarmonicAcceleration->getAccelerationModelForBodyUndergoingAcceleration( ),
-                            accelerationComponentVariableSettings->componentIndices_ );
-                    std::function< Eigen::VectorXd( ) > centralBodyAccelerationsFunction = std::bind(
-                            &gravitation::SphericalHarmonicsGravitationalAccelerationModel::getConcatenatedAccelerationComponents,
-                            thirdBodySphericalHarmonicAcceleration->getAccelerationModelForCentralBody( ),
-                            accelerationComponentVariableSettings->componentIndices_ );
-                    variableFunction = std::bind( &utilities::subtractFunctionReturn< Eigen::VectorXd >,
-                                                  directAccelerationsFunction,
-                                                  centralBodyAccelerationsFunction );
+                    auto directModel = thirdBodySphericalHarmonicAcceleration->getAccelerationModelForBodyUndergoingAcceleration( );
+                    auto centralModel = thirdBodySphericalHarmonicAcceleration->getAccelerationModelForCentralBody( );
+                    auto indices = accelerationComponentVariableSettings->componentIndices_;
+                    variableFunction = [directModel, centralModel, indices]( ) -> Eigen::VectorXd {
+                        return directModel->getConcatenatedAccelerationComponents( indices ) -
+                               centralModel->getConcatenatedAccelerationComponents( indices );
+                    };
                 }
                 else
                 {
@@ -688,26 +619,13 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
             }
             else
             {
-                std::function< Eigen::VectorXd( const Eigen::MatrixXd&, const Eigen::MatrixXd& ) > accelerationFunction = std::bind(
-                        &gravitation::SphericalHarmonicsGravitationalAccelerationModel::getAccelerationWithAlternativeCoefficients,
-                        sphericalHarmonicAcceleration,
-                        std::placeholders::_1,
-                        std::placeholders::_2 );
-                std::function< Eigen::MatrixXd( ) > cosineCorrectionFunction =
-                        std::bind( &gravitation::TimeDependentSphericalHarmonicsGravityField::getTotalCosineCoefficientCorrection,
-                                   timeDependentGravityField,
-                                   sphericalHarmonicAcceleration->getMaximumDegree( ),
-                                   sphericalHarmonicAcceleration->getMaximumOrder( ) );
-                std::function< Eigen::MatrixXd( ) > sineCorrectionFunction =
-                        std::bind( &gravitation::TimeDependentSphericalHarmonicsGravityField::getTotalSineCoefficientCorrection,
-                                   timeDependentGravityField,
-                                   sphericalHarmonicAcceleration->getMaximumDegree( ),
-                                   sphericalHarmonicAcceleration->getMaximumOrder( ) );
-
-                variableFunction = std::bind( evaluateBivariateReferenceFunction< Eigen::VectorXd, Eigen::MatrixXd >,
-                                              accelerationFunction,
-                                              cosineCorrectionFunction,
-                                              sineCorrectionFunction );
+                auto maxDegree = sphericalHarmonicAcceleration->getMaximumDegree( );
+                auto maxOrder = sphericalHarmonicAcceleration->getMaximumOrder( );
+                variableFunction = [sphericalHarmonicAcceleration, timeDependentGravityField, maxDegree, maxOrder]( ) -> Eigen::VectorXd {
+                    return sphericalHarmonicAcceleration->getAccelerationWithAlternativeCoefficients(
+                        timeDependentGravityField->getTotalCosineCoefficientCorrection( maxDegree, maxOrder ),
+                        timeDependentGravityField->getTotalSineCoefficientCorrection( maxDegree, maxOrder ) );
+                };
 
                 parameterSize = 3;
             }
@@ -829,27 +747,17 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                 }
                 else
                 {
-                    std::function< Eigen::VectorXd( const Eigen::MatrixXd&, const Eigen::MatrixXd& ) > accelerationFunction = std::bind(
-                            &gravitation::SphericalHarmonicsGravitationalAccelerationModel::getAccelerationWithAlternativeCoefficients,
-                            sphericalHarmonicAcceleration,
-                            std::placeholders::_1,
-                            std::placeholders::_2 );
-
                     std::shared_ptr< gravitation::GravityFieldVariations > gravityFieldVatiation =
                             timeDependentGravityField->getGravityFieldVariationsSet( )
                                     ->getGravityFieldVariation( accelerationVariableSettings->deformationType_,
                                                                 accelerationVariableSettings->identifier_ )
                                     .second;
 
-                    std::function< Eigen::MatrixXd( ) > cosineCorrectionFunction =
-                            std::bind( &gravitation::GravityFieldVariations::getLastCosineCorrection, gravityFieldVatiation );
-                    std::function< Eigen::MatrixXd( ) > sineCorrectionFunction =
-                            std::bind( &gravitation::GravityFieldVariations::getLastSineCorrection, gravityFieldVatiation );
-
-                    variableFunction = std::bind( evaluateBivariateReferenceFunction< Eigen::VectorXd, Eigen::MatrixXd >,
-                                                  accelerationFunction,
-                                                  cosineCorrectionFunction,
-                                                  sineCorrectionFunction );
+                    variableFunction = [sphericalHarmonicAcceleration, gravityFieldVatiation]( ) -> Eigen::VectorXd {
+                        return sphericalHarmonicAcceleration->getAccelerationWithAlternativeCoefficients(
+                            gravityFieldVatiation->getLastCosineCorrection( ),
+                            gravityFieldVatiation->getLastSineCorrection( ) );
+                    };
                 }
             }
             parameterSize = 3;
@@ -886,13 +794,7 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                 }
                 else
                 {
-                    std::function< Eigen::VectorXd( const Eigen::MatrixXd&, const Eigen::MatrixXd& ) > accelerationFunction =
-                            std::bind( &gravitation::SphericalHarmonicsGravitationalAccelerationModel::
-                                               getAccelerationComponentsWithAlternativeCoefficients,
-                                       sphericalHarmonicAcceleration,
-                                       std::placeholders::_1,
-                                       std::placeholders::_2,
-                                       accelerationVariableSettings->componentIndices_ );
+                    auto componentIndices = accelerationVariableSettings->componentIndices_;
 
                     std::shared_ptr< gravitation::GravityFieldVariations > gravityFieldVatiation =
                             timeDependentGravityField->getGravityFieldVariationsSet( )
@@ -900,15 +802,12 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                                                                 accelerationVariableSettings->identifier_ )
                                     .second;
 
-                    std::function< Eigen::MatrixXd( ) > cosineCorrectionFunction =
-                            std::bind( &gravitation::GravityFieldVariations::getLastCosineCorrection, gravityFieldVatiation );
-                    std::function< Eigen::MatrixXd( ) > sineCorrectionFunction =
-                            std::bind( &gravitation::GravityFieldVariations::getLastSineCorrection, gravityFieldVatiation );
-
-                    variableFunction = std::bind( evaluateBivariateReferenceFunction< Eigen::VectorXd, Eigen::MatrixXd >,
-                                                  accelerationFunction,
-                                                  cosineCorrectionFunction,
-                                                  sineCorrectionFunction );
+                    variableFunction = [sphericalHarmonicAcceleration, gravityFieldVatiation, componentIndices]( ) -> Eigen::VectorXd {
+                        return sphericalHarmonicAcceleration->getAccelerationComponentsWithAlternativeCoefficients(
+                            gravityFieldVatiation->getLastCosineCorrection( ),
+                            gravityFieldVatiation->getLastSineCorrection( ),
+                            componentIndices );
+                    };
                 }
                 parameterSize = 3 * accelerationVariableSettings->componentIndices_.size( );
             }
@@ -921,10 +820,14 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                 simulation_setup::addAtmosphericFlightConditions( bodies, bodyWithProperty, secondaryBody );
             }
 
-            variableFunction = std::bind( &aerodynamics::AerodynamicCoefficientInterface::getCurrentForceCoefficients,
-                                          std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
-                                                  bodies.at( bodyWithProperty )->getFlightConditions( ) )
-                                                  ->getAerodynamicCoefficientInterface( ) );
+            {
+                auto coeffInterface = std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
+                        bodies.at( bodyWithProperty )->getFlightConditions( ) )
+                        ->getAerodynamicCoefficientInterface( );
+                variableFunction = [coeffInterface]( ) -> Eigen::VectorXd {
+                    return coeffInterface->getCurrentForceCoefficients( );
+                };
+            }
             parameterSize = 3;
 
             break;
@@ -936,10 +839,14 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                 simulation_setup::addAtmosphericFlightConditions( bodies, bodyWithProperty, secondaryBody );
             }
 
-            variableFunction = std::bind( &aerodynamics::AerodynamicCoefficientInterface::getCurrentMomentCoefficients,
-                                          std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
-                                                  bodies.at( bodyWithProperty )->getFlightConditions( ) )
-                                                  ->getAerodynamicCoefficientInterface( ) );
+            {
+                auto coeffInterface = std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
+                        bodies.at( bodyWithProperty )->getFlightConditions( ) )
+                        ->getAerodynamicCoefficientInterface( );
+                variableFunction = [coeffInterface]( ) -> Eigen::VectorXd {
+                    return coeffInterface->getCurrentMomentCoefficients( );
+                };
+            }
             parameterSize = 3;
 
             break;
@@ -951,10 +858,14 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                 simulation_setup::addAtmosphericFlightConditions( bodies, bodyWithProperty, secondaryBody );
             }
 
-            variableFunction = std::bind( &aerodynamics::AerodynamicCoefficientInterface::getCurrentControlSurfaceFreeForceCoefficients,
-                                          std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
-                                                  bodies.at( bodyWithProperty )->getFlightConditions( ) )
-                                                  ->getAerodynamicCoefficientInterface( ) );
+            {
+                auto coeffInterface = std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
+                        bodies.at( bodyWithProperty )->getFlightConditions( ) )
+                        ->getAerodynamicCoefficientInterface( );
+                variableFunction = [coeffInterface]( ) -> Eigen::VectorXd {
+                    return coeffInterface->getCurrentControlSurfaceFreeForceCoefficients( );
+                };
+            }
             parameterSize = 3;
 
             break;
@@ -966,10 +877,14 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                 simulation_setup::addAtmosphericFlightConditions( bodies, bodyWithProperty, secondaryBody );
             }
 
-            variableFunction = std::bind( &aerodynamics::AerodynamicCoefficientInterface::getCurrentControlSurfaceFreeMomentCoefficients,
-                                          std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
-                                                  bodies.at( bodyWithProperty )->getFlightConditions( ) )
-                                                  ->getAerodynamicCoefficientInterface( ) );
+            {
+                auto coeffInterface = std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
+                        bodies.at( bodyWithProperty )->getFlightConditions( ) )
+                        ->getAerodynamicCoefficientInterface( );
+                variableFunction = [coeffInterface]( ) -> Eigen::VectorXd {
+                    return coeffInterface->getCurrentControlSurfaceFreeMomentCoefficients( );
+                };
+            }
             parameterSize = 3;
 
             break;
@@ -992,11 +907,13 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                     simulation_setup::addAtmosphericFlightConditions( bodies, bodyWithProperty, secondaryBody );
                 }
 
-                variableFunction = std::bind( &aerodynamics::AerodynamicCoefficientInterface::getCurrentForceCoefficientIncrement,
-                                              std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
-                                                      bodies.at( bodyWithProperty )->getFlightConditions( ) )
-                                                      ->getAerodynamicCoefficientInterface( ),
-                                              controlSurfaceVariabelSettings->controlSurfaceName_ );
+                auto coeffInterface = std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
+                        bodies.at( bodyWithProperty )->getFlightConditions( ) )
+                        ->getAerodynamicCoefficientInterface( );
+                auto surfaceName = controlSurfaceVariabelSettings->controlSurfaceName_;
+                variableFunction = [coeffInterface, surfaceName]( ) -> Eigen::VectorXd {
+                    return coeffInterface->getCurrentForceCoefficientIncrement( surfaceName );
+                };
                 parameterSize = 3;
             }
             break;
@@ -1019,19 +936,23 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                     simulation_setup::addAtmosphericFlightConditions( bodies, bodyWithProperty, secondaryBody );
                 }
 
-                variableFunction = std::bind( &aerodynamics::AerodynamicCoefficientInterface::getCurrentMomentCoefficientIncrement,
-                                              std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
-                                                      bodies.at( bodyWithProperty )->getFlightConditions( ) )
-                                                      ->getAerodynamicCoefficientInterface( ),
-                                              controlSurfaceVariabelSettings->controlSurfaceName_ );
+                auto coeffInterface = std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
+                        bodies.at( bodyWithProperty )->getFlightConditions( ) )
+                        ->getAerodynamicCoefficientInterface( );
+                auto surfaceName = controlSurfaceVariabelSettings->controlSurfaceName_;
+                variableFunction = [coeffInterface, surfaceName]( ) -> Eigen::VectorXd {
+                    return coeffInterface->getCurrentMomentCoefficientIncrement( surfaceName );
+                };
                 parameterSize = 3;
             }
             break;
         }
         case inertial_to_body_fixed_rotation_matrix_variable: {
-            std::function< Eigen::Quaterniond( ) > rotationFunction =
-                    std::bind( &simulation_setup::Body::getCurrentRotationToLocalFrame, bodies.at( bodyWithProperty ) );
-            variableFunction = std::bind( &getVectorRepresentationForRotationQuaternion, rotationFunction );
+            auto body = bodies.at( bodyWithProperty );
+            variableFunction = [body]( ) -> Eigen::VectorXd {
+                return getVectorRepresentationForRotationQuaternion(
+                    [body]( ) { return body->getCurrentRotationToLocalFrame( ); } );
+            };
             parameterSize = 9;
             break;
         }
@@ -1052,13 +973,16 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                 throw std::runtime_error( errorMessage );
             }
 
-            std::function< Eigen::Quaterniond( ) > rotationFunction =
-                    std::bind( &reference_frames::AerodynamicAngleCalculator::getRotationQuaternionBetweenFrames,
-                               bodies.at( bodyWithProperty )->getFlightConditions( )->getAerodynamicAngleCalculator( ),
-                               intermediateAerodynamicRotationVariableSaveSettings->baseFrame_,
-                               intermediateAerodynamicRotationVariableSaveSettings->targetFrame_ );
+            auto angleCalculator = bodies.at( bodyWithProperty )->getFlightConditions( )->getAerodynamicAngleCalculator( );
+            auto baseFrame = intermediateAerodynamicRotationVariableSaveSettings->baseFrame_;
+            auto targetFrame = intermediateAerodynamicRotationVariableSaveSettings->targetFrame_;
 
-            variableFunction = std::bind( &getVectorRepresentationForRotationQuaternion, rotationFunction );
+            variableFunction = [angleCalculator, baseFrame, targetFrame]( ) -> Eigen::VectorXd {
+                return getVectorRepresentationForRotationQuaternion(
+                    [angleCalculator, baseFrame, targetFrame]( ) {
+                        return angleCalculator->getRotationQuaternionBetweenFrames( baseFrame, targetFrame );
+                    } );
+            };
             parameterSize = 9;
             break;
         }
@@ -1069,9 +993,13 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                 simulation_setup::addAtmosphericFlightConditions( bodies, bodyWithProperty, secondaryBody );
             }
 
-            variableFunction = std::bind( &aerodynamics::AtmosphericFlightConditions::getCurrentAirspeedBasedVelocity,
-                                          std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
-                                                  bodies.at( bodyWithProperty )->getFlightConditions( ) ) );
+            {
+                auto flightConditions = std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
+                        bodies.at( bodyWithProperty )->getFlightConditions( ) );
+                variableFunction = [flightConditions]( ) -> Eigen::VectorXd {
+                    return flightConditions->getCurrentAirspeedBasedVelocity( );
+                };
+            }
             parameterSize = 3;
             break;
         }
@@ -1089,14 +1017,17 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                 throw std::runtime_error( errorMessage );
             }
 
-            variableFunction = std::bind( &reference_frames::AerodynamicAngleCalculator::getCurrentGroundspeedBasedBodyFixedVelocity,
-                                          bodies.at( bodyWithProperty )->getFlightConditions( )->getAerodynamicAngleCalculator( ) );
+            {
+                auto angleCalculator = bodies.at( bodyWithProperty )->getFlightConditions( )->getAerodynamicAngleCalculator( );
+                variableFunction = [angleCalculator]( ) -> Eigen::VectorXd {
+                    return angleCalculator->getCurrentGroundspeedBasedBodyFixedVelocity( );
+                };
+            }
             parameterSize = 3;
             break;
         }
         case tnw_to_inertial_frame_rotation_dependent_variable: {
-            std::function< Eigen::Vector6d( ) > vehicleStateFunction =
-                    std::bind( &simulation_setup::Body::getState, bodies.at( dependentVariableSettings->associatedBody_ ) );
+            auto vehicleBody = bodies.at( dependentVariableSettings->associatedBody_ );
             std::function< Eigen::Vector6d( ) > centralBodyStateFunction;
 
             if( ephemerides::isFrameInertial( dependentVariableSettings->secondaryBody_ ) )
@@ -1105,21 +1036,29 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
             }
             else
             {
-                centralBodyStateFunction =
-                        std::bind( &simulation_setup::Body::getState, bodies.at( dependentVariableSettings->secondaryBody_ ) );
+                auto centralBody = bodies.at( dependentVariableSettings->secondaryBody_ );
+                centralBodyStateFunction = [centralBody]( ) -> Eigen::Vector6d {
+                    return centralBody->getState( );
+                };
             }
 
-            std::function< Eigen::Matrix3d( ) > rotationFunction = std::bind(
-                    &reference_frames::getTnwToInertialRotationFromFunctions, vehicleStateFunction, centralBodyStateFunction, true );
-            variableFunction = std::bind( &getVectorRepresentationForRotationMatrixFunction, rotationFunction );
+            variableFunction = [vehicleBody, centralBodyStateFunction]( ) -> Eigen::VectorXd {
+                std::function< Eigen::Vector6d( ) > vehicleStateFn = [vehicleBody]( ) -> Eigen::Vector6d {
+                    return vehicleBody->getState( );
+                };
+                return getVectorRepresentationForRotationMatrixFunction(
+                    [vehicleStateFn, centralBodyStateFunction]( ) -> Eigen::Matrix3d {
+                        return reference_frames::getTnwToInertialRotationFromFunctions(
+                            vehicleStateFn, centralBodyStateFunction, true );
+                    } );
+            };
 
             parameterSize = 9;
 
             break;
         }
         case rsw_to_inertial_frame_rotation_dependent_variable: {
-            std::function< Eigen::Vector6d( ) > vehicleStateFunction =
-                    std::bind( &simulation_setup::Body::getState, bodies.at( dependentVariableSettings->associatedBody_ ) );
+            auto vehicleBody = bodies.at( dependentVariableSettings->associatedBody_ );
             std::function< Eigen::Vector6d( ) > centralBodyStateFunction;
 
             if( ephemerides::isFrameInertial( dependentVariableSettings->secondaryBody_ ) )
@@ -1128,15 +1067,19 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
             }
             else
             {
-                centralBodyStateFunction =
-                        std::bind( &simulation_setup::Body::getState, bodies.at( dependentVariableSettings->secondaryBody_ ) );
+                auto centralBody = bodies.at( dependentVariableSettings->secondaryBody_ );
+                centralBodyStateFunction = [centralBody]( ) -> Eigen::Vector6d {
+                    return centralBody->getState( );
+                };
             }
 
-            std::function< Eigen::Matrix3d( ) > rotationFunction = [ = ]( ) {
-                return reference_frames::getRswSatelliteCenteredToInertialFrameRotationMatrix( vehicleStateFunction( ) -
-                                                                                               centralBodyStateFunction( ) );
+            variableFunction = [vehicleBody, centralBodyStateFunction]( ) -> Eigen::VectorXd {
+                return getVectorRepresentationForRotationMatrixFunction(
+                    [vehicleBody, centralBodyStateFunction]( ) -> Eigen::Matrix3d {
+                        return reference_frames::getRswSatelliteCenteredToInertialFrameRotationMatrix(
+                            vehicleBody->getState( ) - centralBodyStateFunction( ) );
+                    } );
             };
-            variableFunction = std::bind( &getVectorRepresentationForRotationMatrixFunction, rotationFunction );
 
             parameterSize = 9;
 
@@ -1146,9 +1089,9 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
             // Retrieve model responsible for computing accelerations of requested bodies.
             std::shared_ptr< RotationalMotionStateDerivative< StateScalarType, TimeType > > rotationalDynamicsModel =
                     getRotationalStateDerivativeModelForBody( bodyWithProperty, stateDerivativeModels );
-            variableFunction = std::bind( &RotationalMotionStateDerivative< StateScalarType, TimeType >::getTotalTorqueForBody,
-                                          rotationalDynamicsModel,
-                                          bodyWithProperty );
+            variableFunction = [rotationalDynamicsModel, bodyWithProperty]( ) -> Eigen::VectorXd {
+                return rotationalDynamicsModel->getTotalTorqueForBody( bodyWithProperty );
+            };
             parameterSize = 3;
 
             break;
@@ -1182,7 +1125,10 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                 else
                 {
                     // std::function< Eigen::Vector3d( ) > vectorFunction =
-                    variableFunction = std::bind( &basic_astrodynamics::TorqueModel::getTorque, listOfSuitableTorqueModels.at( 0 ) );
+                    auto torqueModel = listOfSuitableTorqueModels.at( 0 );
+                    variableFunction = [torqueModel]( ) -> Eigen::VectorXd {
+                        return torqueModel->getTorque( );
+                    };
                     parameterSize = 3;
                 }
             }
@@ -1212,18 +1158,19 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
             }
             else
             {
-                centralBodyGravitationalParameter = std::bind( &gravitation::GravityFieldModel::getGravitationalParameter,
-                                                               bodies.at( centralBody )->getGravityFieldModel( ) );
+                auto centralGravityField = bodies.at( centralBody )->getGravityFieldModel( );
+                centralBodyGravitationalParameter = [centralGravityField]( ) {
+                    return centralGravityField->getGravitationalParameter( );
+                };
             }
 
-            std::function< double( ) > orbitingBodyGravitationalParameter;
             std::function< double( ) > effectiveGravitationalParameter;
             if( bodies.at( orbitingBody )->getGravityFieldModel( ) != nullptr )
             {
-                orbitingBodyGravitationalParameter = std::bind( &gravitation::GravityFieldModel::getGravitationalParameter,
-                                                                bodies.at( orbitingBody )->getGravityFieldModel( ) );
-                effectiveGravitationalParameter = std::bind(
-                        &utilities::sumFunctionReturn< double >, orbitingBodyGravitationalParameter, centralBodyGravitationalParameter );
+                auto orbitingGravityField = bodies.at( orbitingBody )->getGravityFieldModel( );
+                effectiveGravitationalParameter = [orbitingGravityField, centralBodyGravitationalParameter]( ) {
+                    return orbitingGravityField->getGravitationalParameter( ) + centralBodyGravitationalParameter( );
+                };
             }
             else
             {
@@ -1231,16 +1178,16 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
             }
 
             // Retrieve functions for positions of two bodies.
-            std::function< Eigen::Vector6d( const Eigen::Vector6d&, const Eigen::Vector6d& ) > functionToEvaluate =
-                    std::bind( &linear_algebra::computeVectorDifference< 6 >, std::placeholders::_1, std::placeholders::_2 );
-            std::function< Eigen::Vector6d( ) > firstInput = std::bind( &simulation_setup::Body::getState, bodies.at( orbitingBody ) );
-            std::function< Eigen::Vector6d( ) > secondInput = std::bind( &simulation_setup::Body::getState, bodies.at( centralBody ) );
-            std::function< Eigen::Vector6d( ) > relativeStateFunction = std::bind(
-                    &evaluateBivariateReferenceFunction< Eigen::Vector6d, Eigen::Vector6d >, functionToEvaluate, firstInput, secondInput );
+            auto orbitingBodyObj = bodies.at( orbitingBody );
+            auto centralBodyObj = bodies.at( centralBody );
 
-            variableFunction = std::bind( &orbital_element_conversions::convertCartesianToKeplerianElementsFromFunctions< double >,
-                                          relativeStateFunction,
-                                          effectiveGravitationalParameter );
+            variableFunction = [orbitingBodyObj, centralBodyObj, effectiveGravitationalParameter]( ) -> Eigen::VectorXd {
+                std::function< Eigen::Vector6d( ) > relativeStateFn = [orbitingBodyObj, centralBodyObj]( ) -> Eigen::Vector6d {
+                    return orbitingBodyObj->getState( ) - centralBodyObj->getState( );
+                };
+                return orbital_element_conversions::convertCartesianToKeplerianElementsFromFunctions< double >(
+                    relativeStateFn, effectiveGravitationalParameter );
+            };
             parameterSize = 6;
 
             break;
@@ -1269,18 +1216,19 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
             }
             else
             {
-                centralBodyGravitationalParameter = std::bind( &gravitation::GravityFieldModel::getGravitationalParameter,
-                                                               bodies.at( centralBody )->getGravityFieldModel( ) );
+                auto centralGravityField = bodies.at( centralBody )->getGravityFieldModel( );
+                centralBodyGravitationalParameter = [centralGravityField]( ) {
+                    return centralGravityField->getGravitationalParameter( );
+                };
             }
 
-            std::function< double( ) > orbitingBodyGravitationalParameter;
             std::function< double( ) > effectiveGravitationalParameter;
             if( bodies.at( orbitingBody )->getGravityFieldModel( ) != nullptr )
             {
-                orbitingBodyGravitationalParameter = std::bind( &gravitation::GravityFieldModel::getGravitationalParameter,
-                                                                bodies.at( orbitingBody )->getGravityFieldModel( ) );
-                effectiveGravitationalParameter = std::bind(
-                        &utilities::sumFunctionReturn< double >, orbitingBodyGravitationalParameter, centralBodyGravitationalParameter );
+                auto orbitingGravityField = bodies.at( orbitingBody )->getGravityFieldModel( );
+                effectiveGravitationalParameter = [orbitingGravityField, centralBodyGravitationalParameter]( ) {
+                    return orbitingGravityField->getGravitationalParameter( ) + centralBodyGravitationalParameter( );
+                };
             }
             else
             {
@@ -1288,60 +1236,53 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
             }
 
             // Retrieve functions for positions of two bodies.
-            std::function< Eigen::Vector6d( const Eigen::Vector6d&, const Eigen::Vector6d& ) > functionToEvaluate =
-                    std::bind( &linear_algebra::computeVectorDifference< 6 >, std::placeholders::_1, std::placeholders::_2 );
-            std::function< Eigen::Vector6d( ) > firstInput = std::bind( &simulation_setup::Body::getState, bodies.at( orbitingBody ) );
-            std::function< Eigen::Vector6d( ) > secondInput = std::bind( &simulation_setup::Body::getState, bodies.at( centralBody ) );
-            std::function< Eigen::Vector6d( ) > relativeStateFunction = std::bind(
-                    &evaluateBivariateReferenceFunction< Eigen::Vector6d, Eigen::Vector6d >, functionToEvaluate, firstInput, secondInput );
+            auto orbitingBodyObj = bodies.at( orbitingBody );
+            auto centralBodyObj = bodies.at( centralBody );
 
-            variableFunction =
-                    std::bind( &orbital_element_conversions::convertCartesianToModifiedEquinoctialElementsFromStateFunction< double >,
-                               relativeStateFunction,
-                               effectiveGravitationalParameter );
+            variableFunction = [orbitingBodyObj, centralBodyObj, effectiveGravitationalParameter]( ) -> Eigen::VectorXd {
+                std::function< Eigen::Vector6d( ) > relativeStateFn = [orbitingBodyObj, centralBodyObj]( ) -> Eigen::Vector6d {
+                    return orbitingBodyObj->getState( ) - centralBodyObj->getState( );
+                };
+                return orbital_element_conversions::convertCartesianToModifiedEquinoctialElementsFromStateFunction< double >(
+                    relativeStateFn, effectiveGravitationalParameter );
+            };
             parameterSize = 6;
 
             break;
         }
         case body_fixed_relative_cartesian_position: {
-            std::function< Eigen::Vector3d( ) > positionFunctionOfRelativeBody =
-                    std::bind( &simulation_setup::Body::getPosition, bodies.at( bodyWithProperty ) );
-            std::function< Eigen::Vector3d( ) > positionFunctionOfCentralBody =
-                    std::bind( &simulation_setup::Body::getPosition, bodies.at( secondaryBody ) );
-            std::function< Eigen::Quaterniond( ) > orientationFunctionOfCentralBody =
-                    std::bind( &simulation_setup::Body::getCurrentRotationToLocalFrame, bodies.at( secondaryBody ) );
+            auto relativeBody = bodies.at( bodyWithProperty );
+            auto centralBodyObj = bodies.at( secondaryBody );
 
-            variableFunction = std::bind( &reference_frames::getBodyFixedCartesianPosition,
-                                          positionFunctionOfCentralBody,
-                                          positionFunctionOfRelativeBody,
-                                          orientationFunctionOfCentralBody );
+            variableFunction = [relativeBody, centralBodyObj]( ) -> Eigen::VectorXd {
+                return reference_frames::getBodyFixedCartesianPosition(
+                    [centralBodyObj]( ) { return centralBodyObj->getPosition( ); },
+                    [relativeBody]( ) { return relativeBody->getPosition( ); },
+                    [centralBodyObj]( ) { return centralBodyObj->getCurrentRotationToLocalFrame( ); } );
+            };
             parameterSize = 3;
             break;
         }
         case body_fixed_relative_spherical_position: {
-            std::function< Eigen::Vector3d( ) > positionFunctionOfRelativeBody =
-                    std::bind( &simulation_setup::Body::getPosition, bodies.at( bodyWithProperty ) );
-            std::function< Eigen::Vector3d( ) > positionFunctionOfCentralBody =
-                    std::bind( &simulation_setup::Body::getPosition, bodies.at( secondaryBody ) );
-            std::function< Eigen::Quaterniond( ) > orientationFunctionOfCentralBody =
-                    std::bind( &simulation_setup::Body::getCurrentRotationToLocalFrame, bodies.at( secondaryBody ) );
+            auto relativeBody = bodies.at( bodyWithProperty );
+            auto centralBodyObj = bodies.at( secondaryBody );
 
-            variableFunction = std::bind( &reference_frames::getBodyFixedSphericalPosition,
-                                          positionFunctionOfCentralBody,
-                                          positionFunctionOfRelativeBody,
-                                          orientationFunctionOfCentralBody );
+            variableFunction = [relativeBody, centralBodyObj]( ) -> Eigen::VectorXd {
+                return reference_frames::getBodyFixedSphericalPosition(
+                    [centralBodyObj]( ) { return centralBodyObj->getPosition( ); },
+                    [relativeBody]( ) { return relativeBody->getPosition( ); },
+                    [centralBodyObj]( ) { return centralBodyObj->getCurrentRotationToLocalFrame( ); } );
+            };
             parameterSize = 3;
             break;
         }
         case euler_angles_to_body_fixed_313: {
-            std::function< Eigen::Quaterniond( ) > orientationFunctionOfBody =
-                    std::bind( &simulation_setup::Body::getCurrentRotationToLocalFrame, bodies.at( bodyWithProperty ) );
+            auto body = bodies.at( bodyWithProperty );
 
-            std::function< Eigen::Vector3d( const Eigen::Quaterniond ) > eulerAngleFunction =
-                    std::bind( &basic_mathematics::get313EulerAnglesFromQuaternion, std::placeholders::_1 );
-
-            variableFunction = std::bind(
-                    &evaluateReferenceFunction< Eigen::Vector3d, Eigen::Quaterniond >, eulerAngleFunction, orientationFunctionOfBody );
+            variableFunction = [body]( ) -> Eigen::VectorXd {
+                return basic_mathematics::get313EulerAnglesFromQuaternion(
+                    body->getCurrentRotationToLocalFrame( ) );
+            };
             parameterSize = 3;
             break;
         }
@@ -1382,7 +1323,9 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
                 }
                 else
                 {
-                    variableFunction = std::bind( &getVectorFunctionFromBlockFunction, partialFunction.first, 3, 6 );
+                    variableFunction = [partialFunc = partialFunction.first]( ) -> Eigen::VectorXd {
+                        return getVectorFunctionFromBlockFunction( partialFunc, 3, 6 );
+                    };
                 }
 
                 parameterSize = 18;
@@ -1473,16 +1416,22 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
             }
             else
             {
-                std::function< Eigen::Vector3d( ) > mainBodyPositionFunction =
-                        std::bind( &simulation_setup::Body::getPosition, bodies.at( bodyWithProperty ) );
+                auto mainBody = bodies.at( bodyWithProperty );
+                std::function< Eigen::Vector3d( ) > mainBodyPositionFunction = [mainBody]( ) -> Eigen::Vector3d {
+                    return mainBody->getPosition( );
+                };
                 std::vector< std::function< Eigen::Vector3d( ) > > bodiesToCheckPositionFunctions;
                 for( unsigned int i = 0; i < minimumDistanceDependentVariable->bodiesToCheck_.size( ); i++ )
                 {
-                    bodiesToCheckPositionFunctions.push_back( std::bind(
-                            &simulation_setup::Body::getPosition, bodies.at( minimumDistanceDependentVariable->bodiesToCheck_.at( i ) ) ) );
+                    auto checkBody = bodies.at( minimumDistanceDependentVariable->bodiesToCheck_.at( i ) );
+                    bodiesToCheckPositionFunctions.push_back( [checkBody]( ) -> Eigen::Vector3d {
+                        return checkBody->getPosition( );
+                    } );
                 }
 
-                variableFunction = std::bind( &getConstellationMinimumDistance, mainBodyPositionFunction, bodiesToCheckPositionFunctions );
+                variableFunction = [mainBodyPositionFunction, bodiesToCheckPositionFunctions]( ) -> Eigen::VectorXd {
+                    return getConstellationMinimumDistance( mainBodyPositionFunction, bodiesToCheckPositionFunctions );
+                };
                 parameterSize = 2;
             }
             break;
@@ -1500,19 +1449,21 @@ std::pair< std::function< Eigen::VectorXd( ) >, int > getVectorDependentVariable
             }
             else
             {
-                std::function< Eigen::Vector3d( ) > stationPositionFunction =
-                        std::bind( &simulation_setup::getGroundStationPositionDuringPropagation< double >,
-                                   bodies.at( bodyWithProperty ),
-                                   secondaryBody,
-                                   bodies );
+                auto mainBodyObj = bodies.at( bodyWithProperty );
+                std::function< Eigen::Vector3d( ) > stationPositionFunction = [mainBodyObj, secondaryBody, &bodies]( ) -> Eigen::Vector3d {
+                    return simulation_setup::getGroundStationPositionDuringPropagation< double >(
+                        mainBodyObj, secondaryBody, bodies );
+                };
                 std::shared_ptr< ground_stations::PointingAnglesCalculator > stationPointingAngleCalculator =
                         bodies.at( bodyWithProperty )->getGroundStation( secondaryBody )->getPointingAnglesCalculator( );
 
                 std::vector< std::function< Eigen::Vector3d( ) > > bodiesToCheckPositionFunctions;
                 for( unsigned int i = 0; i < minimumDistanceDependentVariable->bodiesToCheck_.size( ); i++ )
                 {
-                    bodiesToCheckPositionFunctions.push_back( std::bind(
-                            &simulation_setup::Body::getPosition, bodies.at( minimumDistanceDependentVariable->bodiesToCheck_.at( i ) ) ) );
+                    auto checkBody = bodies.at( minimumDistanceDependentVariable->bodiesToCheck_.at( i ) );
+                    bodiesToCheckPositionFunctions.push_back( [checkBody]( ) -> Eigen::Vector3d {
+                        return checkBody->getPosition( );
+                    } );
                 }
 
                 variableFunction = [ = ]( ) {
@@ -1940,7 +1891,9 @@ std::function< double( ) > getDoubleDependentVariableFunction(
         const std::pair< std::function< Eigen::VectorXd( ) >, int > vectorFunction =
                 getVectorDependentVariableFunction< TimeType, StateScalarType >(
                         dependentVariableSettings, bodies, stateDerivativeModels, stateDerivativePartials );
-        return std::bind( &elementAtIndexFunction, vectorFunction.first, componentIndex );
+        return [vectorFunc = vectorFunction.first, componentIndex]( ) -> double {
+            return vectorFunc( )( componentIndex );
+        };
     }
     else
     {
@@ -1961,18 +1914,13 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                     simulation_setup::addAtmosphericFlightConditions( bodies, bodyWithProperty, secondaryBody );
                 }
 
-                std::function< double( const double, const double ) > functionToEvaluate =
-                        std::bind( &aerodynamics::computeMachNumber, std::placeholders::_1, std::placeholders::_2 );
-
-                // Retrieve functions for airspeed and speed of sound.
-                std::function< double( ) > firstInput = std::bind( &aerodynamics::AtmosphericFlightConditions::getCurrentAirspeed,
-                                                                   std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
-                                                                           bodies.at( bodyWithProperty )->getFlightConditions( ) ) );
-                std::function< double( ) > secondInput = std::bind( &aerodynamics::AtmosphericFlightConditions::getCurrentSpeedOfSound,
-                                                                    std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
-                                                                            bodies.at( bodyWithProperty )->getFlightConditions( ) ) );
-
-                variableFunction = std::bind( &evaluateBivariateFunction< double, double >, functionToEvaluate, firstInput, secondInput );
+                auto flightConditions = std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
+                        bodies.at( bodyWithProperty )->getFlightConditions( ) );
+                variableFunction = [flightConditions]( ) -> double {
+                    return aerodynamics::computeMachNumber(
+                        flightConditions->getCurrentAirspeed( ),
+                        flightConditions->getCurrentSpeedOfSound( ) );
+                };
                 break;
             }
             case altitude_dependent_variable:
@@ -1980,8 +1928,10 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                 {
                     simulation_setup::addFlightConditions( bodies, bodyWithProperty, secondaryBody );
                 }
-                variableFunction = std::bind( &aerodynamics::FlightConditions::getCurrentAltitude,
-                                              bodies.at( bodyWithProperty )->getFlightConditions( ) );
+                {
+                    auto fc = bodies.at( bodyWithProperty )->getFlightConditions( );
+                    variableFunction = [fc]( ) { return fc->getCurrentAltitude( ); };
+                }
                 break;
             case airspeed_dependent_variable:
                 if( std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
@@ -1989,9 +1939,11 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                 {
                     simulation_setup::addAtmosphericFlightConditions( bodies, bodyWithProperty, secondaryBody );
                 }
-                variableFunction = std::bind( &aerodynamics::AtmosphericFlightConditions::getCurrentAirspeed,
-                                              std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
-                                                      bodies.at( bodyWithProperty )->getFlightConditions( ) ) );
+                {
+                    auto fc = std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
+                            bodies.at( bodyWithProperty )->getFlightConditions( ) );
+                    variableFunction = [fc]( ) { return fc->getCurrentAirspeed( ); };
+                }
                 break;
             case local_density_dependent_variable:
                 if( std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
@@ -1999,9 +1951,11 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                 {
                     simulation_setup::addAtmosphericFlightConditions( bodies, bodyWithProperty, secondaryBody );
                 }
-                variableFunction = std::bind( &aerodynamics::AtmosphericFlightConditions::getCurrentDensity,
-                                              std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
-                                                      bodies.at( bodyWithProperty )->getFlightConditions( ) ) );
+                {
+                    auto fc = std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
+                            bodies.at( bodyWithProperty )->getFlightConditions( ) );
+                    variableFunction = [fc]( ) { return fc->getCurrentDensity( ); };
+                }
                 break;
             case radiation_pressure_dependent_variable: {
                 auto radiationPressureAccelerationList = getAccelerationBetweenBodies( dependentVariableSettings->associatedBody_,
@@ -2026,19 +1980,20 @@ std::function< double( ) > getDoubleDependentVariableFunction(
             }
             case relative_distance_dependent_variable: {
                 // Retrieve functions for positions of two bodies.
-                std::function< double( const Eigen::Vector3d&, const Eigen::Vector3d& ) > functionToEvaluate =
-                        std::bind( &linear_algebra::computeNormOfVectorDifference, std::placeholders::_1, std::placeholders::_2 );
-                std::function< Eigen::Vector3d( ) > firstInput =
-                        std::bind( &simulation_setup::Body::getPosition, bodies.at( bodyWithProperty ) );
+                auto bodyA = bodies.at( bodyWithProperty );
 
-                std::function< Eigen::Vector3d( ) > secondInput;
                 if( secondaryBody != "SSB" )
                 {
-                    secondInput = std::bind( &simulation_setup::Body::getPosition, bodies.at( secondaryBody ) );
+                    auto bodyB = bodies.at( secondaryBody );
+                    variableFunction = [bodyA, bodyB]( ) -> double {
+                        return ( bodyA->getPosition( ) - bodyB->getPosition( ) ).norm( );
+                    };
                 }
                 else if( simulation_setup::getGlobalFrameOrigin( bodies ) == "SSB" )
                 {
-                    secondInput = []( ) { return Eigen::Vector3d::Zero( ); };
+                    variableFunction = [bodyA]( ) -> double {
+                        return bodyA->getPosition( ).norm( );
+                    };
                 }
                 else
                 {
@@ -2046,34 +2001,30 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                                               " w.r.t. SSB, but SSB is not frame origin" );
                 }
 
-                variableFunction = std::bind(
-                        &evaluateBivariateReferenceFunction< double, Eigen::Vector3d >, functionToEvaluate, firstInput, secondInput );
                 break;
             }
             case relative_speed_dependent_variable: {
-                // Retrieve functions for velicoty of two bodies.
-                std::function< double( const Eigen::Vector3d&, const Eigen::Vector3d& ) > functionToEvaluate =
-                        std::bind( &linear_algebra::computeNormOfVectorDifference, std::placeholders::_1, std::placeholders::_2 );
-                std::function< Eigen::Vector3d( ) > firstInput =
-                        std::bind( &simulation_setup::Body::getVelocity, bodies.at( bodyWithProperty ) );
+                // Retrieve functions for velocity of two bodies.
+                auto bodyA = bodies.at( bodyWithProperty );
 
-                std::function< Eigen::Vector3d( ) > secondInput;
                 if( secondaryBody != "SSB" )
                 {
-                    secondInput = std::bind( &simulation_setup::Body::getVelocity, bodies.at( secondaryBody ) );
+                    auto bodyB = bodies.at( secondaryBody );
+                    variableFunction = [bodyA, bodyB]( ) -> double {
+                        return ( bodyA->getVelocity( ) - bodyB->getVelocity( ) ).norm( );
+                    };
                 }
                 else if( simulation_setup::getGlobalFrameOrigin( bodies ) == "SSB" )
                 {
-                    secondInput = []( ) { return Eigen::Vector3d::Zero( ); };
+                    variableFunction = [bodyA]( ) -> double {
+                        return bodyA->getVelocity( ).norm( );
+                    };
                 }
                 else
                 {
                     throw std::runtime_error( "Error, requested state of " + bodyWithProperty +
                                               " w.r.t. SSB, but SSB is not frame origin" );
                 }
-
-                variableFunction = std::bind(
-                        &evaluateBivariateReferenceFunction< double, Eigen::Vector3d >, functionToEvaluate, firstInput, secondInput );
 
                 break;
             }
@@ -2135,9 +2086,10 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                             }
                         }
 
-                        std::function< Eigen::Vector3d( ) > vectorFunction = std::bind(
-                                &basic_astrodynamics::AccelerationModel3d::getAcceleration, listOfSuitableAccelerationModels.at( 0 ) );
-                        variableFunction = std::bind( &linear_algebra::getVectorNormFromFunction, vectorFunction );
+                        auto accelModel = listOfSuitableAccelerationModels.at( 0 );
+                        variableFunction = [accelModel]( ) -> double {
+                            return accelModel->getAcceleration( ).norm( );
+                        };
                     }
                 }
                 break;
@@ -2147,9 +2099,9 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                 std::shared_ptr< NBodyStateDerivative< StateScalarType, TimeType > > nBodyModel =
                         getTranslationalStateDerivativeModelForBody( bodyWithProperty, stateDerivativeModels );
                 nBodyModel->setUpdateRemovedAcceleration( dependentVariableSettings->associatedBody_ );
-                std::function< Eigen::Vector3d( ) > vectorFunction = std::bind(
-                        &NBodyStateDerivative< StateScalarType, TimeType >::getTotalAccelerationForBody, nBodyModel, bodyWithProperty );
-                variableFunction = std::bind( &linear_algebra::getVectorNormFromFunction, vectorFunction );
+                variableFunction = [nBodyModel, bodyWithProperty]( ) -> double {
+                    return nBodyModel->getTotalAccelerationForBody( bodyWithProperty ).norm( );
+                };
 
                 break;
             }
@@ -2157,11 +2109,9 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                 // Retrieve model responsible for computing accelerations of requested bodies.
                 std::shared_ptr< RotationalMotionStateDerivative< StateScalarType, TimeType > > rotationalDynamicsModel =
                         getRotationalStateDerivativeModelForBody( bodyWithProperty, stateDerivativeModels );
-                std::function< Eigen::Vector3d( ) > vectorFunction =
-                        std::bind( &RotationalMotionStateDerivative< StateScalarType, TimeType >::getTotalTorqueForBody,
-                                   rotationalDynamicsModel,
-                                   bodyWithProperty );
-                variableFunction = std::bind( &linear_algebra::getVectorNormFromFunction, vectorFunction );
+                variableFunction = [rotationalDynamicsModel, bodyWithProperty]( ) -> double {
+                    return rotationalDynamicsModel->getTotalTorqueForBody( bodyWithProperty ).norm( );
+                };
 
                 break;
             }
@@ -2195,10 +2145,10 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                     }
                     else
                     {
-                        // std::function< Eigen::Vector3d( ) > vectorFunction =
-                        std::function< Eigen::Vector3d( ) > vectorFunction =
-                                std::bind( &basic_astrodynamics::TorqueModel::getTorque, listOfSuitableTorqueModels.at( 0 ) );
-                        variableFunction = std::bind( &linear_algebra::getVectorNormFromFunction, vectorFunction );
+                        auto torqueModel = listOfSuitableTorqueModels.at( 0 );
+                        variableFunction = [torqueModel]( ) -> double {
+                            return torqueModel->getTorque( ).norm( );
+                        };
                     }
                 }
                 break;
@@ -2220,9 +2170,11 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                     throw std::runtime_error( errorMessage );
                 }
 
-                variableFunction = std::bind( &reference_frames::AerodynamicAngleCalculator::getAerodynamicAngle,
-                                              bodies.at( bodyWithProperty )->getFlightConditions( )->getAerodynamicAngleCalculator( ),
-                                              bodyAerodynamicAngleVariableSaveSettings->angle_ );
+                auto angleCalculator = bodies.at( bodyWithProperty )->getFlightConditions( )->getAerodynamicAngleCalculator( );
+                auto angle = bodyAerodynamicAngleVariableSaveSettings->angle_;
+                variableFunction = [angleCalculator, angle]( ) -> double {
+                    return angleCalculator->getAerodynamicAngle( angle );
+                };
                 break;
             }
             case total_aerodynamic_g_load_variable: {
@@ -2233,10 +2185,10 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                 std::function< Eigen::VectorXd( ) > aerodynamicAccelerationFunction =
                         getVectorDependentVariableFunction( aerodynamicAccelerationSettings, bodies, stateDerivativeModels ).first;
 
-                std::function< double( Eigen::Vector3d ) > functionToEvaluate =
-                        std::bind( &aerodynamics::computeAerodynamicLoadFromAcceleration, std::placeholders::_1 );
-                variableFunction = std::bind(
-                        &evaluateReferenceFunction< double, Eigen::Vector3d >, functionToEvaluate, aerodynamicAccelerationFunction );
+                variableFunction = [aerodynamicAccelerationFunction]( ) -> double {
+                    return aerodynamics::computeAerodynamicLoadFromAcceleration(
+                        aerodynamicAccelerationFunction( ) );
+                };
 
                 break;
             }
@@ -2272,7 +2224,9 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                     throw std::runtime_error( errorMessage );
                 }
 
-                variableFunction = std::bind( &computeEquilibriumFayRiddellHeatFluxFromProperties, flightConditions, vehicleSystems );
+                variableFunction = [flightConditions, vehicleSystems]( ) -> double {
+                    return computeEquilibriumFayRiddellHeatFluxFromProperties( flightConditions, vehicleSystems );
+                };
 
                 break;
             }
@@ -2282,9 +2236,11 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                 {
                     simulation_setup::addAtmosphericFlightConditions( bodies, bodyWithProperty, secondaryBody );
                 }
-                variableFunction = std::bind( &aerodynamics::AtmosphericFlightConditions::getCurrentFreestreamTemperature,
-                                              std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
-                                                      bodies.at( bodyWithProperty )->getFlightConditions( ) ) );
+                {
+                    auto fc = std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
+                            bodies.at( bodyWithProperty )->getFlightConditions( ) );
+                    variableFunction = [fc]( ) { return fc->getCurrentFreestreamTemperature( ); };
+                }
                 break;
             }
             case local_dynamic_pressure_dependent_variable: {
@@ -2293,9 +2249,11 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                 {
                     simulation_setup::addAtmosphericFlightConditions( bodies, bodyWithProperty, secondaryBody );
                 }
-                variableFunction = std::bind( &aerodynamics::AtmosphericFlightConditions::getCurrentDynamicPressure,
-                                              std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
-                                                      bodies.at( bodyWithProperty )->getFlightConditions( ) ) );
+                {
+                    auto fc = std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
+                            bodies.at( bodyWithProperty )->getFlightConditions( ) );
+                    variableFunction = [fc]( ) { return fc->getCurrentDynamicPressure( ); };
+                }
                 break;
             }
             case local_aerodynamic_heat_rate_dependent_variable: {
@@ -2304,9 +2262,11 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                 {
                     simulation_setup::addAtmosphericFlightConditions( bodies, bodyWithProperty, secondaryBody );
                 }
-                variableFunction = std::bind( &aerodynamics::AtmosphericFlightConditions::getCurrentAerodynamicHeatRate,
-                                              std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
-                                                      bodies.at( bodyWithProperty )->getFlightConditions( ) ) );
+                {
+                    auto fc = std::dynamic_pointer_cast< aerodynamics::AtmosphericFlightConditions >(
+                            bodies.at( bodyWithProperty )->getFlightConditions( ) );
+                    variableFunction = [fc]( ) { return fc->getCurrentAerodynamicHeatRate( ); };
+                }
                 break;
             }
             case geodetic_latitude_dependent_variable: {
@@ -2315,8 +2275,10 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                     simulation_setup::addFlightConditions( bodies, bodyWithProperty, secondaryBody );
                 }
 
-                variableFunction = std::bind( &aerodynamics::FlightConditions::getCurrentGeodeticLatitude,
-                                              bodies.at( bodyWithProperty )->getFlightConditions( ) );
+                {
+                    auto fc = bodies.at( bodyWithProperty )->getFlightConditions( );
+                    variableFunction = [fc]( ) { return fc->getCurrentGeodeticLatitude( ); };
+                }
                 break;
             }
             case control_surface_deflection_dependent_variable: {
@@ -2327,92 +2289,54 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                     throw std::runtime_error( errorMessage );
                 }
 
-                variableFunction = std::bind( &system_models::VehicleSystems::getCurrentControlSurfaceDeflection,
-                                              bodies.at( bodyWithProperty )->getVehicleSystems( ),
-                                              dependentVariableSettings->secondaryBody_ );
+                {
+                    auto vs = bodies.at( bodyWithProperty )->getVehicleSystems( );
+                    auto surfaceName = dependentVariableSettings->secondaryBody_;
+                    variableFunction = [vs, surfaceName]( ) { return vs->getCurrentControlSurfaceDeflection( surfaceName ); };
+                }
                 break;
             }
             case total_mass_rate_dependent_variables: {
                 // Retrieve model responsible for computing mass rate of requested bodies.
                 std::shared_ptr< BodyMassStateDerivative< StateScalarType, TimeType > > nBodyModel =
                         getBodyMassStateDerivativeModelForBody( bodyWithProperty, stateDerivativeModels );
-                variableFunction = std::bind(
-                        &BodyMassStateDerivative< StateScalarType, TimeType >::getTotalMassRateForBody, nBodyModel, bodyWithProperty );
+                variableFunction = [nBodyModel, bodyWithProperty]( ) -> double {
+                    return nBodyModel->getTotalMassRateForBody( bodyWithProperty );
+                };
 
                 break;
             }
             case periapsis_altitude_dependent_variable: {
-                using namespace Eigen;
-                std::function< double( const Vector6d&, const double, const double ) > functionToEvaluate =
-                        std::bind( &basic_astrodynamics::computePeriapsisAltitudeFromCartesianState,
-                                   std::placeholders::_1,
-                                   std::placeholders::_2,
-                                   std::placeholders::_3 );
+                auto propBody = bodies.at( bodyWithProperty );
+                auto centBody = bodies.at( secondaryBody );
+                auto gravField = centBody->getGravityFieldModel( );
+                auto shapeModel = centBody->getShapeModel( );
 
-                // Retrieve function for propagated body's Cartesian state in the global reference frame.
-                std::function< Vector6d( ) > propagatedBodyStateFunction =
-                        std::bind( &simulation_setup::Body::getState, bodies.at( bodyWithProperty ) );
-
-                // Retrieve function for central body's Cartesian state in the global reference frame.
-                std::function< Vector6d( ) > centralBodyStateFunction =
-                        std::bind( &simulation_setup::Body::getState, bodies.at( secondaryBody ) );
-
-                // Retrieve function for propagated body's Cartesian state in the propagation reference frame.
-                std::function< Vector6d( ) > firstInput =
-                        std::bind( &utilities::subtractFunctionReturn< Vector6d >, propagatedBodyStateFunction, centralBodyStateFunction );
-
-                // Retrieve function for central body's gravitational parameter.
-                std::function< double( ) > secondInput = std::bind( &gravitation::GravityFieldModel::getGravitationalParameter,
-                                                                    bodies.at( secondaryBody )->getGravityFieldModel( ) );
-
-                // Retrieve function for central body's average radius.
-                std::function< double( ) > thirdInput =
-                        std::bind( &basic_astrodynamics::BodyShapeModel::getAverageRadius, bodies.at( secondaryBody )->getShapeModel( ) );
-
-                variableFunction = std::bind( &evaluateTrivariateFunction< double, Vector6d, double, double >,
-                                              functionToEvaluate,
-                                              firstInput,
-                                              secondInput,
-                                              thirdInput );
+                variableFunction = [propBody, centBody, gravField, shapeModel]( ) -> double {
+                    return basic_astrodynamics::computePeriapsisAltitudeFromCartesianState(
+                        propBody->getState( ) - centBody->getState( ),
+                        gravField->getGravitationalParameter( ),
+                        shapeModel->getAverageRadius( ) );
+                };
                 break;
             }
             case apoapsis_altitude_dependent_variable: {
-                using namespace Eigen;
-                std::function< double( const Vector6d&, const double, const double ) > functionToEvaluate =
-                        std::bind( &basic_astrodynamics::computeApoapsisAltitudeFromCartesianState,
-                                   std::placeholders::_1,
-                                   std::placeholders::_2,
-                                   std::placeholders::_3 );
+                auto propBody = bodies.at( bodyWithProperty );
+                auto centBody = bodies.at( secondaryBody );
+                auto gravField = centBody->getGravityFieldModel( );
+                auto shapeModel = centBody->getShapeModel( );
 
-                // Retrieve function for propagated body's Cartesian state in the global reference frame.
-                std::function< Vector6d( ) > propagatedBodyStateFunction =
-                        std::bind( &simulation_setup::Body::getState, bodies.at( bodyWithProperty ) );
-
-                // Retrieve function for central body's Cartesian state in the global reference frame.
-                std::function< Vector6d( ) > centralBodyStateFunction =
-                        std::bind( &simulation_setup::Body::getState, bodies.at( secondaryBody ) );
-
-                // Retrieve function for propagated body's Cartesian state in the propagation reference frame.
-                std::function< Vector6d( ) > firstInput =
-                        std::bind( &utilities::subtractFunctionReturn< Vector6d >, propagatedBodyStateFunction, centralBodyStateFunction );
-
-                // Retrieve function for central body's gravitational parameter.
-                std::function< double( ) > secondInput = std::bind( &gravitation::GravityFieldModel::getGravitationalParameter,
-                                                                    bodies.at( secondaryBody )->getGravityFieldModel( ) );
-
-                // Retrieve function for central body's average radius.
-                std::function< double( ) > thirdInput =
-                        std::bind( &basic_astrodynamics::BodyShapeModel::getAverageRadius, bodies.at( secondaryBody )->getShapeModel( ) );
-
-                variableFunction = std::bind( &evaluateTrivariateFunction< double, Vector6d, double, double >,
-                                              functionToEvaluate,
-                                              firstInput,
-                                              secondInput,
-                                              thirdInput );
+                variableFunction = [propBody, centBody, gravField, shapeModel]( ) -> double {
+                    return basic_astrodynamics::computeApoapsisAltitudeFromCartesianState(
+                        propBody->getState( ) - centBody->getState( ),
+                        gravField->getGravitationalParameter( ),
+                        shapeModel->getAverageRadius( ) );
+                };
                 break;
             }
             case current_body_mass_dependent_variable: {
-                variableFunction = std::bind( &simulation_setup::Body::getBodyMass, bodies.at( bodyWithProperty ) );
+                auto bodyObj = bodies.at( bodyWithProperty );
+                variableFunction = [bodyObj]( ) { return bodyObj->getBodyMass( ); };
                 break;
             }
             case radiation_pressure_coefficient_dependent_variable: {
@@ -2430,9 +2354,9 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                             bodyWithProperty + "w.r.t." + secondaryBody;
                     throw std::runtime_error( errorMessage );
                 }
-                variableFunction = std::bind( &electromagnetism::CannonballRadiationPressureTargetModel::getCoefficient,
-                                              std::dynamic_pointer_cast< electromagnetism::CannonballRadiationPressureTargetModel >(
-                                                      bodies.at( bodyWithProperty )->getRadiationPressureTargetModel( ) ) );
+                auto cannonballModel = std::dynamic_pointer_cast< electromagnetism::CannonballRadiationPressureTargetModel >(
+                        bodies.at( bodyWithProperty )->getRadiationPressureTargetModel( ) );
+                variableFunction = [cannonballModel]( ) { return cannonballModel->getCoefficient( ); };
                 break;
             }
             case gravity_field_potential_dependent_variable: {
@@ -2444,10 +2368,12 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                                 dependentVariableSettings, stateDerivativeModels, selectedAccelerationModelType );
 
                 // Position functions
+                auto relBody = bodies.at( bodyWithProperty );
+                auto centBody = bodies.at( secondaryBody );
                 std::function< Eigen::Vector3d( ) > positionFunctionOfRelativeBody =
-                        std::bind( &simulation_setup::Body::getPosition, bodies.at( bodyWithProperty ) );
+                        [relBody]( ) { return relBody->getPosition( ); };
                 std::function< Eigen::Vector3d( ) > positionFunctionOfCentralBody =
-                        std::bind( &simulation_setup::Body::getPosition, bodies.at( secondaryBody ) );
+                        [centBody]( ) { return centBody->getPosition( ); };
 
                 // Retrieve orientation function depending on type of gravity field
                 std::function< Eigen::Quaterniond( ) > orientationFunctionOfCentralBody;
@@ -2462,15 +2388,15 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                 else
                 {
                     orientationFunctionOfCentralBody =
-                            std::bind( &simulation_setup::Body::getCurrentRotationToLocalFrame, bodies.at( secondaryBody ) );
+                            [centBody]( ) { return centBody->getCurrentRotationToLocalFrame( ); };
                 }
 
                 // Retrieve function to get body fixed position of body
                 std::function< Eigen::Vector3d( ) > bodyFixedPositionOfBodyWithProperty =
-                        std::bind( &reference_frames::getBodyFixedCartesianPosition,
-                                   positionFunctionOfCentralBody,
-                                   positionFunctionOfRelativeBody,
-                                   orientationFunctionOfCentralBody );
+                        [positionFunctionOfCentralBody, positionFunctionOfRelativeBody, orientationFunctionOfCentralBody]( ) {
+                            return reference_frames::getBodyFixedCartesianPosition(
+                                positionFunctionOfCentralBody, positionFunctionOfRelativeBody, orientationFunctionOfCentralBody );
+                        };
 
                 // Downcast gravity model and get variable function
                 if( selectedAccelerationModelType == basic_astrodynamics::spherical_harmonic_gravity )
@@ -2574,10 +2500,12 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                                 dependentVariableSettings, stateDerivativeModels, selectedAccelerationModelType );
 
                 // Position functions
+                auto relBody = bodies.at( bodyWithProperty );
+                auto centBody = bodies.at( secondaryBody );
                 std::function< Eigen::Vector3d( ) > positionFunctionOfRelativeBody =
-                        std::bind( &simulation_setup::Body::getPosition, bodies.at( bodyWithProperty ) );
+                        [relBody]( ) { return relBody->getPosition( ); };
                 std::function< Eigen::Vector3d( ) > positionFunctionOfCentralBody =
-                        std::bind( &simulation_setup::Body::getPosition, bodies.at( secondaryBody ) );
+                        [centBody]( ) { return centBody->getPosition( ); };
 
                 // Retrieve orientation function depending on type of gravity field
                 std::function< Eigen::Quaterniond( ) > orientationFunctionOfCentralBody;
@@ -2592,15 +2520,15 @@ std::function< double( ) > getDoubleDependentVariableFunction(
                 else
                 {
                     orientationFunctionOfCentralBody =
-                            std::bind( &simulation_setup::Body::getCurrentRotationToLocalFrame, bodies.at( secondaryBody ) );
+                            [centBody]( ) { return centBody->getCurrentRotationToLocalFrame( ); };
                 }
 
                 // Retrieve function to get body fixed position of body
                 std::function< Eigen::Vector3d( ) > bodyFixedPositionOfBodyWithProperty =
-                        std::bind( &reference_frames::getBodyFixedCartesianPosition,
-                                   positionFunctionOfCentralBody,
-                                   positionFunctionOfRelativeBody,
-                                   orientationFunctionOfCentralBody );
+                        [positionFunctionOfCentralBody, positionFunctionOfRelativeBody, orientationFunctionOfCentralBody]( ) {
+                            return reference_frames::getBodyFixedCartesianPosition(
+                                positionFunctionOfCentralBody, positionFunctionOfRelativeBody, orientationFunctionOfCentralBody );
+                        };
 
                 // Downcast gravity model and get variable function
                 if( selectedAccelerationModelType == basic_astrodynamics::polyhedron_gravity )
@@ -2973,8 +2901,8 @@ std::function< double( ) > getDoubleDependentVariableFunction(
             }
             case solar_longitude:
             {
-                variableFunction = std::bind( &::tudat::aerodynamics::MarsDtmAtmosphereModel::getSolarLongitude,
-                                              std::dynamic_pointer_cast< aerodynamics::MarsDtmAtmosphereModel >( bodies.at( bodyWithProperty )->getAtmosphereModel( ) ) );
+                auto dtmModel = std::dynamic_pointer_cast< aerodynamics::MarsDtmAtmosphereModel >( bodies.at( bodyWithProperty )->getAtmosphereModel( ) );
+                variableFunction = [dtmModel]( ) { return dtmModel->getSolarLongitude( ); };
                 break;
             }
             default:
@@ -3045,7 +2973,7 @@ std::pair< std::function< Eigen::VectorXd( ) >, std::map< std::pair< int, int >,
 #else
             std::function< double( ) > doubleFunction = getDoubleDependentVariableFunction( variable, bodies, stateDerivativeModels );
 #endif
-            vectorFunction = std::make_pair( std::bind( &getVectorFromDoubleFunction, doubleFunction ), 1 );
+            vectorFunction = std::make_pair( [doubleFunction]( ) -> Eigen::VectorXd { return getVectorFromDoubleFunction( doubleFunction ); }, 1 );
         }
         // Create vector parameter
         else
@@ -3073,8 +3001,10 @@ std::pair< std::function< Eigen::VectorXd( ) >, std::map< std::pair< int, int >,
         totalVariableSize += vectorVariable.second;
     }
 
-    // Create function conatenating function results.
-    return std::make_pair( std::bind( &evaluateListOfVectorFunctions, vectorFunctionList, totalVariableSize ), dependentVariableIds );
+    // Create function concatenating function results.
+    return std::make_pair( [vectorFunctionList, totalVariableSize]( ) -> Eigen::VectorXd {
+        return evaluateListOfVectorFunctions( vectorFunctionList, totalVariableSize );
+    }, dependentVariableIds );
 }
 
 }  // namespace propagators

@@ -162,13 +162,13 @@ BOOST_AUTO_TEST_CASE( testCustomPropagationTermination )
         if( test == 0 )
         {
             std::function< bool( const double, const Eigen::MatrixXd& ) > terminationFunction =
-                    std::bind( &customTerminationConditionOnStateElement, std::placeholders::_1, std::placeholders::_2 );
+                    []( const double time, const Eigen::MatrixXd& state ) { return customTerminationConditionOnStateElement( time, state ); };
             terminationSettings = popagationCustomTerminationSettingsFromFullState( terminationFunction );
         }
         else if( test == 1 )
         {
             terminationSettings = popagationCustomTerminationSettings(
-                    std::bind( &customTerminationConditionOnAltitude, std::placeholders::_1, bodies ) );
+                    [bodies]( const double time ) { return customTerminationConditionOnAltitude( time, bodies ); } );
         }
 
         std::shared_ptr< TranslationalStatePropagatorSettings< double > > propagatorSettings =

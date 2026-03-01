@@ -91,11 +91,8 @@ BOOST_AUTO_TEST_CASE( testUnscentedKalmanFilterFirstCase )
 
     // Create unscented Kalman filter object
     UnscentedKalmanFilterDoublePointer unscentedFilter = std::make_shared< UnscentedKalmanFilterDouble >(
-            std::bind( &stateFunction1,
-                       std::placeholders::_1,
-                       std::placeholders::_2,
-                       std::bind( &ControlWrapper< double, double, 2 >::getCurrentControlVector, control ) ),
-            std::bind( &measurementFunction1, std::placeholders::_1, std::placeholders::_2 ),
+            [control]( const double time, const Eigen::Vector2d& state ) { return stateFunction1( time, state, control->getCurrentControlVector( ) ); },
+            []( const double time, const Eigen::Vector2d& state ) { return measurementFunction1( time, state ); },
             systemUncertainty,
             measurementUncertainty,
             timeStep,
@@ -215,11 +212,8 @@ BOOST_AUTO_TEST_CASE( testUnscentedKalmanFilterSecondCase )
     // Create unscented Kalman filter object
     std::shared_ptr< KalmanFilterBase< long double, long double > > unscentedFilter =
             std::make_shared< UnscentedKalmanFilter< long double, long double > >(
-                    std::bind( &stateFunction2,
-                               std::placeholders::_1,
-                               std::placeholders::_2,
-                               std::bind( &ControlWrapper< long double, long double, 3 >::getCurrentControlVector, control ) ),
-                    std::bind( &measurementFunction2, std::placeholders::_1, std::placeholders::_2 ),
+                    [control]( const long double time, const Vector3ld& state ) { return stateFunction2( time, state, control->getCurrentControlVector( ) ); },
+                    []( const long double time, const Vector3ld& state ) { return measurementFunction2( time, state ); },
                     systemUncertainty,
                     measurementUncertainty,
                     timeStep,
@@ -345,11 +339,8 @@ BOOST_AUTO_TEST_CASE( testUnscentedKalmanFilterThirdCase )
 
     // Create unscented Kalman filter object
     UnscentedKalmanFilterDoublePointer unscentedFilter = std::make_shared< UnscentedKalmanFilterDouble >(
-            std::bind( &stateFunction3,
-                       std::placeholders::_1,
-                       std::placeholders::_2,
-                       std::bind( &ControlWrapper< double, double, 3 >::getCurrentControlVector, control ) ),
-            std::bind( &measurementFunction3, std::placeholders::_1, std::placeholders::_2 ),
+            [control]( const double time, const Eigen::Vector3d& state ) { return stateFunction3( time, state, control->getCurrentControlVector( ) ); },
+            []( const double time, const Eigen::Vector3d& state ) { return measurementFunction3( time, state ); },
             systemUncertainty,
             measurementUncertainty,
             timeStep,

@@ -339,26 +339,30 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > AerodynamicAccelerat
         switch( parameter->getParameterName( ).first )
         {
             case estimatable_parameters::constant_drag_coefficient: {
-                partialFunction = std::bind(
-                        &AerodynamicAccelerationPartial::computeAccelerationPartialWrtCurrentDragCoefficient, this, std::placeholders::_1 );
+                partialFunction = [this](Eigen::MatrixXd& m) {
+                    this->computeAccelerationPartialWrtCurrentDragCoefficient(m);
+                };
                 numberOfColumns = 1;
                 break;
             }
             case estimatable_parameters::drag_component_scaling_factor: {
-                partialFunction = std::bind(
-                        &AerodynamicAccelerationPartial::computeAccelerationPartialWrtDragComponent, this, std::placeholders::_1 );
+                partialFunction = [this](Eigen::MatrixXd& m) {
+                    this->computeAccelerationPartialWrtDragComponent(m);
+                };
                 numberOfColumns = 1;
                 break;
             }
             case estimatable_parameters::side_component_scaling_factor: {
-                partialFunction = std::bind(
-                        &AerodynamicAccelerationPartial::computeAccelerationPartialWrtSideComponent, this, std::placeholders::_1 );
+                partialFunction = [this](Eigen::MatrixXd& m) {
+                    this->computeAccelerationPartialWrtSideComponent(m);
+                };
                 numberOfColumns = 1;
                 break;
             }
             case estimatable_parameters::lift_component_scaling_factor: {
-                partialFunction = std::bind(
-                        &AerodynamicAccelerationPartial::computeAccelerationPartialWrtLiftComponent, this, std::placeholders::_1 );
+                partialFunction = [this](Eigen::MatrixXd& m) {
+                    this->computeAccelerationPartialWrtLiftComponent(m);
+                };
                 numberOfColumns = 1;
                 break;
             }
@@ -385,10 +389,10 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > AerodynamicAccelerat
                     if( exponentialAtmosphere != nullptr )
                     {
                         partialFunction =
-                                std::bind( &AerodynamicAccelerationPartial::computeAccelerationPartialWrtExponentialAtmosphereBaseDensity,
-                                           this,
-                                           std::placeholders::_1,
-                                           exponentialAtmosphere );
+                                [this, exponentialAtmosphere](Eigen::MatrixXd& m) {
+                                    auto atm = exponentialAtmosphere;
+                                    this->computeAccelerationPartialWrtExponentialAtmosphereBaseDensity(m, atm);
+                                };
                         numberOfColumns = 1;
                     }
                     else
@@ -420,10 +424,10 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > AerodynamicAccelerat
                     if( exponentialAtmosphere != nullptr )
                     {
                         partialFunction =
-                                std::bind( &AerodynamicAccelerationPartial::computeAccelerationPartialWrtExponentialAtmosphereScaleHeight,
-                                           this,
-                                           std::placeholders::_1,
-                                           exponentialAtmosphere );
+                                [this, exponentialAtmosphere](Eigen::MatrixXd& m) {
+                                    auto atm = exponentialAtmosphere;
+                                    this->computeAccelerationPartialWrtExponentialAtmosphereScaleHeight(m, atm);
+                                };
                         numberOfColumns = 1;
                     }
                     else
@@ -465,10 +469,9 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > AerodynamicAccelerat
                 if( std::dynamic_pointer_cast< estimatable_parameters::ArcWiseConstantDragCoefficient >( parameter ) != nullptr )
                 {
                     partialFunction =
-                            std::bind( &AerodynamicAccelerationPartial::computeAccelerationPartialWrtArcwiseDragCoefficient,
-                                       this,
-                                       std::placeholders::_1,
-                                       std::dynamic_pointer_cast< estimatable_parameters::ArcWiseConstantDragCoefficient >( parameter ) );
+                            [this, arcWiseParam = std::dynamic_pointer_cast< estimatable_parameters::ArcWiseConstantDragCoefficient >( parameter )](Eigen::MatrixXd& m) {
+                                this->computeAccelerationPartialWrtArcwiseDragCoefficient(m, arcWiseParam);
+                            };
                     numberOfColumns = parameter->getParameterSize( );
                 }
                 else
@@ -483,10 +486,9 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > AerodynamicAccelerat
                 if( std::dynamic_pointer_cast< estimatable_parameters::ArcWiseAerodynamicScalingFactor >( parameter ) != nullptr )
                 {
                     partialFunction =
-                            std::bind( &AerodynamicAccelerationPartial::computeAccelerationPartialWrtArcWiseAerodynamicScalingCofficient,
-                                       this,
-                                       std::placeholders::_1,
-                                       std::dynamic_pointer_cast< estimatable_parameters::ArcWiseAerodynamicScalingFactor >( parameter ) );
+                            [this, arcWiseParam = std::dynamic_pointer_cast< estimatable_parameters::ArcWiseAerodynamicScalingFactor >( parameter )](Eigen::MatrixXd& m) {
+                                this->computeAccelerationPartialWrtArcWiseAerodynamicScalingCofficient(m, arcWiseParam);
+                            };
                     numberOfColumns = parameter->getParameterSize( );
                 }
                 else
@@ -508,11 +510,10 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > AerodynamicAccelerat
             case estimatable_parameters::arc_wise_exponential_atmosphere_scale_height: {
                 if( std::dynamic_pointer_cast< estimatable_parameters::ArcWiseExponentialAtmosphereParameter >( parameter ) != nullptr )
                 {
-                    partialFunction = std::bind(
-                            &AerodynamicAccelerationPartial::computeAccelerationPartialWrtArcWiseExponentialAtmosphereParameter,
-                            this,
-                            std::placeholders::_1,
-                            std::dynamic_pointer_cast< estimatable_parameters::ArcWiseExponentialAtmosphereParameter >( parameter ) );
+                    partialFunction =
+                            [this, arcWiseParam = std::dynamic_pointer_cast< estimatable_parameters::ArcWiseExponentialAtmosphereParameter >( parameter )](Eigen::MatrixXd& m) {
+                                this->computeAccelerationPartialWrtArcWiseExponentialAtmosphereParameter(m, arcWiseParam);
+                            };
                     numberOfColumns = parameter->getParameterSize( );
                 }
                 else

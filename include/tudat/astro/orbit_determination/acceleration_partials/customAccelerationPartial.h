@@ -192,11 +192,11 @@ public:
         int parameterSize = 0;
         if( customAccelerationPartialSet_->customDoubleParameterPartials_.count( parameter->getParameterName( ) ) != 0 )
         {
+            auto customPartialCalculator = customAccelerationPartialSet_->customDoubleParameterPartials_.at( parameter->getParameterName( ) );
             partialFunction =
-                    std::bind( &CustomAccelerationPartial::createCustomParameterPartialFunction,
-                               this,
-                               std::placeholders::_1,
-                               customAccelerationPartialSet_->customDoubleParameterPartials_.at( parameter->getParameterName( ) ) );
+                    [this, customPartialCalculator]( Eigen::MatrixXd& partialBlock ) {
+                        this->createCustomParameterPartialFunction( partialBlock, customPartialCalculator );
+                    };
             parameterSize = 1;
         }
         return std::make_pair( partialFunction, parameterSize );
@@ -216,11 +216,11 @@ public:
         int parameterSize = 0;
         if( customAccelerationPartialSet_->customVectorParameterPartials_.count( parameter->getParameterName( ) ) != 0 )
         {
+            auto customPartialCalculator = customAccelerationPartialSet_->customVectorParameterPartials_.at( parameter->getParameterName( ) );
             partialFunction =
-                    std::bind( &CustomAccelerationPartial::createCustomParameterPartialFunction,
-                               this,
-                               std::placeholders::_1,
-                               customAccelerationPartialSet_->customVectorParameterPartials_.at( parameter->getParameterName( ) ) );
+                    [this, customPartialCalculator]( Eigen::MatrixXd& partialBlock ) {
+                        this->createCustomParameterPartialFunction( partialBlock, customPartialCalculator );
+                    };
             parameterSize = parameter->getParameterSize( );
         }
         return std::make_pair( partialFunction, parameterSize );

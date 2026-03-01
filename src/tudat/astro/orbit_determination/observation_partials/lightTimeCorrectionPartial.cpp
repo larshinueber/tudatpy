@@ -59,20 +59,21 @@ getLightTimeParameterPartialFunction( const estimatable_parameters::EstimatebleP
                 {
                     int bodyIndex = std::distance( perturbingBodies.begin( ), findIterator );
                     partialFunction =
-                            std::make_pair( std::bind( &FirstOrderRelativisticLightTimeCorrectionPartial::wrtBodyGravitationalParameter,
-                                                       currentLightTimeCorrectorPartial,
-                                                       std::placeholders::_1,
-                                                       std::placeholders::_2,
-                                                       bodyIndex ),
+                            std::make_pair( [currentLightTimeCorrectorPartial, bodyIndex](
+                                                    const std::vector< Eigen::Vector6d >& states,
+                                                    const std::vector< double >& times) {
+                                                return currentLightTimeCorrectorPartial->wrtBodyGravitationalParameter(states, times, bodyIndex);
+                                            },
                                             1 );
                 }
             }
             else if( parameterId.first == estimatable_parameters::ppn_parameter_gamma )
             {
-                partialFunction = std::make_pair( std::bind( &FirstOrderRelativisticLightTimeCorrectionPartial::wrtPpnParameterGamma,
-                                                             currentLightTimeCorrectorPartial,
-                                                             std::placeholders::_1,
-                                                             std::placeholders::_2 ),
+                partialFunction = std::make_pair( [currentLightTimeCorrectorPartial](
+                                                         const std::vector< Eigen::Vector6d >& states,
+                                                         const std::vector< double >& times) {
+                                                     return currentLightTimeCorrectorPartial->wrtPpnParameterGamma(states, times);
+                                                 },
                                                   1 );
             }
             break;
@@ -119,11 +120,12 @@ getLightTimeGradientParameterPartialFunction( const estimatable_parameters::Esti
             if( parameterId.first == estimatable_parameters::ppn_parameter_gamma )
             {
                 partialFunction =
-                        std::make_pair( std::bind( &FirstOrderRelativisticLightTimeCorrectionPartial::gradientWrtPpnParameterGamma,
-                                                   currentLightTimeCorrectorPartial,
-                                                   std::placeholders::_1,
-                                                   std::placeholders::_2,
-                                                   std::placeholders::_3 ),
+                        std::make_pair( [currentLightTimeCorrectorPartial](
+                                                const std::vector< Eigen::Vector6d >& states,
+                                                const std::vector< double >& times,
+                                                const observation_models::LinkEndType linkEndType) {
+                                            return currentLightTimeCorrectorPartial->gradientWrtPpnParameterGamma(states, times, linkEndType);
+                                        },
                                         1 );
             }
             break;

@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE( test_TopocentricVectorToAzEl )
             std::make_shared< GroundStationState >( Eigen::Vector3d::Zero( ), coordinate_conversions::cartesian_position, bodyShape );
     std::shared_ptr< PointingAnglesCalculator > pointAnglesCalculator = std::make_shared< PointingAnglesCalculator >(
             [ & ]( const double ) { return Eigen::Quaterniond( Eigen::Matrix3d::Identity( ) ); },
-            std::bind( &GroundStationState::getRotationFromBodyFixedToTopocentricFrame, stationState, std::placeholders::_1 ) );
+            [stationState]( const double t ) { return stationState->getRotationFromBodyFixedToTopocentricFrame( t ); } );
 
     // Case 1
     topocentricVector = ( Eigen::Vector3d( ) << 69282032.302755102515, 0, 39999999.999999992549 ).finished( );
@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE( test_PointingAnglesCalculator )
                 bodyShape );
         std::shared_ptr< PointingAnglesCalculator > pointAnglesCalculator = std::make_shared< PointingAnglesCalculator >(
                 [ & ]( const double ) { return Eigen::Quaterniond( Eigen::Matrix3d::Identity( ) ); },
-                std::bind( &GroundStationState::getRotationFromBodyFixedToTopocentricFrame, stationState, std::placeholders::_1 ) );
+                [stationState]( const double t ) { return stationState->getRotationFromBodyFixedToTopocentricFrame( t ); } );
 
         // Define state of viewed point
         double testLatitude = 30.0 * degreesToRadians;

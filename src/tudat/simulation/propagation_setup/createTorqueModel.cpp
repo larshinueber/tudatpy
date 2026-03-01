@@ -26,8 +26,8 @@ std::shared_ptr< basic_astrodynamics::InertialTorqueModel > createInertialTorque
         const std::string& nameOfBodyUndergoingTorque )
 {
     std::function< Eigen::Vector3d( ) > angularVelocityFunction =
-            std::bind( &Body::getCurrentAngularVelocityVectorInLocalFrame, bodyUndergoingTorque );
-    std::function< Eigen::Matrix3d( ) > inertiaTensorFunction = std::bind( &Body::getBodyInertiaTensor, bodyUndergoingTorque );
+            [bodyUndergoingTorque]( ) { return bodyUndergoingTorque->getCurrentAngularVelocityVectorInLocalFrame( ); };
+    std::function< Eigen::Matrix3d( ) > inertiaTensorFunction = [bodyUndergoingTorque]( ) { return bodyUndergoingTorque->getBodyInertiaTensor( ); };
     return std::make_shared< basic_astrodynamics::InertialTorqueModel >( angularVelocityFunction, inertiaTensorFunction );
 }
 
@@ -83,21 +83,21 @@ std::shared_ptr< aerodynamics::AerodynamicTorque > createAerodynamicTorqueModel(
     toPropagationFrameTransformation = reference_frames::getAerodynamicForceTransformationFunction(
             bodyFlightConditions->getAerodynamicAngleCalculator( ),
             torqueFrame,
-            std::bind( &Body::getCurrentRotationToGlobalFrame, bodyExertingTorque ),
+            [bodyExertingTorque]( ) { return bodyExertingTorque->getCurrentRotationToGlobalFrame( ); },
             reference_frames::body_frame );
 
     std::function< Eigen::Vector3d( ) > coefficientFunction =
-            std::bind( &aerodynamics::AerodynamicCoefficientInterface::getCurrentMomentCoefficients, aerodynamicCoefficients );
-    std::function< Eigen::Vector3d( ) > coefficientInPropagationFrameFunction = std::bind(
-            &reference_frames::transformVectorFunctionFromVectorFunctions, coefficientFunction, toPropagationFrameTransformation );
+            [aerodynamicCoefficients]( ) { return aerodynamicCoefficients->getCurrentMomentCoefficients( ); };
+    std::function< Eigen::Vector3d( ) > coefficientInPropagationFrameFunction =
+            [coefficientFunction, toPropagationFrameTransformation]( ) { return reference_frames::transformVectorFunctionFromVectorFunctions( coefficientFunction, toPropagationFrameTransformation ); };
 
     // Create torque model.
     return std::make_shared< aerodynamics::AerodynamicTorque >(
             coefficientInPropagationFrameFunction,
-            std::bind( &aerodynamics::AtmosphericFlightConditions::getCurrentDensity, bodyFlightConditions ),
-            std::bind( &aerodynamics::AtmosphericFlightConditions::getCurrentAirspeed, bodyFlightConditions ),
-            std::bind( &aerodynamics::AerodynamicCoefficientInterface::getReferenceArea, aerodynamicCoefficients ),
-            std::bind( &aerodynamics::AerodynamicCoefficientInterface::getReferenceLengths, aerodynamicCoefficients ),
+            [bodyFlightConditions]( ) { return bodyFlightConditions->getCurrentDensity( ); },
+            [bodyFlightConditions]( ) { return bodyFlightConditions->getCurrentAirspeed( ); },
+            [aerodynamicCoefficients]( ) { return aerodynamicCoefficients->getReferenceArea( ); },
+            [aerodynamicCoefficients]( ) { return aerodynamicCoefficients->getReferenceLengths( ); },
             aerodynamics::areCoefficientsInNegativeDirection( aerodynamicCoefficients->getMomentCoefficientsFrame( ) ) );
 }
 
@@ -110,9 +110,9 @@ std::shared_ptr< gravitation::SecondDegreeGravitationalTorqueModel > createSecon
 {
     // Retrieve state functions
     std::function< Eigen::Vector3d( ) > positionOfBodySubjectToTorqueFunction =
-            std::bind( &simulation_setup::Body::getPosition, bodyUndergoingTorque );
+            [bodyUndergoingTorque]( ) { return bodyUndergoingTorque->getPosition( ); };
     std::function< Eigen::Vector3d( ) > positionOfBodyExertingTorqueFunction =
-            std::bind( &simulation_setup::Body::getPosition, bodyExertingTorque );
+            [bodyExertingTorque]( ) { return bodyExertingTorque->getPosition( ); };
 
     // Check model availability
     std::shared_ptr< gravitation::GravityFieldModel > gravityFieldModel = bodyExertingTorque->getGravityFieldModel( );
@@ -125,14 +125,14 @@ std::shared_ptr< gravitation::SecondDegreeGravitationalTorqueModel > createSecon
     else
     {
         gravitationalParameterOfAttractingBodyFunction =
-                std::bind( &gravitation::GravityFieldModel::getGravitationalParameter, gravityFieldModel );
+                [gravityFieldModel]( ) { return gravityFieldModel->getGravitationalParameter( ); };
     }
 
     // Retrieve environment parameters
     std::function< Eigen::Matrix3d( ) > inertiaTensorOfRotatingBodyFunction =
-            std::bind( &simulation_setup::Body::getBodyInertiaTensor, bodyUndergoingTorque );
+            [bodyUndergoingTorque]( ) { return bodyUndergoingTorque->getBodyInertiaTensor( ); };
     std::function< Eigen::Quaterniond( ) > rotationToBodyFixedFrameFunction =
-            std::bind( &simulation_setup::Body::getCurrentRotationToLocalFrame, bodyUndergoingTorque );
+            [bodyUndergoingTorque]( ) { return bodyUndergoingTorque->getCurrentRotationToLocalFrame( ); };
 
     return std::make_shared< gravitation::SecondDegreeGravitationalTorqueModel >( positionOfBodySubjectToTorqueFunction,
                                                                                   gravitationalParameterOfAttractingBodyFunction,
@@ -171,8 +171,8 @@ std::shared_ptr< gravitation::SphericalHarmonicGravitationalTorqueModel > create
 
     return std::make_shared< gravitation::SphericalHarmonicGravitationalTorqueModel >(
             sphericalHarmonicAcceleration,
-            std::bind( &Body::getCurrentRotationToLocalFrame, bodyUndergoingTorque ),
-            std::bind( &Body::getBodyMass, bodyExertingTorque ) );
+            [bodyUndergoingTorque]( ) { return bodyUndergoingTorque->getCurrentRotationToLocalFrame( ); },
+            [bodyExertingTorque]( ) { return bodyExertingTorque->getBodyMass( ); } );
 }
 
 //! Function to create a spherical harmonic gravitational torque
@@ -207,7 +207,7 @@ std::shared_ptr< electromagnetism::IsotropicPointSourceRadiationPressureTorque >
     }
     else
     {
-        centerOfMassFunction = std::bind( &RigidBodyProperties::getCurrentCenterOfMass, massProperties );
+        centerOfMassFunction = [massProperties]( ) { return massProperties->getCurrentCenterOfMass( ); };
     }
 
     return std::make_shared< electromagnetism::IsotropicPointSourceRadiationPressureTorque >( radiationPressureAcceleration,

@@ -450,9 +450,9 @@ void SphericalShapingLeg::iterateToMatchRequiredTimeOfFlight( std::shared_ptr< r
 {
     // Define the structure updating the time of flight from the free coefficient value, while still satisfying the boundary conditions.
     std::function< void( double ) > satisfyBoundaryConditionsFunction =
-            std::bind( &SphericalShapingLeg::satisfyBoundaryConditions, this, std::placeholders::_1 );
-    std::function< double( ) > computeTOFfunction = std::bind( &SphericalShapingLeg::computeNormalizedTimeOfFlight, this );
-    std::function< double( ) > getRequiredTOFfunction = std::bind( &SphericalShapingLeg::getNormalizedRequiredTimeOfFlight, this );
+            [this](double a) { satisfyBoundaryConditions(a); };
+    std::function< double( ) > computeTOFfunction = [this]() { return computeNormalizedTimeOfFlight(); };
+    std::function< double( ) > getRequiredTOFfunction = [this]() { return getNormalizedRequiredTimeOfFlight(); };
 
     std::shared_ptr< basic_mathematics::Function< double, double > > timeOfFlightFunction =
             std::make_shared< SphericalShapingLeg::TimeOfFlightFunction >(

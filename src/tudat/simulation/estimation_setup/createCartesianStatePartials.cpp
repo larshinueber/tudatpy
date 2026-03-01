@@ -78,17 +78,13 @@ std::map< observation_models::LinkEndType, std::shared_ptr< CartesianStatePartia
 
             // Set ground station position function
             std::function< Eigen::Vector3d( const double ) > groundStationPositionFunction =
-                    std::bind( &ground_stations::GroundStationState::getCartesianPositionInTime,
-                               currentBody->getGroundStation( linkEndIterator->second.stationName_ )->getNominalStationState( ),
-                               std::placeholders::_1,
-                               bodies.getFrameOrigin( ) );
+                    [stationState = currentBody->getGroundStation( linkEndIterator->second.stationName_ )->getNominalStationState( ),
+                     frameOrigin = bodies.getFrameOrigin( )]( const double time ) { return stationState->getCartesianPositionInTime( time, frameOrigin ); };
 
             // Create partial
             partialMap[ linkEndIterator->first ] = std::make_shared< CartesianStatePartialWrtRotationMatrixParameter >(
                     std::make_shared< RotationMatrixPartialWrtRotationalState >(
-                            std::bind( &ephemerides::RotationalEphemeris::getRotationToBaseFrame,
-                                       currentBody->getRotationalEphemeris( ),
-                                       std::placeholders::_1 ) ),
+                            [rotEph = currentBody->getRotationalEphemeris( )]( const double time ) { return rotEph->getRotationToBaseFrame( time ); } ),
                     groundStationPositionFunction );
         }
     }
@@ -129,10 +125,8 @@ std::map< observation_models::LinkEndType, std::shared_ptr< CartesianStatePartia
             {
                 // Set ground station position function
                 std::function< Eigen::Vector3d( const double ) > groundStationPositionFunction =
-                        std::bind( &ground_stations::GroundStationState::getCartesianPositionInTime,
-                                   ( currentBody )->getGroundStation( linkEndIterator->second.stationName_ )->getNominalStationState( ),
-                                   std::placeholders::_1,
-                                   bodies.getFrameOrigin( ) );
+                        [stationState = ( currentBody )->getGroundStation( linkEndIterator->second.stationName_ )->getNominalStationState( ),
+                         frameOrigin = bodies.getFrameOrigin( )]( const double time ) { return stationState->getCartesianPositionInTime( time, frameOrigin ); };
 
                 // Create parameter partial object.
                 partialMap[ linkEndIterator->first ] = std::make_shared< CartesianStatePartialWrtRotationMatrixParameter >(
@@ -194,10 +188,8 @@ std::map< observation_models::LinkEndType, std::shared_ptr< CartesianStatePartia
 
                 // Set ground station position function
                 std::function< Eigen::Vector3d( const double ) > groundStationPositionFunction =
-                        std::bind( &ground_stations::GroundStationState::getCartesianPositionInTime,
-                                   currentBody->getGroundStation( linkEndIterator->second.stationName_ )->getNominalStationState( ),
-                                   std::placeholders::_1,
-                                   bodies.getFrameOrigin( ) );
+                        [stationState = currentBody->getGroundStation( linkEndIterator->second.stationName_ )->getNominalStationState( ),
+                         frameOrigin = bodies.getFrameOrigin( )]( const double time ) { return stationState->getCartesianPositionInTime( time, frameOrigin ); };
 
                 // Create parameter partial object.
                 partialMap[ linkEndIterator->first ] = std::make_shared< CartesianStatePartialWrtRotationMatrixParameter >(

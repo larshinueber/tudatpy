@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE( testShapiroDelay )
     std::vector< std::function< Eigen::Vector6d( const double ) > > perturbingBodyStateFunctions;
     std::vector< std::function< double( ) > > perturbingBodyGravitationalParameterFunctions;
 
-    perturbingBodyStateFunctions.push_back( std::bind( &Ephemeris::getCartesianState, ephemeris, std::placeholders::_1 ) );
+    perturbingBodyStateFunctions.push_back( [ephemeris]( const double t ) { return ephemeris->getCartesianState( t ); } );
     perturbingBodyGravitationalParameterFunctions.push_back( [ & ]( ) { return earthGravitationalParameter; } );
 
     // Calculate with bending through calculator (default)

@@ -1687,10 +1687,9 @@ public:
                                                                   terminationSettings,
                                                                   dependentVariablesToSave,
                                                                   statePrintInterval ),
-        stateDerivativeFunction_( std::bind( &convertScalarToVectorStateFunction< StateScalarType, TimeType >,
-                                             stateDerivativeFunction,
-                                             std::placeholders::_1,
-                                             std::placeholders::_2 ) ),
+        stateDerivativeFunction_( [stateDerivativeFunction]( const TimeType time, const StateVectorType& state ) {
+            return convertScalarToVectorStateFunction< StateScalarType, TimeType >( stateDerivativeFunction, time, state );
+        } ),
         stateSize_( 1 )
     {}
 

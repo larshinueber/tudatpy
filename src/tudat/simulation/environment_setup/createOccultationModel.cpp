@@ -34,7 +34,7 @@ std::shared_ptr< tudat::electromagnetism::OccultationModel > createOccultationMo
             auto occultingBodyName = occultingBodies.front( );
             auto occultingBody = bodies.at( occultingBodyName );
             occultationModel = std::make_shared< SingleOccultingBodyOccultationModel >(
-                    occultingBodyName, std::bind( &Body::getPosition, occultingBody ), occultingBody->getShapeModel( ) );
+                    occultingBodyName, [occultingBody]() { return occultingBody->getPosition(); }, occultingBody->getShapeModel( ) );
             break;
         }
         default: {
@@ -43,7 +43,7 @@ std::shared_ptr< tudat::electromagnetism::OccultationModel > createOccultationMo
             for( const auto& occultingBodyName: occultingBodies )
             {
                 auto occultingBody = bodies.at( occultingBodyName );
-                occultingBodyPositionFunctions.emplace_back( std::bind( &Body::getPosition, occultingBody ) );
+                occultingBodyPositionFunctions.emplace_back( [occultingBody]() { return occultingBody->getPosition(); } );
                 occultingBodyShapeModels.push_back( occultingBody->getShapeModel( ) );
             }
             occultationModel = std::make_shared< SimpleMultipleOccultingBodyOccultationModel >(

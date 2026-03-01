@@ -92,7 +92,7 @@ Eigen::Vector3d HybridMethod::computeCurrentThrustForce(
     };
 
     std::function< double( ) > thrustingBodyMassFunction =
-            std::bind( &simulation_setup::Body::getBodyMass, bodies_.at( bodyToPropagate_ ) );
+            [body = bodies_.at( bodyToPropagate_ )]() { return body->getBodyMass(); };
 
     propulsion::MeeCostatesBangBangThrustMagnitudeWrapper thrustMagnitudeWrapper =
             propulsion::MeeCostatesBangBangThrustMagnitudeWrapper( thrustingBodyStateFunction,
@@ -152,7 +152,7 @@ void HybridMethod::getThrustForceProfile( std::vector< double >& epochsVector,
         };
 
         std::function< double( ) > thrustingBodyMassFunction =
-                std::bind( &simulation_setup::Body::getBodyMass, bodies_.at( bodyToPropagate_ ) );
+                [body = bodies_.at( bodyToPropagate_ )]() { return body->getBodyMass(); };
 
         propulsion::MeeCostatesBangBangThrustMagnitudeWrapper thrustMagnitudeWrapper =
                 propulsion::MeeCostatesBangBangThrustMagnitudeWrapper( thrustingBodyStateFunction,

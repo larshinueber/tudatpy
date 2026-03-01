@@ -253,19 +253,14 @@ BOOST_AUTO_TEST_CASE( testControlSurfaceIncrementInterfaceInPropagation )
 
     // Set update function for body orientation and control surface deflections
     std::shared_ptr< DummyGuidanceSystem > dummyGuidanceSystem =
-            std::make_shared< DummyGuidanceSystem >( std::bind( &system_models::VehicleSystems::setCurrentControlSurfaceDeflection,
-                                                                apolloSystems,
-                                                                std::placeholders::_1,
-                                                                std::placeholders::_2 ) );
+            std::make_shared< DummyGuidanceSystem >( [apolloSystems]( const std::string& name, const double value ) { apolloSystems->setCurrentControlSurfaceDeflection( name, value ); } );
 
     std::shared_ptr< ephemerides::RotationalEphemeris > vehicleRotationModel =
             createRotationModel( std::make_shared< AerodynamicAngleRotationSettings >(
                                          "Earth",
                                          "ECLIPJ2000",
                                          "VehicleFixed",
-                                         std::bind( &unit_tests::DummyGuidanceSystem::computeAndGetAerodynamicAngles,
-                                                    dummyGuidanceSystem,
-                                                    std::placeholders::_1 ) ),
+                                         [dummyGuidanceSystem]( const double t ) { return dummyGuidanceSystem->computeAndGetAerodynamicAngles( t ); } ),
                                  "Apollo",
                                  bodies );
 

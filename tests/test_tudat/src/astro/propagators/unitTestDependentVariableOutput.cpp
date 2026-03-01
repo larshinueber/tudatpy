@@ -275,9 +275,9 @@ BOOST_AUTO_TEST_CASE( testDependentVariableOutput )
             dependentVariablesToAdd.push_back( std::make_shared< SingleDependentVariableSaveSettings >(
                     rsw_to_inertial_frame_rotation_dependent_variable, "Apollo", "Earth" ) );
             dependentVariablesToAdd.push_back(
-                    std::make_shared< CustomDependentVariableSaveSettings >( std::bind( &customDependentVariable1, bodies ), 3 ) );
+                    std::make_shared< CustomDependentVariableSaveSettings >( [bodies]() { return customDependentVariable1( bodies ); }, 3 ) );
             dependentVariablesToAdd.push_back(
-                    std::make_shared< CustomDependentVariableSaveSettings >( std::bind( &customDependentVariable2, bodies ), 1 ) );
+                    std::make_shared< CustomDependentVariableSaveSettings >( [bodies]() { return customDependentVariable2( bodies ); }, 1 ) );
             dependentVariablesToAdd.push_back( std::make_shared< SingleDependentVariableSaveSettings >(
                     gravity_field_potential_dependent_variable, "Apollo", "Earth" ) );
             dependentVariablesToAdd.push_back( std::make_shared< SingleDependentVariableSaveSettings >(

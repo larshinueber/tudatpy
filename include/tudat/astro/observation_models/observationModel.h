@@ -488,16 +488,15 @@ std::function< double( const double, const observation_models::LinkEndType ) > g
         std::function< Eigen::Matrix< ObservationScalarType, 1, 1 >( const TimeType, const observation_models::LinkEndType ) >
                 observationFunction )
 {
-    return std::bind( &getSizeOneObservationAtDoublePrecision< ObservationScalarType, TimeType >,
-                      observationFunction,
-                      std::placeholders::_1,
-                      std::placeholders::_2 );
+    return [observationFunction]( const double currentTime, const observation_models::LinkEndType referenceLinkEnd ) {
+        return getSizeOneObservationAtDoublePrecision< ObservationScalarType, TimeType >( observationFunction, currentTime, referenceLinkEnd );
+    };
 }
 
 //! Function to generate a function that computes an observation  from an ObservationModel
 /*!
  *  Function to generate a function that produces an observation, only
- * applicable for observation models of size one. This function uses std::bind
+ * applicable for observation models of size one. This function uses a lambda
  * to link the computeObservations function of the observationModel to the
  * output of this function. \param observationModel Observation model for which
  * the observation function is to be returned. \return Function that computes
@@ -509,18 +508,16 @@ std::function< Eigen::Matrix< ObservationScalarType, 1, 1 >( const TimeType, con
 getSizeOneObservationFunctionFromObservationModel(
         const std::shared_ptr< ObservationModel< 1, ObservationScalarType, TimeType > > observationModel )
 {
-    return std::bind( &ObservationModel< 1, ObservationScalarType, TimeType >::computeObservations,
-                      observationModel,
-                      std::placeholders::_1,
-                      std::placeholders::_2,
-                      nullptr );
+    return [observationModel]( const TimeType time, const observation_models::LinkEndType linkEndAssociatedWithTime ) {
+        return observationModel->computeObservations( time, linkEndAssociatedWithTime, nullptr );
+    };
 }
 
 //! Function to generate a function that computes an observation at double precision from an ObservationModel
 /*!
  *  Function to generate a function that computes an observation at double
  * precision, only applicable for observation models of size one. This function
- * uses std::bind to link the computeObservations function of the
+ * uses a lambda to link the computeObservations function of the
  * observationModel to the output of this function, casting in/and output to
  * double precisiono if needed. \param observationModel Observation model for
  * which the observation function is to be returned. \return Function that

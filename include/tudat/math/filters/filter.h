@@ -110,14 +110,12 @@ public:
         generateNoiseDistributions( );
 
         // Create system and measurement functions based on input parameters// Get time step information
-        systemFunction_ = std::bind( &FilterBase< IndependentVariableType, DependentVariableType >::createSystemFunction,
-                                     this,
-                                     std::placeholders::_1,
-                                     std::placeholders::_2 );
-        measurementFunction_ = std::bind( &FilterBase< IndependentVariableType, DependentVariableType >::createMeasurementFunction,
-                                          this,
-                                          std::placeholders::_1,
-                                          std::placeholders::_2 );
+        systemFunction_ = [this](const IndependentVariableType t, const DependentVector& x) {
+                               return this->createSystemFunction( t, x );
+                           };
+        measurementFunction_ = [this](const IndependentVariableType t, const DependentVector& x) {
+                                   return this->createMeasurementFunction( t, x );
+                               };
 
         // Create numerical integrator
         isStateToBeIntegrated_ = integratorSettings != nullptr;
@@ -358,7 +356,7 @@ protected:
     //! Function to create the function that defines the system model.
     /*!
      *  Function to create the function that defines the system model. The output of this function is then bound
-     *  to the systemFunction_ variable, via the std::bind command.
+     *  to the systemFunction_ variable, via a lambda.
      *  \param currentTime Scalar representing the current time.
      *  \param currentStateVector Vector representing the current state.
      *  \return Vector representing the estimated state.
@@ -369,7 +367,7 @@ protected:
     //! Function to create the function that defines the measurement model.
     /*!
      *  Function to create the function that defines the measurement model. The output of this function is then bound
-     *  to the measurementFunction_ variable, via the std::bind command.
+     *  to the measurementFunction_ variable, via a lambda.
      *  \param currentTime Scalar representing the current time.
      *  \param currentStateVector Vector representing the current state.
      *  \return Vector representing the estimated measurement.

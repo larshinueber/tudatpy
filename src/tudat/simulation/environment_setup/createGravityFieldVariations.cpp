@@ -173,13 +173,12 @@ std::shared_ptr< gravitation::GravityFieldVariations > createGravityFieldVariati
                 // directly during propagation, or a priori by an interpolator
                 if( gravityFieldVariationSettings->getInterpolatorSettings( ) != nullptr )
                 {
-                    deformingBodyStateFunctions.push_back( std::bind( &Body::getStateInBaseFrameFromEphemeris< double, double >,
-                                                                      bodies.at( deformingBodies[ i ] ),
-                                                                      std::placeholders::_1 ) );
+                    deformingBodyStateFunctions.push_back( [body = bodies.at( deformingBodies[ i ] )](const double time) {
+                                                                      return body->getStateInBaseFrameFromEphemeris<double, double>( time ); } );
                 }
                 else
                 {
-                    deformingBodyStateFunctions.push_back( std::bind( &Body::getState, bodies.at( deformingBodies[ i ] ) ) );
+                    deformingBodyStateFunctions.push_back( [body = bodies.at( deformingBodies[ i ] )](const double) { return body->getState(); } );
                 }
 
                 // Get gravitational parameter of perturbing bodies.
@@ -190,8 +189,8 @@ std::shared_ptr< gravitation::GravityFieldVariations > createGravityFieldVariati
                 }
                 else
                 {
-                    gravitionalParametersOfDeformingBodies.push_back( std::bind(
-                            &GravityFieldModel::getGravitationalParameter, bodies.at( deformingBodies[ i ] )->getGravityFieldModel( ) ) );
+                    gravitionalParametersOfDeformingBodies.push_back( [gravityField = bodies.at( deformingBodies[ i ] )->getGravityFieldModel( )]() {
+                            return gravityField->getGravitationalParameter(); } );
                 }
             }
 
@@ -199,19 +198,18 @@ std::shared_ptr< gravitation::GravityFieldVariations > createGravityFieldVariati
             if( gravityFieldVariationSettings->getInterpolatorSettings( ) != nullptr )
             {
                 deformedBodyStateFunction =
-                        std::bind( &Body::getStateInBaseFrameFromEphemeris< double, double >, bodies.at( body ), std::placeholders::_1 );
-                deformedBodyOrientationFunction = std::bind( &ephemerides::RotationalEphemeris::getRotationToTargetFrame,
-                                                             bodies.at( body )->getRotationalEphemeris( ),
-                                                             std::placeholders::_1 );
+                        [body = bodies.at( body )](const double time) { return body->getStateInBaseFrameFromEphemeris<double, double>( time ); };
+                deformedBodyOrientationFunction = [rotEph = bodies.at( body )->getRotationalEphemeris( )](const double time) {
+                                                             return rotEph->getRotationToTargetFrame( time ); };
             }
             else
             {
-                deformedBodyStateFunction = std::bind( &Body::getState, bodies.at( body ) );
-                deformedBodyOrientationFunction = std::bind( &Body::getCurrentRotationToLocalFrame, bodies.at( body ) );
+                deformedBodyStateFunction = [body = bodies.at( body )](const double) { return body->getState(); };
+                deformedBodyOrientationFunction = [body = bodies.at( body )](const double) { return body->getCurrentRotationToLocalFrame(); };
             }
 
             std::function< double( ) > gravitionalParameterOfDeformedBody =
-                    std::bind( &GravityFieldModel::getGravitationalParameter, bodies.at( body )->getGravityFieldModel( ) );
+                    [gravityField = bodies.at( body )->getGravityFieldModel( )]() { return gravityField->getGravitationalParameter(); };
 
             // Create basic tidal variation object.
             if( gravityFieldVariationSettings->getBodyDeformationType( ) == basic_solid_body )

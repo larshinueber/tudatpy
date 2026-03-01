@@ -72,7 +72,7 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > CannonBallRadiationP
             case estimatable_parameters::radiation_pressure_coefficient:
 
                 partialFunction =
-                        std::bind( &CannonBallRadiationPressurePartial::wrtRadiationPressureCoefficient, this, std::placeholders::_1 );
+                        [this](Eigen::MatrixXd& m) { this->wrtRadiationPressureCoefficient(m); };
                 numberOfRows = 1;
 
                 break;
@@ -85,16 +85,17 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > CannonBallRadiationP
             {
                 case estimatable_parameters::source_direction_radiation_pressure_scaling_factor:
 
-                    partialFunction = std::bind(
-                            &computeRadiationPressureAccelerationWrtSourceDirectionScaling, accelerationModel_, std::placeholders::_1 );
+                    partialFunction = [accelerationModel = accelerationModel_](Eigen::MatrixXd& m) {
+                        computeRadiationPressureAccelerationWrtSourceDirectionScaling(accelerationModel, m);
+                    };
                     numberOfRows = 1;
 
                     break;
                 case estimatable_parameters::source_perpendicular_direction_radiation_pressure_scaling_factor:
 
-                    partialFunction = std::bind( &computeRadiationPressureAccelerationWrtSourcePerpendicularDirectionScaling,
-                                                 accelerationModel_,
-                                                 std::placeholders::_1 );
+                    partialFunction = [accelerationModel = accelerationModel_](Eigen::MatrixXd& m) {
+                        computeRadiationPressureAccelerationWrtSourcePerpendicularDirectionScaling(accelerationModel, m);
+                    };
                     numberOfRows = 1;
 
                     break;
@@ -123,11 +124,9 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > CannonBallRadiationP
 
                 if( std::dynamic_pointer_cast< estimatable_parameters::ArcWiseRadiationPressureCoefficient >( parameter ) != nullptr )
                 {
-                    partialFunction = std::bind(
-                            &CannonBallRadiationPressurePartial::wrtArcWiseRadiationPressureCoefficient,
-                            this,
-                            std::placeholders::_1,
-                            std::dynamic_pointer_cast< estimatable_parameters::ArcWiseRadiationPressureCoefficient >( parameter ) );
+                    partialFunction = [this, arcWiseParam = std::dynamic_pointer_cast< estimatable_parameters::ArcWiseRadiationPressureCoefficient >( parameter )](Eigen::MatrixXd& m) {
+                        this->wrtArcWiseRadiationPressureCoefficient(m, arcWiseParam);
+                    };
                 }
                 else
                 {

@@ -133,13 +133,14 @@ std::function< Eigen::Vector6d( const double, bool ) > createRelativeStateFuncti
                                                                                     const std::string centralBody )
 {
     // Retrieve state functions for relevant bodies (obtained from current state of body objects)
-    std::function< Eigen::Vector6d( const double ) > bodyInertialStateFunction = std::bind( &Body::getState, bodies.at( orbitingBody ) );
+    std::function< Eigen::Vector6d( const double ) > bodyInertialStateFunction = [body = bodies.at( orbitingBody )](const double) { return body->getState(); };
     std::function< Eigen::Vector6d( const double ) > centralBodyInertialStateFunction =
-            std::bind( &Body::getState, bodies.at( centralBody ) );
+            [body = bodies.at( centralBody )](const double) { return body->getState(); };
 
     // Define relative state function from body object
-    std::function< Eigen::Vector6d( const double ) > fromBodyStateFunction = std::bind(
-            &ephemerides::getDifferenceBetweenStates, bodyInertialStateFunction, centralBodyInertialStateFunction, std::placeholders::_1 );
+    std::function< Eigen::Vector6d( const double ) > fromBodyStateFunction =
+            [bodyInertialStateFunction, centralBodyInertialStateFunction](const double time) {
+                return ephemerides::getDifferenceBetweenStates( bodyInertialStateFunction, centralBodyInertialStateFunction, time ); };
 
     // Define state function from ephemeris
     std::function< Eigen::Vector6d( const double ) > fromEphemerisStateFunction;
@@ -147,25 +148,20 @@ std::function< Eigen::Vector6d( const double, bool ) > createRelativeStateFuncti
     if( bodies.at( orbitingBody )->getEphemeris( )->getReferenceFrameOrigin( ) == centralBody )
     {
         fromEphemerisStateFunction =
-                std::bind( &ephemerides::Ephemeris::getCartesianState, bodies.at( orbitingBody )->getEphemeris( ), std::placeholders::_1 );
+                [ephemeris = bodies.at( orbitingBody )->getEphemeris( )](const double time) { return ephemeris->getCartesianState( time ); };
     }
     else
     {
         std::function< Eigen::Vector6d( const double ) > ephemerisInertialStateFunction =
-                std::bind( &Body::getStateInBaseFrameFromEphemeris< double, double >, bodies.at( orbitingBody ), std::placeholders::_1 );
+                [body = bodies.at( orbitingBody )](const double time) { return body->getStateInBaseFrameFromEphemeris<double, double>( time ); };
         std::function< Eigen::Vector6d( const double ) > ephemerisCentralBodyInertialStateFunction =
-                std::bind( &Body::getStateInBaseFrameFromEphemeris< double, double >, bodies.at( centralBody ), std::placeholders::_1 );
-        fromEphemerisStateFunction = std::bind( &ephemerides::getDifferenceBetweenStates,
-                                                ephemerisInertialStateFunction,
-                                                ephemerisCentralBodyInertialStateFunction,
-                                                std::placeholders::_1 );
+                [body = bodies.at( centralBody )](const double time) { return body->getStateInBaseFrameFromEphemeris<double, double>( time ); };
+        fromEphemerisStateFunction = [ephemerisInertialStateFunction, ephemerisCentralBodyInertialStateFunction](const double time) {
+                return ephemerides::getDifferenceBetweenStates( ephemerisInertialStateFunction, ephemerisCentralBodyInertialStateFunction, time ); };
     }
 
-    return std::bind( &getStateFromSelectedStateFunction,
-                      std::placeholders::_1,
-                      std::placeholders::_2,
-                      fromBodyStateFunction,
-                      fromEphemerisStateFunction );
+    return [fromBodyStateFunction, fromEphemerisStateFunction](const double time, bool useFirstFunction) {
+                return getStateFromSelectedStateFunction( time, useFirstFunction, fromBodyStateFunction, fromEphemerisStateFunction ); };
 }
 
 //! Function to set the angle of attack to trimmed conditions.
@@ -188,9 +184,9 @@ void linkTrimmedConditions( const std::shared_ptr< aerodynamics::TrimOrientation
 {
     // Create angle-of-attack function from trim object.
     std::function< std::vector< double >( ) > untrimmedIndependentVariablesFunction =
-            std::bind( &aerodynamics::AtmosphericFlightConditions::getAerodynamicCoefficientIndependentVariables, flightConditions );
-    std::function< std::map< std::string, std::vector< double > >( ) > untrimmedControlSurfaceIndependentVariableFunction = std::bind(
-            &aerodynamics::AtmosphericFlightConditions::getControlSurfaceAerodynamicCoefficientIndependentVariables, flightConditions );
+            [flightConditions]() { return flightConditions->getAerodynamicCoefficientIndependentVariables(); };
+    std::function< std::map< std::string, std::vector< double > >( ) > untrimmedControlSurfaceIndependentVariableFunction =
+            [flightConditions]() { return flightConditions->getControlSurfaceAerodynamicCoefficientIndependentVariables(); };
 
     std::function< Eigen::Vector3d( const double ) > aerodynamicAngleFunction = [ = ]( const double currentTime ) {
         Eigen::Vector2d sideslipBankAngles = Eigen::Vector2d::Zero( );
@@ -291,14 +287,14 @@ std::shared_ptr< ephemerides::InertialBodyFixedDirectionCalculator > createInert
                         "StateBasedInertialDirectionSettings" );
             }
             // Retrieve state function of body for which thrust is to be computed.
-            std::function< Eigen::Vector6d( ) > bodyStateFunction = std::bind( &Body::getState, bodies.at( body ) );
+            std::function< Eigen::Vector6d( ) > bodyStateFunction = [body = bodies.at( body )]() { return body->getState(); };
             std::function< Eigen::Vector6d( ) > centralBodyStateFunction;
 
             // Retrieve state function of central body (or set to zero if inertial)
             if( stateBasedDirectionSettings->centralBody_ != "SSB" )
             {
                 // FIXME: add update function.
-                centralBodyStateFunction = std::bind( &Body::getState, bodies.at( stateBasedDirectionSettings->centralBody_ ) );
+                centralBodyStateFunction = [body = bodies.at( stateBasedDirectionSettings->centralBody_ )]() { return body->getState(); };
                 //        magnitudeUpdateSettings[ propagators::body_translational_state_update ].push_back(
                 //                    thrustDirectionFromStateGuidanceSettings->relativeBody_ );
             }
@@ -315,7 +311,8 @@ std::shared_ptr< ephemerides::InertialBodyFixedDirectionCalculator > createInert
 
             // Define relative state function
             std::function< void( Eigen::Vector6d& ) > stateFunction =
-                    std::bind( &ephemerides::getRelativeState, std::placeholders::_1, bodyStateFunction, centralBodyStateFunction );
+                    [bodyStateFunction, centralBodyStateFunction](Eigen::Vector6d& relativeState) {
+                        ephemerides::getRelativeState( relativeState, bodyStateFunction, centralBodyStateFunction ); };
 
             directionCalculator = std::make_shared< ephemerides::StateBasedBodyFixedDirectionCalculator >(
                     stateBasedDirectionSettings->centralBody_,

@@ -80,13 +80,11 @@ double calculateUnpoweredGravityAssistPericenter( const double absoluteIncomingS
 
     // Create an object containing the function of which we whish to obtain the root from.
     basic_mathematics::UnivariateProxyPointer rootFunction = std::make_shared< basic_mathematics::UnivariateProxy >(
-            std::bind( &PericenterFindingFunctions::computePericenterRadiusFunction, pericenterFindingFunctions, std::placeholders::_1 ) );
+            [pericenterFindingFunctions](const double a) mutable { return pericenterFindingFunctions.computePericenterRadiusFunction(a); } );
 
     // Add the first derivative of the root function.
     rootFunction->addBinding( -1,
-                              std::bind( &PericenterFindingFunctions::computeFirstDerivativePericenterRadiusFunction,
-                                         pericenterFindingFunctions,
-                                         std::placeholders::_1 ) );
+                              [pericenterFindingFunctions](const double a) mutable { return pericenterFindingFunctions.computeFirstDerivativePericenterRadiusFunction(a); } );
 
     // Set pericenter radius based on result of Newton-Raphson root-finding algorithm.
     return rootFinder->execute( rootFunction, initialGuess );
@@ -143,14 +141,12 @@ double calculateGravityAssistDeltaVThroughEccentricity( const double centralBody
     EccentricityFindingFunctions eccentricityFindingFunctions( incomingSemiMajorAxis, outgoingSemiMajorAxis, bendingAngle );
 
     // Create an object containing the function of which we whish to obtain the root from.
-    basic_mathematics::UnivariateProxyPointer rootFunction = std::make_shared< basic_mathematics::UnivariateProxy >( std::bind(
-            &EccentricityFindingFunctions::computeIncomingEccentricityFunction, eccentricityFindingFunctions, std::placeholders::_1 ) );
+    basic_mathematics::UnivariateProxyPointer rootFunction = std::make_shared< basic_mathematics::UnivariateProxy >(
+            [eccentricityFindingFunctions](const double a) mutable { return eccentricityFindingFunctions.computeIncomingEccentricityFunction(a); } );
 
     // Add the first derivative of the root function.
     rootFunction->addBinding( -1,
-                              std::bind( &EccentricityFindingFunctions::computeFirstDerivativeIncomingEccentricityFunction,
-                                         eccentricityFindingFunctions,
-                                         std::placeholders::_1 ) );
+                              [eccentricityFindingFunctions](const double a) mutable { return eccentricityFindingFunctions.computeFirstDerivativeIncomingEccentricityFunction(a); } );
 
     // Initialize incoming eccentricity.
     double incomingEccentricity = TUDAT_NAN;
@@ -296,14 +292,12 @@ double calculateGravityAssistDeltaV( const double centralBodyGravitationalParame
         EccentricityFindingFunctions eccentricityFindingFunctions( incomingSemiMajorAxis, outgoingSemiMajorAxis, bendingAngle );
 
         // Create an object containing the function of which we whish to obtain the root from.
-        UnivariateProxyPointer rootFunction = std::make_shared< UnivariateProxy >( std::bind(
-                &EccentricityFindingFunctions::computeIncomingEccentricityFunction, eccentricityFindingFunctions, std::placeholders::_1 ) );
+        UnivariateProxyPointer rootFunction = std::make_shared< UnivariateProxy >(
+                [eccentricityFindingFunctions](const double a) mutable { return eccentricityFindingFunctions.computeIncomingEccentricityFunction(a); } );
 
         // Add the first derivative of the root function.
         rootFunction->addBinding( -1,
-                                  std::bind( &EccentricityFindingFunctions::computeFirstDerivativeIncomingEccentricityFunction,
-                                             eccentricityFindingFunctions,
-                                             std::placeholders::_1 ) );
+                                  [eccentricityFindingFunctions](const double a) mutable { return eccentricityFindingFunctions.computeFirstDerivativeIncomingEccentricityFunction(a); } );
 
         // Initialize incoming eccentricity.
         double incomingEccentricity = TUDAT_NAN;

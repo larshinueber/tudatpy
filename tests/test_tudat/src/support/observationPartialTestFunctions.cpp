@@ -181,7 +181,7 @@ std::shared_ptr< EstimatableParameterSet< double > > createEstimatableParameters
         estimatedInitialStateParameters.push_back( std::make_shared< InitialRotationalStateParameter< double > >(
                 "Mars",
                 propagators::getInitialRotationalStateOfBody( "Mars", "ECLIPJ2000", bodies, initialTime ),
-                std::bind( &simulation_setup::Body::getBodyInertiaTensor, bodies.at( "Mars" ) ) ) );
+                [mars = bodies.at( "Mars" )]() { return mars->getBodyInertiaTensor(); } ) );
     }
 
     return std::make_shared< EstimatableParameterSet< double > >(

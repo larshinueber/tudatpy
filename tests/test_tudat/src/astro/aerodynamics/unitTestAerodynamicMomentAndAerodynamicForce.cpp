@@ -200,7 +200,7 @@ BOOST_AUTO_TEST_CASE( testAerodynamicForceAndAcceleration )
                 createAtmosphericFlightConditions( bodies.at( "Legacy" ), bodies.at( "TreasurePlanet" ), "Legacy", "TreasurePlanet" );
         bodies.at( "Legacy" )->setFlightConditions( bodyFlightConditions );
 
-        AerodynamicAcceleration aerodynamicAcceleration( bodyFlightConditions, std::bind( &Body::getBodyMass, bodies.at( "Legacy" ) ) );
+        AerodynamicAcceleration aerodynamicAcceleration( bodyFlightConditions, [body = bodies.at( "Legacy" )]() { return body->getBodyMass(); } );
 
         // update environment
         bodies.at( "TreasurePlanet" )->setCurrentRotationalStateToLocalFrameFromEphemeris( 0.0 );
@@ -262,7 +262,7 @@ BOOST_AUTO_TEST_CASE( testAerodynamicForceAndAcceleration )
                 createAtmosphericFlightConditions( bodies.at( "Legacy" ), bodies.at( "TreasurePlanet" ), "Legacy", "TreasurePlanet" );
         bodies.at( "Legacy" )->setFlightConditions( bodyFlightConditions );
 
-        AerodynamicAcceleration aerodynamicAcceleration( bodyFlightConditions, std::bind( &Body::getBodyMass, bodies.at( "Legacy" ) ) );
+        AerodynamicAcceleration aerodynamicAcceleration( bodyFlightConditions, [body = bodies.at( "Legacy" )]() { return body->getBodyMass(); } );
 
         // update environment
         bodies.at( "TreasurePlanet" )->setCurrentRotationalStateToLocalFrameFromEphemeris( 0.0 );
@@ -396,7 +396,7 @@ void testAerodynamicForceDirection( const bool includeThrustForce, const bool us
                             "Earth",
                             "ECLIPJ2000",
                             "VehicleFixed",
-                            std::bind( &DummyAngleCalculator::getAerodynamicAngles, testAngles, std::placeholders::_1 ) ),
+                            [testAngles](const double time) { return testAngles->getAerodynamicAngles(time); } ),
                     "Vehicle",
                     bodies );
 

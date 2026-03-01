@@ -13,23 +13,24 @@ std::shared_ptr< acceleration_partials::TorquePartial > createConstantTorqueRota
         const basic_astrodynamics::SingleBodyTorqueModelMap& torqueVector )
 {
     std::function< Eigen::Vector3d( ) > angularVelocityFunction =
-            std::bind( &Body::getCurrentAngularVelocityVectorInLocalFrame, acceleratedBody.second );
-    std::function< Eigen::Matrix3d( ) > inertiaTensorFunction = std::bind( &Body::getBodyInertiaTensor, acceleratedBody.second );
+            [body = acceleratedBody.second]( ) { return body->getCurrentAngularVelocityVectorInLocalFrame( ); };
+    std::function< Eigen::Matrix3d( ) > inertiaTensorFunction =
+            [body = acceleratedBody.second]( ) { return body->getBodyInertiaTensor( ); };
 
     std::function< double( ) > inertiaTensorNormalizationFunction;
     if( std::dynamic_pointer_cast< gravitation::SphericalHarmonicsGravityField >( acceleratedBody.second->getGravityFieldModel( ) ) !=
         nullptr )
     {
-        inertiaTensorNormalizationFunction = std::bind( &gravitation::SphericalHarmonicsGravityField::getInertiaTensorNormalizationFactor,
-                                                        std::dynamic_pointer_cast< gravitation::SphericalHarmonicsGravityField >(
-                                                                acceleratedBody.second->getGravityFieldModel( ) ) );
+        inertiaTensorNormalizationFunction =
+                [shGravityField = std::dynamic_pointer_cast< gravitation::SphericalHarmonicsGravityField >(
+                         acceleratedBody.second->getGravityFieldModel( ) )]( ) { return shGravityField->getInertiaTensorNormalizationFactor( ); };
     }
 
     std::function< double( ) > gravitationalParameterFunction;
     if( acceleratedBody.second->getGravityFieldModel( ) != nullptr )
     {
         gravitationalParameterFunction =
-                std::bind( &gravitation::GravityFieldModel::getGravitationalParameter, acceleratedBody.second->getGravityFieldModel( ) );
+                [gravityModel = acceleratedBody.second->getGravityFieldModel( )]( ) { return gravityModel->getGravitationalParameter( ); };
     }
 
     return std::make_shared< acceleration_partials::ConstantTorquePartial >( angularVelocityFunction,

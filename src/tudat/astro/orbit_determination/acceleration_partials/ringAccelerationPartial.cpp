@@ -25,16 +25,14 @@ RingGravityPartial::RingGravityPartial( const std::string& acceleratedBody,
     gravitationalParameterFunction_( accelerationModel->getGravitationalParameterFunction( ) ),
     ringRadiusFunction_( accelerationModel->getRingRadiusFunction( ) ), ringCache_( accelerationModel->getRingCache( ) ),
     positionFunctionOfAcceleratedBody_(
-            std::bind( &gravitation::RingGravitationalAccelerationModel::getCurrentPositionOfBodySubjectToAcceleration,
-                       accelerationModel ) ),
+            [accelerationModel]() { return accelerationModel->getCurrentPositionOfBodySubjectToAcceleration(); } ),
     positionFunctionOfAcceleratingBody_(
-            std::bind( &gravitation::RingGravitationalAccelerationModel::getCurrentPositionOfBodyExertingAcceleration,
-                       accelerationModel ) ),
+            [accelerationModel]() { return accelerationModel->getCurrentPositionOfBodyExertingAcceleration(); } ),
     fromBodyFixedToIntegrationFrameRotation_(
-            std::bind( &gravitation::RingGravitationalAccelerationModel::getCurrentRotationToIntegrationFrameMatrix, accelerationModel ) ),
-    accelerationFunction_( std::bind( &gravitation::RingGravitationalAccelerationModel::getAcceleration, accelerationModel ) ),
+            [accelerationModel]() { return accelerationModel->getCurrentRotationToIntegrationFrameMatrix(); } ),
+    accelerationFunction_( [accelerationModel]() { return accelerationModel->getAcceleration(); } ),
     updateFunction_(
-            std::bind( &gravitation::RingGravitationalAccelerationModel::updateMembers, accelerationModel, std::placeholders::_1 ) ),
+            [accelerationModel](const double time) { accelerationModel->updateMembers(time); } ),
     rotationMatrixPartials_( rotationMatrixPartials )
 { }
 

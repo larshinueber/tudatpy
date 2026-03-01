@@ -717,14 +717,13 @@ void resetIntegratedBodyMass(
                     static_cast< double >( stateIterator->second( startIndexAndSize.first + i ) );
         }
 
-        typedef interpolators::OneDimensionalInterpolator< double, double > LocalInterpolator;
-
         // Create and set interpolator.
-        bodies.at( bodiesToIntegrate.at( i ) )
-                ->setBodyMassFunction(
-                        std::bind( static_cast< double ( LocalInterpolator::* )( const double ) >( &LocalInterpolator::interpolate ),
-                                   std::make_shared< interpolators::LagrangeInterpolatorDouble >( currentBodyMassMap, 6 ),
-                                   std::placeholders::_1 ) );
+        {
+            auto interpolator = std::make_shared< interpolators::LagrangeInterpolatorDouble >( currentBodyMassMap, 6 );
+            bodies.at( bodiesToIntegrate.at( i ) )
+                    ->setBodyMassFunction(
+                            [interpolator]( const double time ) { return interpolator->interpolate( time ); } );
+        }
     }
 }
 

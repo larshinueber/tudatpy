@@ -35,8 +35,8 @@ std::shared_ptr< basic_astrodynamics::Iers2010EarthDeformation > createDefaultEa
 
     std::vector< std::function< Eigen::Vector6d( const double ) > > ephemerides;
     ephemerides.resize( 2 );
-    ephemerides[ 0 ] = std::bind( &Ephemeris::getCartesianState, lunarEphemeris, std::placeholders::_1 );
-    ephemerides[ 1 ] = std::bind( &Ephemeris::getCartesianState, solarEphemeris, std::placeholders::_1 );
+    ephemerides[ 0 ] = [lunarEphemeris](const double time) { return lunarEphemeris->getCartesianState( time ); };
+    ephemerides[ 1 ] = [solarEphemeris](const double time) { return solarEphemeris->getCartesianState( time ); };
 
     double equatorialRadius = 6378136.6;
 
@@ -71,9 +71,9 @@ std::shared_ptr< basic_astrodynamics::Iers2010EarthDeformation > createDefaultEa
     std::string diurnalFile = paths::getEarthDeformationDataFilesPath( ) + "/diurnalDisplacementFrequencyDependence2.txt";
 
     std::shared_ptr< Iers2010EarthDeformation > deformationModel = std::make_shared< Iers2010EarthDeformation >(
-            std::bind( &Ephemeris::getCartesianState, earthEphemeris, std::placeholders::_1 ),
+            [earthEphemeris](const double time) { return earthEphemeris->getCartesianState( time ); },
             ephemerides,
-            std::bind( &RotationalEphemeris::getRotationToTargetFrame, earthRotation, std::placeholders::_1 ),
+            [earthRotation](const double time) { return earthRotation->getRotationToTargetFrame( time ); },
             gravitionalParametersOfEarth,
             gravitationalParameters,
             equatorialRadius,
@@ -122,9 +122,8 @@ std::shared_ptr< basic_astrodynamics::BodyDeformationModel > createBodyDeformati
                                                   deformingBodies.at( i ) );
                     }
 
-                    deformingBodyEphemerides.push_back( std::bind( &Body::getStateInBaseFrameFromEphemeris< double, double >,
-                                                                   bodyMap.at( deformingBodies.at( i ) ),
-                                                                   std::placeholders::_1 ) );
+                    deformingBodyEphemerides.push_back( [body = bodyMap.at( deformingBodies.at( i ) )](const double time) {
+                                                                   return body->getStateInBaseFrameFromEphemeris<double, double>( time ); } );
 
                     std::shared_ptr< gravitation::GravityFieldModel > gravityFieldModel =
                             bodyMap.at( deformingBodies.at( i ) )->getGravityFieldModel( );
@@ -134,7 +133,7 @@ std::shared_ptr< basic_astrodynamics::BodyDeformationModel > createBodyDeformati
                                                   " found when making basic body deformation of " + body );
                     }
                     gravitionalParametersOfDeformingBodies.push_back(
-                            std::bind( &GravityFieldModel::getGravitationalParameter, gravityFieldModel ) );
+                            [gravityFieldModel]() { return gravityFieldModel->getGravitationalParameter(); } );
                 }
 
                 std::shared_ptr< gravitation::GravityFieldModel > gravityFieldModel = bodyMap.at( body )->getGravityFieldModel( );
@@ -145,7 +144,7 @@ std::shared_ptr< basic_astrodynamics::BodyDeformationModel > createBodyDeformati
                 }
 
                 std::function< double( ) > gravitionalParameterOfDeformedBody =
-                        std::bind( &GravityFieldModel::getGravitationalParameter, gravityFieldModel );
+                        [gravityFieldModel]() { return gravityFieldModel->getGravitationalParameter(); };
 
                 double deformationReferenceRadius = basicSolidBodyDeformationSettings->getBodyReferenceRadius( );
                 if( deformationReferenceRadius != deformationReferenceRadius )
@@ -163,11 +162,10 @@ std::shared_ptr< basic_astrodynamics::BodyDeformationModel > createBodyDeformati
                 }
 
                 bodyDeformationModel = std::make_shared< basic_astrodynamics::BasicTidalBodyDeformation >(
-                        std::bind( &Body::getStateInBaseFrameFromEphemeris< double, double >, bodyMap.at( body ), std::placeholders::_1 ),
+                        [body = bodyMap.at( body )](const double time) { return body->getStateInBaseFrameFromEphemeris<double, double>( time ); },
                         deformingBodyEphemerides,
-                        std::bind( &ephemerides::RotationalEphemeris::getRotationToTargetFrame,
-                                   bodyMap.at( body )->getRotationalEphemeris( ),
-                                   std::placeholders::_1 ),
+                        [rotEph = bodyMap.at( body )->getRotationalEphemeris( )](const double time) {
+                                   return rotEph->getRotationToTargetFrame( time ); },
                         gravitionalParameterOfDeformedBody,
                         gravitionalParametersOfDeformingBodies,
                         deformationReferenceRadius,
@@ -198,9 +196,9 @@ std::shared_ptr< basic_astrodynamics::BodyDeformationModel > createBodyDeformati
                     bodyMap.at( "Moon" )->getEphemeris( ),
                     bodyMap.at( "Sun" )->getEphemeris( ),
                     bodyMap.at( "Earth" )->getRotationalEphemeris( ),
-                    std::bind( &gravitation::GravityFieldModel::getGravitationalParameter, bodyMap.at( "Earth" )->getGravityFieldModel( ) ),
-                    std::bind( &gravitation::GravityFieldModel::getGravitationalParameter, bodyMap.at( "Moon" )->getGravityFieldModel( ) ),
-                    std::bind( &gravitation::GravityFieldModel::getGravitationalParameter, bodyMap.at( "Sun" )->getGravityFieldModel( ) ) );
+                    [gravityField = bodyMap.at( "Earth" )->getGravityFieldModel( )]() { return gravityField->getGravitationalParameter(); },
+                    [gravityField = bodyMap.at( "Moon" )->getGravityFieldModel( )]() { return gravityField->getGravitationalParameter(); },
+                    [gravityField = bodyMap.at( "Sun" )->getGravityFieldModel( )]() { return gravityField->getGravitationalParameter(); } );
             break;
         }
         case pole_tide: {

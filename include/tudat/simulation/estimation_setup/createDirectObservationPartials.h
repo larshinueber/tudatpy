@@ -335,12 +335,11 @@ createSingleLinkObservationPartials(
         else
         {
             std::function< std::shared_ptr< ObservationPartial< ObservationSize > >( const std::string& ) >
-                    partialWrtStateCreationFunction = std::bind( &createObservationPartialWrtBodyPosition< ObservationSize >,
-                                                                 oneWayLinkEnds,
-                                                                 bodies,
-                                                                 std::placeholders::_1,
-                                                                 positionScaling,
-                                                                 lightTimeCorrectionPartialObjects );
+                    partialWrtStateCreationFunction = [oneWayLinkEnds, &bodies, positionScaling, lightTimeCorrectionPartialObjects](
+                            const std::string& bodyName ) {
+                        return createObservationPartialWrtBodyPosition< ObservationSize >(
+                                oneWayLinkEnds, bodies, bodyName, positionScaling, lightTimeCorrectionPartialObjects );
+                    };
             currentObservationPartial =
                     createObservationPartialWrtLinkProperty< ObservationSize >( oneWayLinkEnds,
                                                                                 observableType,

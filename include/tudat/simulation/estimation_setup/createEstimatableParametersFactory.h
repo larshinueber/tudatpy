@@ -719,14 +719,9 @@ std::vector< std::shared_ptr< estimatable_parameters::EstimatableParameterSettin
 
             // Link propagator get/set functions for state
             initialStateGetFunctions.push_back(
-                    std::bind( &TranslationalStatePropagatorSettings< InitialStateParameterType, TimeType >::getStateOfBody,
-                               singleArcTranslationalSettings.at( currentArcAndBodyIndex.first ),
-                               currentArcAndBodyIndex.second ) );
+                    [settings = singleArcTranslationalSettings.at( currentArcAndBodyIndex.first ), bodyIndex = currentArcAndBodyIndex.second]( ) { return settings->getStateOfBody( bodyIndex ); } );
             initialStateSetFunctions.push_back(
-                    std::bind( &TranslationalStatePropagatorSettings< InitialStateParameterType, TimeType >::setStateOfBody,
-                               singleArcTranslationalSettings.at( currentArcAndBodyIndex.first ),
-                               currentArcAndBodyIndex.second,
-                               std::placeholders::_1 ) );
+                    [settings = singleArcTranslationalSettings.at( currentArcAndBodyIndex.first ), bodyIndex = currentArcAndBodyIndex.second]( const Eigen::Matrix< InitialStateParameterType, Eigen::Dynamic, 1 >& state ) { settings->setStateOfBody( bodyIndex, state ); } );
         }
 
         // Create estimate parameter
@@ -842,14 +837,9 @@ std::vector< std::shared_ptr< estimatable_parameters::EstimatableParameterSettin
                                             bodies.getFrameOrientation( ) );
 
                     std::function< Eigen::Matrix< InitialStateParameterType, Eigen::Dynamic, 1 >( ) > initialStateGetFunction =
-                            std::bind( &TranslationalStatePropagatorSettings< InitialStateParameterType, TimeType >::getStateOfBody,
-                                       translationalPropagatorSettings,
-                                       i );
+                            [translationalPropagatorSettings, i]( ) { return translationalPropagatorSettings->getStateOfBody( i ); };
                     std::function< void( const Eigen::Matrix< InitialStateParameterType, Eigen::Dynamic, 1 >& ) > initialStateSetFunction =
-                            std::bind( &TranslationalStatePropagatorSettings< InitialStateParameterType, TimeType >::setStateOfBody,
-                                       translationalPropagatorSettings,
-                                       i,
-                                       std::placeholders::_1 );
+                            [translationalPropagatorSettings, i]( const Eigen::Matrix< InitialStateParameterType, Eigen::Dynamic, 1 >& state ) { translationalPropagatorSettings->setStateOfBody( i, state ); };
                     initialStateParameter->initialStateSetFunction_ = initialStateSetFunction;
                     initialStateParameter->initialStateGetFunction_ = initialStateGetFunction;
 
@@ -881,14 +871,9 @@ std::vector< std::shared_ptr< estimatable_parameters::EstimatableParameterSettin
                                             bodies.getFrameOrientation( ) );
 
                     std::function< Eigen::Matrix< InitialStateParameterType, Eigen::Dynamic, 1 >( ) > initialStateGetFunction =
-                            std::bind( &RotationalStatePropagatorSettings< InitialStateParameterType, TimeType >::getStateOfBody,
-                                       rotationalPropagatorSettings,
-                                       i );
+                            [rotationalPropagatorSettings, i]( ) { return rotationalPropagatorSettings->getStateOfBody( i ); };
                     std::function< void( const Eigen::Matrix< InitialStateParameterType, Eigen::Dynamic, 1 >& ) > initialStateSetFunction =
-                            std::bind( &RotationalStatePropagatorSettings< InitialStateParameterType, TimeType >::setStateOfBody,
-                                       rotationalPropagatorSettings,
-                                       i,
-                                       std::placeholders::_1 );
+                            [rotationalPropagatorSettings, i]( const Eigen::Matrix< InitialStateParameterType, Eigen::Dynamic, 1 >& state ) { rotationalPropagatorSettings->setStateOfBody( i, state ); };
                     initialStateParameter->initialStateSetFunction_ = initialStateSetFunction;
                     initialStateParameter->initialStateGetFunction_ = initialStateGetFunction;
 
@@ -912,13 +897,10 @@ std::vector< std::shared_ptr< estimatable_parameters::EstimatableParameterSettin
                             std::make_shared< InitialMassEstimatableParameterSettings< InitialStateParameterType > >(
                                     propagatedBodies.at( i ), initialStates( i ) );
 
-                    std::function< Eigen::Matrix< InitialStateParameterType, Eigen::Dynamic, 1 >( ) > initialStateGetFunction = std::bind(
-                            &MassPropagatorSettings< InitialStateParameterType, TimeType >::getStateOfBody, massPropagatorSettings, i );
+                    std::function< Eigen::Matrix< InitialStateParameterType, Eigen::Dynamic, 1 >( ) > initialStateGetFunction =
+                            [massPropagatorSettings, i]( ) { return massPropagatorSettings->getStateOfBody( i ); };
                     std::function< void( const Eigen::Matrix< InitialStateParameterType, Eigen::Dynamic, 1 >& ) > initialStateSetFunction =
-                            std::bind( &MassPropagatorSettings< InitialStateParameterType, TimeType >::setStateOfBody,
-                                       massPropagatorSettings,
-                                       i,
-                                       std::placeholders::_1 );
+                            [massPropagatorSettings, i]( const Eigen::Matrix< InitialStateParameterType, Eigen::Dynamic, 1 >& state ) { massPropagatorSettings->setStateOfBody( i, state ); };
                     initialStateParameter->initialStateSetFunction_ = initialStateSetFunction;
                     initialStateParameter->initialStateGetFunction_ = initialStateGetFunction;
 
@@ -1109,8 +1091,7 @@ createInitialDynamicalStateParameterToEstimate(
                             std::make_shared< InitialRotationalStateParameter< InitialStateParameterType > >(
                                     initialStateSettings->parameterType_.second.first,
                                     initialRotationalState,
-                                    std::bind( &Body::getBodyInertiaTensor,
-                                               bodies.at( initialStateSettings->parameterType_.second.first ) ),
+                                    [body = bodies.at( initialStateSettings->parameterType_.second.first )]( ) { return body->getBodyInertiaTensor( ); },
                                     initialStateSettings->baseOrientation_ );
                     initialRotationalStateParameter->addStateClosureFunctions( initialStateSettings->initialStateGetFunction_,
                                                                                initialStateSettings->initialStateSetFunction_ );
@@ -1482,10 +1463,8 @@ std::shared_ptr< estimatable_parameters::EstimatableParameter< double > > create
                     auto gravityFieldModel =
                             std::dynamic_pointer_cast< SphericalHarmonicsGravityField >( currentBody->getGravityFieldModel( ) );
                     doubleParameterToEstimate = std::make_shared< MeanMomentOfInertiaParameter >(
-                            std::bind( &SphericalHarmonicsGravityField::getScaledMeanMomentOfInertia, gravityFieldModel ),
-                            std::bind( &SphericalHarmonicsGravityField::setScaledMeanMomentOfInertia,
-                                       gravityFieldModel,
-                                       std::placeholders::_1 ),
+                            [gravityFieldModel]( ) { return gravityFieldModel->getScaledMeanMomentOfInertia( ); },
+                            [gravityFieldModel]( const double value ) { gravityFieldModel->setScaledMeanMomentOfInertia( value ); },
                             currentBodyName );
                 }
                 break;
@@ -2106,18 +2085,15 @@ std::shared_ptr< estimatable_parameters::EstimatableParameter< Eigen::VectorXd >
 
                     if( timeDependentShField == nullptr )
                     {
-                        getCosineCoefficientsFunction = std::bind( &SphericalHarmonicsGravityField::getCosineCoefficients, shGravityField );
+                        getCosineCoefficientsFunction = [shGravityField]( ) { return shGravityField->getCosineCoefficients( ); };
                         setCosineCoefficientsFunction =
-                                std::bind( &SphericalHarmonicsGravityField::setCosineCoefficients, shGravityField, std::placeholders::_1 );
+                                [shGravityField]( Eigen::MatrixXd coefficients ) { shGravityField->setCosineCoefficients( coefficients ); };
                     }
                     else
                     {
-                        getCosineCoefficientsFunction = std::bind(
-                                &TimeDependentSphericalHarmonicsGravityField::getNominalCosineCoefficients, timeDependentShField );
+                        getCosineCoefficientsFunction = [timeDependentShField]( ) { return timeDependentShField->getNominalCosineCoefficients( ); };
                         setCosineCoefficientsFunction =
-                                std::bind( &TimeDependentSphericalHarmonicsGravityField::setNominalCosineCoefficients,
-                                           timeDependentShField,
-                                           std::placeholders::_1 );
+                                [timeDependentShField]( Eigen::MatrixXd coefficients ) { timeDependentShField->setNominalCosineCoefficients( coefficients ); };
                     }
 
                     // Create cosine coefficients estimation object.
@@ -2163,17 +2139,15 @@ std::shared_ptr< estimatable_parameters::EstimatableParameter< Eigen::VectorXd >
 
                     if( timeDependentShField == nullptr )
                     {
-                        getSineCoefficientsFunction = std::bind( &SphericalHarmonicsGravityField::getSineCoefficients, shGravityField );
+                        getSineCoefficientsFunction = [shGravityField]( ) { return shGravityField->getSineCoefficients( ); };
                         setSineCoefficientsFunction =
-                                std::bind( &SphericalHarmonicsGravityField::setSineCoefficients, shGravityField, std::placeholders::_1 );
+                                [shGravityField]( Eigen::MatrixXd coefficients ) { shGravityField->setSineCoefficients( coefficients ); };
                     }
                     else
                     {
                         getSineCoefficientsFunction =
-                                std::bind( &TimeDependentSphericalHarmonicsGravityField::getNominalSineCoefficients, timeDependentShField );
-                        setSineCoefficientsFunction = std::bind( &TimeDependentSphericalHarmonicsGravityField::setNominalSineCoefficients,
-                                                                 timeDependentShField,
-                                                                 std::placeholders::_1 );
+                                [timeDependentShField]( ) { return timeDependentShField->getNominalSineCoefficients( ); };
+                        setSineCoefficientsFunction = [timeDependentShField]( Eigen::MatrixXd coefficients ) { timeDependentShField->setNominalSineCoefficients( coefficients ); };
                     }
 
                     // Create sine coefficients estimation object.

@@ -126,27 +126,27 @@ public:
                         dopplerObservationModel->getReceiverProperTimeRateCalculator( ), linkEnds, observation_models::receiver );
 
                 std::function< Eigen::Vector6d( const double ) > transmitterNumericalStateDerivativeFunction =
-                        std::bind( &numerical_derivatives::computeCentralDifferenceFromFunction< Eigen::Vector6d, double >,
-                                   simulation_setup::getLinkEndCompleteEphemerisFunction< double, double >(
-                                           linkEnds.at( observation_models::transmitter ), bodies ),
-                                   std::placeholders::_1,
-                                   100.0,
-                                   numerical_derivatives::order8 );
+                        [transmitterEphemeris = simulation_setup::getLinkEndCompleteEphemerisFunction< double, double >(
+                                linkEnds.at( observation_models::transmitter ), bodies )]( const double time ) {
+                            return numerical_derivatives::computeCentralDifferenceFromFunction< Eigen::Vector6d, double >(
+                                    transmitterEphemeris, time, 100.0, numerical_derivatives::order8 );
+                        };
                 std::function< Eigen::Vector6d( const double ) > receiverNumericalStateDerivativeFunction =
-                        std::bind( numerical_derivatives::computeCentralDifferenceFromFunction< Eigen::Vector6d, double >,
-                                   simulation_setup::getLinkEndCompleteEphemerisFunction< double, double >(
-                                           linkEnds.at( observation_models::receiver ), bodies ),
-                                   std::placeholders::_1,
-                                   100.0,
-                                   numerical_derivatives::order8 );
+                        [receiverEphemeris = simulation_setup::getLinkEndCompleteEphemerisFunction< double, double >(
+                                linkEnds.at( observation_models::receiver ), bodies )]( const double time ) {
+                            return numerical_derivatives::computeCentralDifferenceFromFunction< Eigen::Vector6d, double >(
+                                    receiverEphemeris, time, 100.0, numerical_derivatives::order8 );
+                        };
 
                 positionPartialScaler = std::make_shared< OneWayDopplerScaling >(
-                        std::bind( &linear_algebra::evaluateSecondBlockInStateVector,
-                                   transmitterNumericalStateDerivativeFunction,
-                                   std::placeholders::_1 ),
-                        std::bind( &linear_algebra::evaluateSecondBlockInStateVector,
-                                   receiverNumericalStateDerivativeFunction,
-                                   std::placeholders::_1 ),
+                        [transmitterNumericalStateDerivativeFunction]( const double time ) {
+                            return linear_algebra::evaluateSecondBlockInStateVector(
+                                    transmitterNumericalStateDerivativeFunction, time );
+                        },
+                        [receiverNumericalStateDerivativeFunction]( const double time ) {
+                            return linear_algebra::evaluateSecondBlockInStateVector(
+                                    receiverNumericalStateDerivativeFunction, time );
+                        },
                         dopplerObservationModel->getNormalizeWithSpeedOfLight( ) ? physical_constants::SPEED_OF_LIGHT : 1.0,
                         transmitterProperTimePartials,
                         receiverProperTimePartials );

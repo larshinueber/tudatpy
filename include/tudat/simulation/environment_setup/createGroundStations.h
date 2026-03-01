@@ -308,16 +308,15 @@ std::shared_ptr< ephemerides::Ephemeris > createReferencePointEphemeris(
 
     // Create list of state/rotation functions that are to be used
     std::map< int, std::function< Eigen::Matrix< StateScalarType, 6, 1 >( const TimeType& ) > > stationEphemerisVector;
-    stationEphemerisVector[ 2 ] = std::bind( &simulation_setup::Body::getStateInBaseFrameFromEphemeris< StateScalarType, TimeType >,
-                                             bodyWithReferencePoint,
-                                             std::placeholders::_1 );
+    stationEphemerisVector[ 2 ] = [bodyWithReferencePoint]( const TimeType& time ) {
+        return bodyWithReferencePoint->template getStateInBaseFrameFromEphemeris< StateScalarType, TimeType >( time );
+    };
     stationEphemerisVector[ 0 ] = referencePointStateFunction;
 
     std::map< int, std::function< StateType( const TimeType, const StateType& ) > > stationRotationVector;
-    stationRotationVector[ 1 ] = std::bind( &ephemerides::transformStateToInertialOrientation< StateScalarType, TimeType >,
-                                            std::placeholders::_2,
-                                            std::placeholders::_1,
-                                            bodyRotationModel );
+    stationRotationVector[ 1 ] = [bodyRotationModel]( const TimeType time, const StateType& state ) {
+        return ephemerides::transformStateToInertialOrientation< StateScalarType, TimeType >( state, time, bodyRotationModel );
+    };
 
     // Create and return ephemeris
     return std::make_shared< ephemerides::CompositeEphemeris< TimeType, StateScalarType > >(
@@ -348,10 +347,10 @@ std::shared_ptr< ephemerides::Ephemeris > createReferencePointEphemerisFromId(
             else
             {
                 referencePointStateFunction =
-                        std::bind( &ground_stations::GroundStation::getStateInPlanetFixedFrame< StateScalarType, TimeType >,
-                                   bodyWithLinkEnd->getGroundStation( referencePointName ),
-                                   std::placeholders::_1,
-                                   bodies.getFrameOrigin( ) );
+                        [groundStation = bodyWithLinkEnd->getGroundStation( referencePointName ),
+                         frameOrigin = bodies.getFrameOrigin( )]( const TimeType& time ) {
+                            return groundStation->template getStateInPlanetFixedFrame< StateScalarType, TimeType >( time, frameOrigin );
+                        };
             }
         }
         else
@@ -389,10 +388,10 @@ std::shared_ptr< ephemerides::Ephemeris > createReferencePointEphemerisFromId(
                             "rotational model." );
                 }
                 referencePointStateFunction =
-                        std::bind( &system_models::VehicleSystems::getReferencePointStateInBodyFixedFrame< StateScalarType, TimeType >,
-                                   bodyWithLinkEnd->getVehicleSystems( ),
-                                   referencePointName,
-                                   std::placeholders::_1 );
+                        [vehicleSystems = bodyWithLinkEnd->getVehicleSystems( ),
+                         referencePointName]( const TimeType& time ) {
+                            return vehicleSystems->template getReferencePointStateInBodyFixedFrame< StateScalarType, TimeType >( referencePointName, time );
+                        };
             }
         }
 
@@ -468,9 +467,9 @@ std::shared_ptr< ephemerides::Ephemeris > getLinkEndCompleteEphemeris( const obs
     {
         // Create function to calculate state of transmitting ground station.
         linkEndEphemeris = std::make_shared< ephemerides::CustomEphemeris< TimeType, StateScalarType > >(
-                std::bind( &simulation_setup::Body::getStateInBaseFrameFromEphemeris< StateScalarType, TimeType >,
-                           bodyWithLinkEnd,
-                           std::placeholders::_1 ),
+                [bodyWithLinkEnd]( const TimeType time ) {
+                    return bodyWithLinkEnd->template getStateInBaseFrameFromEphemeris< StateScalarType, TimeType >( time );
+                },
                 bodies.getFrameOrigin( ),
                 bodies.getFrameOrientation( ) );
     }
@@ -484,8 +483,9 @@ std::function< Eigen::Matrix< StateScalarType, 6, 1 >( const TimeType ) > getLin
 {
     std::shared_ptr< ephemerides::Ephemeris > linkEndEphemeris =
             getLinkEndCompleteEphemeris< TimeType, StateScalarType >( linkEndId, bodies );
-    return std::bind(
-            &ephemerides::Ephemeris::getTemplatedStateFromEphemeris< StateScalarType, TimeType >, linkEndEphemeris, std::placeholders::_1 );
+    return [linkEndEphemeris]( const TimeType time ) {
+        return linkEndEphemeris->template getTemplatedStateFromEphemeris< StateScalarType, TimeType >( time );
+    };
 }
 
 // std::vector< double >  getTargetElevationAngles(

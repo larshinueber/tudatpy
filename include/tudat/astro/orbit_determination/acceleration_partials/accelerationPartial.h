@@ -109,19 +109,16 @@ public:
                 else if( stateReferencePoint.first == acceleratedBody_ )
                 {
                     partialFunction =
-                            std::make_pair( std::bind( &AccelerationPartial::wrtStateOfAcceleratedBody, this, std::placeholders::_1 ), 6 );
+                            std::make_pair( [this]( Eigen::Block< Eigen::MatrixXd > block ) { this->wrtStateOfAcceleratedBody( block ); }, 6 );
                 }
                 else if( stateReferencePoint.first == acceleratingBody_ )
                 {
                     partialFunction =
-                            std::make_pair( std::bind( &AccelerationPartial::wrtStateOfAcceleratingBody, this, std::placeholders::_1 ), 6 );
+                            std::make_pair( [this]( Eigen::Block< Eigen::MatrixXd > block ) { this->wrtStateOfAcceleratingBody( block ); }, 6 );
                 }
                 else if( isAccelerationPartialWrtAdditionalBodyNonnullptr( stateReferencePoint.first ) )
                 {
-                    partialFunction = std::make_pair( std::bind( &AccelerationPartial::wrtStateOfAdditionalBody,
-                                                                 this,
-                                                                 std::placeholders::_1,
-                                                                 stateReferencePoint.first ),
+                    partialFunction = std::make_pair( [this, bodyName = stateReferencePoint.first]( Eigen::Block< Eigen::MatrixXd > block ) { this->wrtStateOfAdditionalBody( block, bodyName ); },
                                                       6 );
                 }
                 break;
@@ -136,12 +133,7 @@ public:
                 }
                 else if( isStateDerivativeDependentOnIntegratedAdditionalStateTypes( stateReferencePoint, integratedStateType ) )
                 {
-                    partialFunction = std::make_pair( std::bind( &AccelerationPartial::wrtNonTranslationalStateOfAdditionalBody,
-                                                                 this,
-                                                                 std::placeholders::_1,
-                                                                 stateReferencePoint,
-                                                                 integratedStateType,
-                                                                 true ),
+                    partialFunction = std::make_pair( [this, stateReferencePoint, integratedStateType]( Eigen::Block< Eigen::MatrixXd > block ) { this->wrtNonTranslationalStateOfAdditionalBody( block, stateReferencePoint, integratedStateType, true ); },
                                                       7 );
                 }
                 break;
@@ -156,12 +148,7 @@ public:
                 }
                 else if( isStateDerivativeDependentOnIntegratedAdditionalStateTypes( stateReferencePoint, integratedStateType ) )
                 {
-                    partialFunction = std::make_pair( std::bind( &AccelerationPartial::wrtNonTranslationalStateOfAdditionalBody,
-                                                                 this,
-                                                                 std::placeholders::_1,
-                                                                 stateReferencePoint,
-                                                                 integratedStateType,
-                                                                 true ),
+                    partialFunction = std::make_pair( [this, stateReferencePoint, integratedStateType]( Eigen::Block< Eigen::MatrixXd > block ) { this->wrtNonTranslationalStateOfAdditionalBody( block, stateReferencePoint, integratedStateType, true ); },
                                                       1 );
                 }
                 break;
@@ -313,8 +300,7 @@ public:
 
                     if( partialIsNonZero )
                     {
-                        partialFunction = std::bind(
-                                &AccelerationPartial::computeAccelerationPartialWrtAccelerationScalingFactor, this, std::placeholders::_1 );
+                        partialFunction = [this]( Eigen::MatrixXd& block ) { this->computeAccelerationPartialWrtAccelerationScalingFactor( block ); };
                         numberOfColumns = 1;
                     }
                     break;
@@ -331,9 +317,7 @@ public:
 
                         if( accelerationScalingParameter->hasAccelerationModel( accelerationModel_ ) )
                         {
-                            partialFunction = std::bind( &AccelerationPartial::computeAccelerationPartialWrtAccelerationScalingFactor,
-                                                         this,
-                                                         std::placeholders::_1 );
+                            partialFunction = [this]( Eigen::MatrixXd& block ) { this->computeAccelerationPartialWrtAccelerationScalingFactor( block ); };
                             numberOfColumns = 1;
                         }
                     }

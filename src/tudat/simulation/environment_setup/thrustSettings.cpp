@@ -37,7 +37,7 @@ std::vector< std::function< double( ) > > getPropulsionInputVariables(
         switch( independentVariables.at( i ) )
         {
             case propulsion::altitude_dependent_thrust:
-                inputFunctions.push_back( std::bind( &aerodynamics::FlightConditions::getCurrentAltitude, vehicleFlightConditions ) );
+                inputFunctions.push_back( [vehicleFlightConditions]() { return vehicleFlightConditions->getCurrentAltitude(); } );
                 break;
             case propulsion::density_dependent_thrust:
                 if( vehicleAtmosphericFlightConditions == nullptr )
@@ -46,7 +46,7 @@ std::vector< std::function< double( ) > > getPropulsionInputVariables(
                             "Error when making propulsion input variables, atmospheric flight conditions required, but not found" );
                 }
                 inputFunctions.push_back(
-                        std::bind( &aerodynamics::AtmosphericFlightConditions::getCurrentDensity, vehicleAtmosphericFlightConditions ) );
+                        [vehicleAtmosphericFlightConditions]() { return vehicleAtmosphericFlightConditions->getCurrentDensity(); } );
                 break;
             case propulsion::dynamic_pressure_dependent_thrust:
                 if( vehicleAtmosphericFlightConditions == nullptr )
@@ -54,8 +54,7 @@ std::vector< std::function< double( ) > > getPropulsionInputVariables(
                     throw std::runtime_error(
                             "Error when making propulsion input variables, atmospheric flight conditions required, but not found" );
                 }
-                inputFunctions.push_back( std::bind( &aerodynamics::AtmosphericFlightConditions::getCurrentDynamicPressure,
-                                                     vehicleAtmosphericFlightConditions ) );
+                inputFunctions.push_back( [vehicleAtmosphericFlightConditions]() { return vehicleAtmosphericFlightConditions->getCurrentDynamicPressure(); } );
                 break;
             case propulsion::mach_number_dependent_thrust:
                 if( vehicleAtmosphericFlightConditions == nullptr )
@@ -64,7 +63,7 @@ std::vector< std::function< double( ) > > getPropulsionInputVariables(
                             "Error when making propulsion input variables, atmospheric flight conditions required, but not found" );
                 }
                 inputFunctions.push_back(
-                        std::bind( &aerodynamics::AtmosphericFlightConditions::getCurrentMachNumber, vehicleAtmosphericFlightConditions ) );
+                        [vehicleAtmosphericFlightConditions]() { return vehicleAtmosphericFlightConditions->getCurrentMachNumber(); } );
                 break;
             case propulsion::pressure_dependent_thrust:
                 if( vehicleAtmosphericFlightConditions == nullptr )
@@ -73,7 +72,7 @@ std::vector< std::function< double( ) > > getPropulsionInputVariables(
                             "Error when making propulsion input variables, atmospheric flight conditions required, but not found" );
                 }
                 inputFunctions.push_back(
-                        std::bind( &aerodynamics::AtmosphericFlightConditions::getCurrentPressure, vehicleAtmosphericFlightConditions ) );
+                        [vehicleAtmosphericFlightConditions]() { return vehicleAtmosphericFlightConditions->getCurrentPressure(); } );
                 break;
             case propulsion::guidance_input_dependent_thrust:
                 inputFunctions.push_back( guidanceInputFunctions.at( numberOfCustomInputs ) );
@@ -162,10 +161,11 @@ void ParameterizedThrustMagnitudeSettings::parseInputDataAndCheckConsistency(
         }
 
         std::function< double( const std::vector< double >& ) > maximumThrustMagnitudeFunction = thrustMagnitudeFunction_;
-        thrustMagnitudeFunction_ = std::bind( &multiplyMaximumThrustByScalingFactor,
-                                              maximumThrustMagnitudeFunction,
-                                              thrustGuidanceInputVariables_.at( entryForMaximumThrustMultiplierInGuidanceFunctions ),
-                                              std::placeholders::_1 );
+        thrustMagnitudeFunction_ = [maximumThrustMagnitudeFunction,
+                                    maximumThrustMultiplier = thrustGuidanceInputVariables_.at( entryForMaximumThrustMultiplierInGuidanceFunctions )](
+                                              const std::vector< double >& maximumThrustIndependentVariables) {
+                                              return multiplyMaximumThrustByScalingFactor(
+                                                      maximumThrustMagnitudeFunction, maximumThrustMultiplier, maximumThrustIndependentVariables ); };
         thrustIndependentVariables_.erase( thrustIndependentVariables_.begin( ) + entryForMaximumThrustMultiplierInIndependentVariables );
         thrustGuidanceInputVariables_.erase( thrustGuidanceInputVariables_.begin( ) + entryForMaximumThrustMultiplierInGuidanceFunctions );
     }
@@ -251,7 +251,7 @@ std::shared_ptr< ParameterizedThrustMagnitudeSettings > createParameterizedThrus
     for( int i = 0; i < thrustInputParameterGuidance->getNumberOfThrustInputParameters( ); i++ )
     {
         thrustGuidanceInputVariables.push_back(
-                std::bind( &ThrustInputParameterGuidance::getThrustInputGuidanceParameter, thrustInputParameterGuidance, i ) );
+                [thrustInputParameterGuidance, i]() { return thrustInputParameterGuidance->getThrustInputGuidanceParameter( i ); } );
     }
 
     // Create specific impulse input functions.
@@ -259,7 +259,7 @@ std::shared_ptr< ParameterizedThrustMagnitudeSettings > createParameterizedThrus
     for( int i = 0; i < thrustInputParameterGuidance->getNumberOfSpecificImpulseInputParameters( ); i++ )
     {
         specificImpulseGuidanceInputVariables.push_back(
-                std::bind( &ThrustInputParameterGuidance::getSpecificImpulseInputGuidanceParameter, thrustInputParameterGuidance, i ) );
+                [thrustInputParameterGuidance, i]() { return thrustInputParameterGuidance->getSpecificImpulseInputGuidanceParameter( i ); } );
     }
 
     // Create thrust magnitude settings object.
@@ -270,7 +270,7 @@ std::shared_ptr< ParameterizedThrustMagnitudeSettings > createParameterizedThrus
             specificImpulseDependentVariables,
             thrustGuidanceInputVariables,
             specificImpulseGuidanceInputVariables,
-            std::bind( &ThrustInputParameterGuidance::update, thrustInputParameterGuidance, std::placeholders::_1 ) );
+            [thrustInputParameterGuidance](const double time) { thrustInputParameterGuidance->update( time ); } );
 }
 
 //! Function to create thrust magnitude settings from guidance input and tables
@@ -301,7 +301,7 @@ std::shared_ptr< ParameterizedThrustMagnitudeSettings > createParameterizedThrus
     for( int i = 0; i < thrustInputParameterGuidance->getNumberOfThrustInputParameters( ); i++ )
     {
         thrustGuidanceInputVariables.push_back(
-                std::bind( &ThrustInputParameterGuidance::getThrustInputGuidanceParameter, thrustInputParameterGuidance, i ) );
+                [thrustInputParameterGuidance, i]() { return thrustInputParameterGuidance->getThrustInputGuidanceParameter( i ); } );
     }
 
     // Create thrust magnitude settings object.
@@ -310,7 +310,7 @@ std::shared_ptr< ParameterizedThrustMagnitudeSettings > createParameterizedThrus
             thrustIndependentVariables,
             constantSpecificImpulse,
             thrustGuidanceInputVariables,
-            std::bind( &ThrustInputParameterGuidance::update, thrustInputParameterGuidance, std::placeholders::_1 ) );
+            [thrustInputParameterGuidance](const double time) { thrustInputParameterGuidance->update( time ); } );
 }
 
 //! Function to create thrust magnitude settings from guidance input and tables, with constant specific impulse

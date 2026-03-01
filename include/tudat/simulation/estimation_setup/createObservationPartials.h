@@ -613,14 +613,16 @@ public:
                                              const std::vector< double >&,
                                              const std::shared_ptr< observation_models::ObservationAncillarySimulationSettings >,
                                              const bool ) >
-                        scalingFactorFunction = std::bind( observation_models::getDsnNWayAveragedDopplerScalingFactor< ScalarType >,
-                                                           receivedFrequencyFunction,
-                                                           subtractDopplerSignature,
-                                                           std::placeholders::_1,
-                                                           std::placeholders::_2,
-                                                           std::placeholders::_3,
-                                                           std::placeholders::_4,
-                                                           std::placeholders::_5 );
+                        scalingFactorFunction = [receivedFrequencyFunction, subtractDopplerSignature](
+                                const observation_models::LinkEndType linkEndType,
+                                const std::vector< Eigen::Vector6d >& states,
+                                const std::vector< double >& times,
+                                const std::shared_ptr< observation_models::ObservationAncillarySimulationSettings > ancillarySettings,
+                                const bool subtractFlag ) {
+                            return observation_models::getDsnNWayAveragedDopplerScalingFactor< ScalarType >(
+                                    receivedFrequencyFunction, subtractDopplerSignature,
+                                    linkEndType, states, times, ancillarySettings, subtractFlag );
+                        };
 
                 differencedPartial = std::make_shared< DifferencedObservablePartial< 1 > >(
                         firstPartial,

@@ -49,7 +49,7 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > SecondDegreeGravitat
     {
         // If parameter is gravitational parameter, check and create dependency function .
         partialFunctionPair = std::make_pair(
-                std::bind( &SecondDegreeGravitationalTorquePartial::wrtGravitationalParameterOfCentralBody, this, std::placeholders::_1 ),
+                [this](Eigen::MatrixXd& m) { this->wrtGravitationalParameterOfCentralBody(m); },
                 1 );
     }
     else
@@ -90,12 +90,9 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > SecondDegreeGravitat
                                 "normalization function not found." );
                     }
                     partialFunction = std::make_pair(
-                            std::bind( &SecondDegreeGravitationalTorquePartial::wrtCosineSphericalHarmonicCoefficientsOfCentralBody,
-                                       this,
-                                       std::placeholders::_1,
-                                       c20Index,
-                                       c21Index,
-                                       c22Index ),
+                            [this, c20Index, c21Index, c22Index](Eigen::MatrixXd& m) {
+                                this->wrtCosineSphericalHarmonicCoefficientsOfCentralBody(m, c20Index, c21Index, c22Index);
+                            },
                             coefficientsParameter->getParameterSize( ) );
                 }
 
@@ -119,11 +116,9 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > SecondDegreeGravitat
                                 "normalization function not found." );
                     }
                     partialFunction = std::make_pair(
-                            std::bind( &SecondDegreeGravitationalTorquePartial::wrtSineSphericalHarmonicCoefficientsOfCentralBody,
-                                       this,
-                                       std::placeholders::_1,
-                                       s21Index,
-                                       s22Index ),
+                            [this, s21Index, s22Index](Eigen::MatrixXd& m) {
+                                this->wrtSineSphericalHarmonicCoefficientsOfCentralBody(m, s21Index, s22Index);
+                            },
                             coefficientsParameter->getParameterSize( ) );
                 }
 

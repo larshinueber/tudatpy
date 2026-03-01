@@ -73,11 +73,10 @@ double TrimOrientationCalculator::findTrimAngleOfAttack(
         const std::map< std::string, std::vector< double > > untrimmedControlSurfaceIndependentVariables )
 {
     // Determine function for which the root is to be determined.
-    std::function< double( const double ) > coefficientFunction = std::bind( &TrimOrientationCalculator::getPerturbedMomentCoefficient,
-                                                                             this,
-                                                                             std::placeholders::_1,
-                                                                             untrimmedIndependentVariables,
-                                                                             untrimmedControlSurfaceIndependentVariables );
+    std::function< double( const double ) > coefficientFunction = [this, untrimmedIndependentVariables, untrimmedControlSurfaceIndependentVariables](
+                                                                            const double perturbedAngle) {
+        return this->getPerturbedMomentCoefficient(perturbedAngle, untrimmedIndependentVariables, untrimmedControlSurfaceIndependentVariables);
+    };
 
     double trimmedAngleOfAttack = TUDAT_NAN;
 

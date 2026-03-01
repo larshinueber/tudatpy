@@ -308,11 +308,7 @@ void testObservationPartials(
 
             // Define observation function for current observable/link end
             std::function< Eigen::VectorXd( const double ) > observationFunction =
-                    std::bind( &ObservationModel< ObservableSize, double, TimeType >::computeObservations,
-                               observationModel,
-                               std::placeholders::_1,
-                               linkEndIterator->first,
-                               modifiedAncillarySettings );
+                    [observationModel, linkEnd = linkEndIterator->first, modifiedAncillarySettings]( const TimeType t ) { return observationModel->computeObservations( t, linkEnd, modifiedAncillarySettings ); };
 
             if( testPositionPartial )
             {
@@ -471,11 +467,7 @@ void testObservationPartials(
                 // Test vector parameter partials
                 {
                     std::function< Eigen::Matrix< double, ObservableSize, 1 >( TimeType ) > vectorObservationFunction =
-                            std::bind( &ObservationModel< ObservableSize, double, TimeType >::computeObservations,
-                                       observationModel,
-                                       std::placeholders::_1,
-                                       linkEndIterator->first,
-                                       modifiedAncillarySettings );
+                            [observationModel, linkEnd = linkEndIterator->first, modifiedAncillarySettings]( const TimeType t ) { return observationModel->computeObservations( t, linkEnd, modifiedAncillarySettings ); };
 
                     // Settings for parameter partial functions.
                     std::vector< Eigen::VectorXd > parameterPerturbations;

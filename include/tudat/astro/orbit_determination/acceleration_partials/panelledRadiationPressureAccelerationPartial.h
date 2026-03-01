@@ -173,17 +173,13 @@ public:
                 {
                     case estimatable_parameters::source_direction_radiation_pressure_scaling_factor:
 
-                        partialFunction = std::bind( &computeRadiationPressureAccelerationWrtSourceDirectionScaling,
-                                                     radiationPressureAcceleration_,
-                                                     std::placeholders::_1 );
+                        partialFunction = [this]( Eigen::MatrixXd& block ) { computeRadiationPressureAccelerationWrtSourceDirectionScaling( radiationPressureAcceleration_, block ); };
                         numberOfRows = 1;
 
                         break;
                     case estimatable_parameters::source_perpendicular_direction_radiation_pressure_scaling_factor:
 
-                        partialFunction = std::bind( &computeRadiationPressureAccelerationWrtSourcePerpendicularDirectionScaling,
-                                                     radiationPressureAcceleration_,
-                                                     std::placeholders::_1 );
+                        partialFunction = [this]( Eigen::MatrixXd& block ) { computeRadiationPressureAccelerationWrtSourcePerpendicularDirectionScaling( radiationPressureAcceleration_, block ); };
                         numberOfRows = 1;
 
                         break;
@@ -195,18 +191,12 @@ public:
             switch( parameter->getParameterName( ).first )
             {
                 case estimatable_parameters::specular_reflectivity:
-                    partialFunction = std::bind( &PanelledRadiationPressurePartial::wrtSpecularReflectivity,
-                                                 this,
-                                                 std::placeholders::_1,
-                                                 parameter->getParameterName( ).second.second );
+                    partialFunction = [this, bodyName = parameter->getParameterName( ).second.second]( Eigen::MatrixXd& block ) { this->wrtSpecularReflectivity( block, bodyName ); };
                     numberOfRows = 1;
                     break;
 
                 case estimatable_parameters::diffuse_reflectivity:
-                    partialFunction = std::bind( &PanelledRadiationPressurePartial::wrtDiffuseReflectivity,
-                                                 this,
-                                                 std::placeholders::_1,
-                                                 parameter->getParameterName( ).second.second );
+                    partialFunction = [this, bodyName = parameter->getParameterName( ).second.second]( Eigen::MatrixXd& block ) { this->wrtDiffuseReflectivity( block, bodyName ); };
                     numberOfRows = 1;
                     break;
                 default:

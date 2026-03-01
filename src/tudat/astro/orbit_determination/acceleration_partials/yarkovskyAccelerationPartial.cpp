@@ -54,7 +54,7 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > YarkovskyAcceleratio
         // If parameter is gravitational parameter, check and create dependency function .
         std::cout << "In" << std::endl;
         partialFunctionPair =
-                std::make_pair( std::bind( &YarkovskyAccelerationPartial::wrtYarkovskyParameter, this, std::placeholders::_1 ), 1 );
+                std::make_pair( [this](Eigen::MatrixXd& m) { this->wrtYarkovskyParameter(m); }, 1 );
     }
     else
     {

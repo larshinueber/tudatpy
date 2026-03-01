@@ -45,14 +45,14 @@ public:
         AccelerationPartial( acceleratedBody, acceleratingBody, accelerationModel, basic_astrodynamics::cannon_ball_radiation_pressure ),
         sourceBodyState_( accelerationModel->getSourcePositionFunction( ) ),
         acceleratedBodyState_( accelerationModel->getTargetPositionFunction( ) ),
-        areaFunction_( std::bind( &electromagnetism::CannonballRadiationPressureTargetModel::getArea, cannonballTargetModel ) ),
+        areaFunction_( [cannonballTargetModel]() { return cannonballTargetModel->getArea(); } ),
         radiationPressureCoefficientFunction_(
-                std::bind( &electromagnetism::CannonballRadiationPressureTargetModel::getCoefficient, cannonballTargetModel ) ),
+                [cannonballTargetModel]() { return cannonballTargetModel->getCoefficient(); } ),
         radiationPressureFunction_(
-                std::bind( &electromagnetism::RadiationPressureAcceleration::getCurrentRadiationPressure, accelerationModel ) ),
+                [accelerationModel]() { return accelerationModel->getCurrentRadiationPressure(); } ),
         acceleratedBodyMassFunction_( accelerationModel->getTargetMassFunction( ) ),
         accelerationUpdateFunction_(
-                std::bind( &basic_astrodynamics::AccelerationModel3d::updateMembers, accelerationModel, std::placeholders::_1 ) ),
+                [accelerationModel]( const double time ) { accelerationModel->updateMembers( time ); } ),
         cannonballTargetModel_( cannonballTargetModel ), accelerationModel_( accelerationModel )
     { }
 

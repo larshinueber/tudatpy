@@ -43,13 +43,9 @@ BOOST_AUTO_TEST_CASE( test_newtonRaphson_testFunction1 )
 
     // The termination condition.
     NewtonRaphson<>::TerminationFunction terminationConditionFunction =
-            std::bind( &RootAbsoluteToleranceTerminationCondition< double >::checkTerminationCondition,
-                       std::make_shared< RootAbsoluteToleranceTerminationCondition< double > >( testFunction->getTrueRootAccuracy( ) ),
-                       std::placeholders::_1,
-                       std::placeholders::_2,
-                       std::placeholders::_3,
-                       std::placeholders::_4,
-                       std::placeholders::_5 );
+            [cond = std::make_shared< RootAbsoluteToleranceTerminationCondition< double > >( testFunction->getTrueRootAccuracy( ) )]
+            ( const auto& a, const auto& b, const auto& c, const auto& d, const auto& e )
+            { return cond->checkTerminationCondition( a, b, c, d, e ); };
 
     // Test Newton-Raphson object.
     NewtonRaphson<> newtonRaphson( terminationConditionFunction );
@@ -70,13 +66,9 @@ BOOST_AUTO_TEST_CASE( test_newtonRaphson_testFunction2 )
 
     // The termination condition.
     NewtonRaphson<>::TerminationFunction terminationConditionFunction =
-            std::bind( &RootAbsoluteToleranceTerminationCondition< double >::checkTerminationCondition,
-                       std::make_shared< RootAbsoluteToleranceTerminationCondition< double > >( testFunction->getTrueRootAccuracy( ) ),
-                       std::placeholders::_1,
-                       std::placeholders::_2,
-                       std::placeholders::_3,
-                       std::placeholders::_4,
-                       std::placeholders::_5 );
+            [cond = std::make_shared< RootAbsoluteToleranceTerminationCondition< double > >( testFunction->getTrueRootAccuracy( ) )]
+            ( const auto& a, const auto& b, const auto& c, const auto& d, const auto& e )
+            { return cond->checkTerminationCondition( a, b, c, d, e ); };
 
     // Test Newton-Raphson object.
     NewtonRaphson<> newtonRaphson( terminationConditionFunction );
@@ -97,13 +89,9 @@ BOOST_AUTO_TEST_CASE( test_newtonRaphson_testFunction3 )
 
     // The termination condition.
     NewtonRaphson<>::TerminationFunction terminationConditionFunction =
-            std::bind( &RootAbsoluteToleranceTerminationCondition< double >::checkTerminationCondition,
-                       std::make_shared< RootAbsoluteToleranceTerminationCondition< double > >( testFunction->getTrueRootAccuracy( ) ),
-                       std::placeholders::_1,
-                       std::placeholders::_2,
-                       std::placeholders::_3,
-                       std::placeholders::_4,
-                       std::placeholders::_5 );
+            [cond = std::make_shared< RootAbsoluteToleranceTerminationCondition< double > >( testFunction->getTrueRootAccuracy( ) )]
+            ( const auto& a, const auto& b, const auto& c, const auto& d, const auto& e )
+            { return cond->checkTerminationCondition( a, b, c, d, e ); };
 
     // Test Newton-Raphson object.
     NewtonRaphson<> newtonRaphson( terminationConditionFunction );
@@ -137,13 +125,9 @@ BOOST_AUTO_TEST_CASE( test_newtonRaphson_testFunctionWithLargeRootDifference )
 
     // The termination condition.
     NewtonRaphson<>::TerminationFunction terminationConditionFunction =
-            std::bind( &RootRelativeToleranceTerminationCondition<>::checkTerminationCondition,
-                       std::make_shared< RootRelativeToleranceTerminationCondition<> >( 1.0e-10 ),
-                       std::placeholders::_1,
-                       std::placeholders::_2,
-                       std::placeholders::_3,
-                       std::placeholders::_4,
-                       std::placeholders::_5 );
+            [cond = std::make_shared< RootRelativeToleranceTerminationCondition<> >( 1.0e-10 )]
+            ( const auto& a, const auto& b, const auto& c, const auto& d, const auto& e )
+            { return cond->checkTerminationCondition( a, b, c, d, e ); };
 
     // Make the Newton-Raphson object.
     NewtonRaphson<> newtonRaphson( terminationConditionFunction );

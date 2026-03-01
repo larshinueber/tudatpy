@@ -105,8 +105,7 @@ public:
         if( tdbToTtInterpolatorSettings != nullptr )
         {
             std::function< double( const double ) > correctionFunction =
-                    std::bind< double( const double, const double, const double, const double ) >(
-                            sofa_interface::getTDBminusTT, std::placeholders::_1, 0.0, 0.0, 0.0 );
+                    []( const double t ) -> double { return sofa_interface::getTDBminusTT( t, 0.0, 0.0, 0.0 ); };
 
             std::shared_ptr< interpolators::OneDimensionalInterpolator< double, double > > correctionInterpolator =
                     interpolators::createOneDimensionalInterpolator< double, double >( correctionFunction, tdbToTtInterpolatorSettings );

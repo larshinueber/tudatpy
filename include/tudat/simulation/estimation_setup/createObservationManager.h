@@ -85,11 +85,8 @@ void performObservationParameterEstimationClosureForSingleModelSet(
                     if( linkEnds == biasParameter->getLinkEnds( ) && observableType == biasParameter->getObservableType( ) )
                     {
                         biasParameter->setObservationBiasFunctions(
-                                std::bind( &ConstantObservationBias< ObservationSize >::getTemplateFreeConstantObservationBias,
-                                           constantBiasObject ),
-                                std::bind( &ConstantObservationBias< ObservationSize >::resetConstantObservationBiasTemplateFree,
-                                           constantBiasObject,
-                                           std::placeholders::_1 ) );
+                                [constantBiasObject]( ) { return constantBiasObject->getTemplateFreeConstantObservationBias( ); },
+                                [constantBiasObject]( const Eigen::VectorXd& bias ) { constantBiasObject->resetConstantObservationBiasTemplateFree( bias ); } );
                     }
                 }
                 break;
@@ -127,11 +124,8 @@ void performObservationParameterEstimationClosureForSingleModelSet(
                         if( doTimesMatch == true )
                         {
                             biasParameter->setObservationBiasFunctions(
-                                    std::bind( &ConstantArcWiseObservationBias< ObservationSize >::getTemplateFreeConstantObservationBias,
-                                               constantBiasObject ),
-                                    std::bind( &ConstantArcWiseObservationBias< ObservationSize >::resetConstantObservationBiasTemplateFree,
-                                               constantBiasObject,
-                                               std::placeholders::_1 ) );
+                                    [constantBiasObject]( ) { return constantBiasObject->getTemplateFreeConstantObservationBias( ); },
+                                    [constantBiasObject]( const std::vector< Eigen::VectorXd >& bias ) { constantBiasObject->resetConstantObservationBiasTemplateFree( bias ); } );
                             biasParameter->setLookupScheme( constantBiasObject->getLookupScheme( ) );
                         }
                     }
@@ -156,11 +150,8 @@ void performObservationParameterEstimationClosureForSingleModelSet(
                     if( linkEnds == biasParameter->getLinkEnds( ) && observableType == biasParameter->getObservableType( ) )
                     {
                         biasParameter->setObservationBiasFunctions(
-                                std::bind( &ConstantRelativeObservationBias< ObservationSize >::getTemplateFreeConstantObservationBias,
-                                           constantBiasObject ),
-                                std::bind( &ConstantRelativeObservationBias< ObservationSize >::resetConstantObservationBiasTemplateFree,
-                                           constantBiasObject,
-                                           std::placeholders::_1 ) );
+                                [constantBiasObject]( ) { return constantBiasObject->getTemplateFreeConstantObservationBias( ); },
+                                [constantBiasObject]( const Eigen::VectorXd& bias ) { constantBiasObject->resetConstantObservationBiasTemplateFree( bias ); } );
                     }
                 }
                 break;
@@ -198,13 +189,12 @@ void performObservationParameterEstimationClosureForSingleModelSet(
                         if( doTimesMatch == true )
                         {
                             biasParameter->setObservationBiasFunctions(
-                                    std::bind( &ConstantRelativeArcWiseObservationBias<
-                                                       ObservationSize >::getTemplateFreeConstantObservationBias,
-                                               constantBiasObject ),
-                                    std::bind( &ConstantRelativeArcWiseObservationBias<
-                                                       ObservationSize >::resetConstantObservationBiasTemplateFree,
-                                               constantBiasObject,
-                                               std::placeholders::_1 ) );
+                                    [constantBiasObject]() {
+                                        return constantBiasObject->getTemplateFreeConstantObservationBias();
+                                    },
+                                    [constantBiasObject]( const std::vector< Eigen::VectorXd >& bias ) {
+                                        constantBiasObject->resetConstantObservationBiasTemplateFree( bias );
+                                    } );
                             biasParameter->setLookupScheme( constantBiasObject->getLookupScheme( ) );
                         }
                     }
@@ -229,11 +219,12 @@ void performObservationParameterEstimationClosureForSingleModelSet(
                     if( linkEnds == biasParameter->getLinkEnds( ) && observableType == biasParameter->getObservableType( ) )
                     {
                         biasParameter->setObservationBiasFunctions(
-                                std::bind( &ConstantTimeDriftBias< ObservationSize >::getTemplateFreeConstantObservationBias,
-                                           timeBiasObject ),
-                                std::bind( &ConstantTimeDriftBias< ObservationSize >::resetConstantObservationBiasTemplateFree,
-                                           timeBiasObject,
-                                           std::placeholders::_1 ) );
+                                [timeBiasObject]() {
+                                    return timeBiasObject->getTemplateFreeConstantObservationBias();
+                                },
+                                [timeBiasObject]( const Eigen::VectorXd& bias ) {
+                                    timeBiasObject->resetConstantObservationBiasTemplateFree( bias );
+                                } );
                     }
                 }
                 break;
@@ -274,11 +265,8 @@ void performObservationParameterEstimationClosureForSingleModelSet(
                         if( doTimesMatch == true )
                         {
                             timeBiasParameter->setObservationBiasFunctions(
-                                    std::bind( &ArcWiseTimeDriftBias< ObservationSize >::getTemplateFreeConstantObservationBias,
-                                               timeBiasObject ),
-                                    std::bind( &ArcWiseTimeDriftBias< ObservationSize >::resetConstantObservationBiasTemplateFree,
-                                               timeBiasObject,
-                                               std::placeholders::_1 ) );
+                                    [timeBiasObject]( ) { return timeBiasObject->getTemplateFreeConstantObservationBias( ); },
+                                    [timeBiasObject]( const std::vector< Eigen::VectorXd >& bias ) { timeBiasObject->resetConstantObservationBiasTemplateFree( bias ); } );
                             timeBiasParameter->setLookupScheme( timeBiasObject->getLookupScheme( ) );
                         }
                     }
@@ -303,10 +291,8 @@ void performObservationParameterEstimationClosureForSingleModelSet(
                     if( linkEnds == biasParameter->getLinkEnds( ) && observableType == biasParameter->getObservableType( ) )
                     {
                         biasParameter->setObservationBiasFunctions(
-                                std::bind( &ConstantTimeBias< ObservationSize >::getTemplateFreeConstantObservationBias, timeBiasObject ),
-                                std::bind( &ConstantTimeBias< ObservationSize >::resetConstantObservationBiasTemplateFree,
-                                           timeBiasObject,
-                                           std::placeholders::_1 ) );
+                                [timeBiasObject]( ) { return timeBiasObject->getTemplateFreeConstantObservationBias( ); },
+                                [timeBiasObject]( const Eigen::VectorXd& bias ) { timeBiasObject->resetConstantObservationBiasTemplateFree( bias ); } );
                     }
                 }
                 break;
@@ -347,11 +333,8 @@ void performObservationParameterEstimationClosureForSingleModelSet(
                         if( doTimesMatch == true )
                         {
                             timeBiasParameter->setObservationBiasFunctions(
-                                    std::bind( &ArcWiseTimeBias< ObservationSize >::getTemplateFreeConstantObservationBias,
-                                               timeBiasObject ),
-                                    std::bind( &ArcWiseTimeBias< ObservationSize >::resetConstantObservationBiasTemplateFree,
-                                               timeBiasObject,
-                                               std::placeholders::_1 ) );
+                                    [timeBiasObject]( ) { return timeBiasObject->getTemplateFreeConstantObservationBias( ); },
+                                    [timeBiasObject]( const std::vector< Eigen::VectorXd >& bias ) { timeBiasObject->resetConstantObservationBiasTemplateFree( bias ); } );
                             timeBiasParameter->setLookupScheme( timeBiasObject->getLookupScheme( ) );
                         }
                     }

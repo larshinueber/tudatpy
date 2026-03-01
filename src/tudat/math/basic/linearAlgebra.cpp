@@ -141,12 +141,6 @@ Eigen::Vector3d evaluateSecondBlockInStateVector( const std::function< Eigen::Ve
     return stateFunction( time ).segment( 3, 3 );
 }
 
-//! Computes the norm of a 3d vector from a vector-returning function.
-double getVectorNormFromFunction( const std::function< Eigen::Vector3d( ) > vectorFunction )
-{
-    return getVectorNorm( vectorFunction( ) );
-}
-
 //! Function to calculate the jacobian of a normalized vector, from the partial of the unnormalized vector.
 Eigen::Matrix3d calculatePartialOfNormalizedVector( const Eigen::Matrix3d& partialOfUnnormalizedVector,
                                                     const Eigen::Vector3d& unnormalizedVector )

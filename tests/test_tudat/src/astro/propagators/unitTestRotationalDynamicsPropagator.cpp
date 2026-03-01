@@ -841,11 +841,8 @@ BOOST_AUTO_TEST_CASE( testRotationalAndTranslationalDynamicsPropagation )
                 // Create and set interpolator for angular momentum.
                 std::shared_ptr< interpolators::OneDimensionalInterpolator< double, Eigen::Vector3d > > angularMomentumInterpolator =
                         std::make_shared< interpolators::LagrangeInterpolator< double, Eigen::Vector3d > >( inertialAngularMomentumMap, 6 );
-                typedef interpolators::OneDimensionalInterpolator< double, Eigen::Vector3d > LocalInterpolator;
-                std::function< Eigen::Vector3d( const double ) > angularMomentumFunction = std::bind(
-                        static_cast< Eigen::Vector3d ( LocalInterpolator::* )( const double ) >( &LocalInterpolator::interpolate ),
-                        angularMomentumInterpolator,
-                        std::placeholders::_1 );
+                std::function< Eigen::Vector3d( const double ) > angularMomentumFunction =
+                        [angularMomentumInterpolator]( const double t ) { return angularMomentumInterpolator->interpolate( t ); };
 
                 double timeStep = 0.001;
 

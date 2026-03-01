@@ -165,7 +165,7 @@ std::shared_ptr< TransferLeg > createTransferLeg( const simulation_setup::System
             {
                 throw std::runtime_error( "Error when making dsm_velocity_based_leg, no departure node" );
             }
-            std::function< Eigen::Vector3d( ) > departureVelocityFunction = std::bind( &TransferNode::getOutgoingVelocity, departureNode );
+            std::function< Eigen::Vector3d( ) > departureVelocityFunction = [departureNode]() { return departureNode->getOutgoingVelocity(); };
 
             transferLeg = std::make_shared< DsmVelocityBasedTransferLeg >(
                     departureBodyEphemeris, arrivalBodyEphemeris, centralBodyGravitationalParameter, departureVelocityFunction );
@@ -188,8 +188,8 @@ std::shared_ptr< TransferLeg > createTransferLeg( const simulation_setup::System
                 throw std::runtime_error( "Error when making spherical_shaping_low_thrust_leg, no arrival node." );
             }
 
-            std::function< Eigen::Vector3d( ) > departureVelocityFunction = std::bind( &TransferNode::getOutgoingVelocity, departureNode );
-            std::function< Eigen::Vector3d( ) > arrivalVelocityFunction = std::bind( &TransferNode::getIncomingVelocity, arrivalNode );
+            std::function< Eigen::Vector3d( ) > departureVelocityFunction = [departureNode]() { return departureNode->getOutgoingVelocity(); };
+            std::function< Eigen::Vector3d( ) > arrivalVelocityFunction = [arrivalNode]() { return arrivalNode->getIncomingVelocity(); };
 
             transferLeg = std::make_shared< shape_based_methods::SphericalShapingLeg >(
                     departureBodyEphemeris,
@@ -222,8 +222,8 @@ std::shared_ptr< TransferLeg > createTransferLeg( const simulation_setup::System
                 throw std::runtime_error( "Error when making hodographic_shaping_low_thrust_leg, no arrival node." );
             }
 
-            std::function< Eigen::Vector3d( ) > departureVelocityFunction = std::bind( &TransferNode::getOutgoingVelocity, departureNode );
-            std::function< Eigen::Vector3d( ) > arrivalVelocityFunction = std::bind( &TransferNode::getIncomingVelocity, arrivalNode );
+            std::function< Eigen::Vector3d( ) > departureVelocityFunction = [departureNode]() { return departureNode->getOutgoingVelocity(); };
+            std::function< Eigen::Vector3d( ) > arrivalVelocityFunction = [arrivalNode]() { return arrivalNode->getIncomingVelocity(); };
 
             transferLeg = std::make_shared< shape_based_methods::HodographicShapingLeg >(
                     departureBodyEphemeris,
@@ -285,9 +285,9 @@ std::shared_ptr< TransferNode > createTransferNode( const simulation_setup::Syst
                 }
 
                 std::function< Eigen::Vector3d( ) > incomingVelocityFunction =
-                        std::bind( &TransferLeg::getArrivalVelocity, incomingTransferLeg );
+                        [incomingTransferLeg]() { return incomingTransferLeg->getArrivalVelocity(); };
                 std::function< Eigen::Vector3d( ) > outgoingVelocityFunction =
-                        std::bind( &TransferLeg::getDepartureVelocity, outgoingTransferLeg );
+                        [outgoingTransferLeg]() { return outgoingTransferLeg->getDepartureVelocity(); };
 
                 transferNode = std::make_shared< SwingbyWithFixedIncomingFixedOutgoingVelocity >( centralBodyEphemeris,
                                                                                                   centralBodyGravitationalParameter,
@@ -298,7 +298,7 @@ std::shared_ptr< TransferNode > createTransferNode( const simulation_setup::Syst
             else if( !nodeComputesIncomingVelocity && nodeComputesOutgoingVelocity )
             {
                 std::function< Eigen::Vector3d( ) > incomingVelocityFunction =
-                        std::bind( &TransferLeg::getArrivalVelocity, incomingTransferLeg );
+                        [incomingTransferLeg]() { return incomingTransferLeg->getArrivalVelocity(); };
 
                 transferNode = std::make_shared< SwingbyWithFixedIncomingFreeOutgoingVelocity >(
                         centralBodyEphemeris, centralBodyGravitationalParameter, incomingVelocityFunction );
@@ -311,7 +311,7 @@ std::shared_ptr< TransferNode > createTransferNode( const simulation_setup::Syst
             else
             {
                 std::function< Eigen::Vector3d( ) > outgoingVelocityFunction =
-                        std::bind( &TransferLeg::getDepartureVelocity, outgoingTransferLeg );
+                        [outgoingTransferLeg]() { return outgoingTransferLeg->getDepartureVelocity(); };
 
                 transferNode = std::make_shared< SwingbyWithFreeIncomingFixedOutgoingVelocity >(
                         centralBodyEphemeris, centralBodyGravitationalParameter, outgoingVelocityFunction );
@@ -330,7 +330,7 @@ std::shared_ptr< TransferNode > createTransferNode( const simulation_setup::Syst
                 }
 
                 std::function< Eigen::Vector3d( ) > outgoingVelocityFunction =
-                        std::bind( &TransferLeg::getDepartureVelocity, outgoingTransferLeg );
+                        [outgoingTransferLeg]() { return outgoingTransferLeg->getDepartureVelocity(); };
                 transferNode =
                         std::make_shared< DepartureWithFixedOutgoingVelocityNode >( centralBodyEphemeris,
                                                                                     centralBodyGravitationalParameter,
@@ -367,7 +367,7 @@ std::shared_ptr< TransferNode > createTransferNode( const simulation_setup::Syst
             if( !nodeComputesIncomingVelocity )
             {
                 std::function< Eigen::Vector3d( ) > incomingVelocityFunction =
-                        std::bind( &TransferLeg::getArrivalVelocity, incomingTransferLeg );
+                        [incomingTransferLeg]() { return incomingTransferLeg->getArrivalVelocity(); };
 
                 transferNode = std::make_shared< CaptureWithFixedIncomingVelocityNode >( centralBodyEphemeris,
                                                                                          centralBodyGravitationalParameter,

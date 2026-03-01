@@ -71,21 +71,13 @@ BOOST_AUTO_TEST_CASE( testWindModelInPropagation )
         if( test == 0 )
         {
             defaultBodySettings.at( "Earth" )->atmosphereSettings->setWindSettings(
-                    std::make_shared< CustomWindModelSettings >( std::bind( &getCustomWindVector,
-                                                                            std::placeholders::_1,
-                                                                            std::placeholders::_2,
-                                                                            std::placeholders::_3,
-                                                                            std::placeholders::_4 ),
+                    std::make_shared< CustomWindModelSettings >( [](double altitude, double longitude, double latitude, double time) { return getCustomWindVector(altitude, longitude, latitude, time); },
                                                                  reference_frames::corotating_frame ) );
         }
         else
         {
             defaultBodySettings.at( "Earth" )->atmosphereSettings->setWindSettings(
-                    std::make_shared< CustomWindModelSettings >( std::bind( &getCustomWindVector,
-                                                                            std::placeholders::_1,
-                                                                            std::placeholders::_2,
-                                                                            std::placeholders::_3,
-                                                                            std::placeholders::_4 ),
+                    std::make_shared< CustomWindModelSettings >( [](double altitude, double longitude, double latitude, double time) { return getCustomWindVector(altitude, longitude, latitude, time); },
                                                                  reference_frames::vertical_frame ) );
         }
         SystemOfBodies bodies = createSystemOfBodies( defaultBodySettings );
@@ -176,7 +168,7 @@ BOOST_AUTO_TEST_CASE( testWindModelInPropagation )
         toPropagationFrameTransformation = reference_frames::getAerodynamicForceTransformationFunction(
                 bodies.at( "Vehicle" )->getFlightConditions( )->getAerodynamicAngleCalculator( ),
                 reference_frames::aerodynamic_frame,
-                std::bind( &Body::getCurrentRotationToGlobalFrame, bodies.at( "Earth" ) ),
+                [earth = bodies.at( "Earth" )]() { return earth->getCurrentRotationToGlobalFrame(); },
                 reference_frames::inertial_frame );
 
         // Iterate over all time steps and compute test quantities

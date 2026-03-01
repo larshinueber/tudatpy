@@ -248,11 +248,8 @@ public:
         coefficientInterpolator_ = std::make_shared< interpolators::PiecewiseConstantInterpolator< double, double > >(
                 timeLimits_, fullRadiationPressureCoefficients_ );
 
-        typedef interpolators::OneDimensionalInterpolator< double, double > LocalInterpolator;
         radiationPressureInterface->resetCoefficientFunction(
-                std::bind( static_cast< double ( LocalInterpolator::* )( const double ) >( &LocalInterpolator::interpolate ),
-                           coefficientInterpolator_,
-                           std::placeholders::_1 ) );
+                [interp = coefficientInterpolator_]( const double time ) { return interp->interpolate( time ); } );
     }
 
     //! Destructor.

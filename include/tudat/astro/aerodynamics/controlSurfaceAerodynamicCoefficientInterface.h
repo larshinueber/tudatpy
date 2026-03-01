@@ -215,8 +215,9 @@ public:
             const std::vector< AerodynamicCoefficientsIndependentVariables > independentVariableNames ):
         ControlSurfaceIncrementAerodynamicInterface( independentVariableNames )
     {
-        coefficientFunction_ = std::bind(
-                &concatenateForceAndMomentCoefficients, forceCoefficientFunction, momentCoefficientFunction, std::placeholders::_1 );
+        coefficientFunction_ = [forceCoefficientFunction, momentCoefficientFunction]( const std::vector< double >& vars ) {
+            return concatenateForceAndMomentCoefficients( forceCoefficientFunction, momentCoefficientFunction, vars );
+        };
     }
 
     //! Destructor

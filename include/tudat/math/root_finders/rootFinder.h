@@ -51,13 +51,9 @@ public:
     RootFinder( TerminationFunction terminationFunction ): terminationFunction_( terminationFunction ) { }
 
     RootFinder( std::shared_ptr< TerminationCondition< DataType > > terminationCondition ):
-        terminationFunction_( std::bind( &TerminationCondition< DataType >::checkTerminationCondition,
-                                         terminationCondition,
-                                         std::placeholders::_1,
-                                         std::placeholders::_2,
-                                         std::placeholders::_3,
-                                         std::placeholders::_4,
-                                         std::placeholders::_5 ) )
+        terminationFunction_( [terminationCondition]( const DataType a, const DataType b, const DataType c, const DataType d, const unsigned int e ) {
+            return terminationCondition->checkTerminationCondition( a, b, c, d, e );
+        } )
     { }
 
     //! Default destructor.

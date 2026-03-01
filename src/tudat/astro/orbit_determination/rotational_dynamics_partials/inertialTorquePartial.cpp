@@ -38,7 +38,7 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > InertialTorquePartia
                             "function not found." );
                 }
                 partialFunction =
-                        std::make_pair( std::bind( &InertialTorquePartial::wrtGravitationalParameter, this, std::placeholders::_1 ), 1 );
+                        std::make_pair( [this](Eigen::MatrixXd& m) { this->wrtGravitationalParameter(m); }, 1 );
 
                 break;
             }
@@ -50,7 +50,7 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > InertialTorquePartia
                             "function not found." );
                 }
                 partialFunction =
-                        std::make_pair( std::bind( &InertialTorquePartial::wrtMeanMomentOfInertia, this, std::placeholders::_1 ), 1 );
+                        std::make_pair( [this](Eigen::MatrixXd& m) { this->wrtMeanMomentOfInertia(m); }, 1 );
 
                 break;
             }
@@ -91,12 +91,9 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > InertialTorquePartia
                                 "function not found." );
                     }
                     partialFunction =
-                            std::make_pair( std::bind( &InertialTorquePartial::wrtCosineSphericalHarmonicCoefficientsOfCentralBody,
-                                                       this,
-                                                       std::placeholders::_1,
-                                                       c20Index,
-                                                       c21Index,
-                                                       c22Index ),
+                            std::make_pair( [this, c20Index, c21Index, c22Index](Eigen::MatrixXd& m) {
+                                this->wrtCosineSphericalHarmonicCoefficientsOfCentralBody(m, c20Index, c21Index, c22Index);
+                            },
                                             coefficientsParameter->getParameterSize( ) );
                 }
 
@@ -119,11 +116,9 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > InertialTorquePartia
                                 "Error when getting partial of inertial torque w.r.t. sine sh parameters, inertia tensor normalization "
                                 "function not found." );
                     }
-                    partialFunction = std::make_pair( std::bind( &InertialTorquePartial::wrtSineSphericalHarmonicCoefficientsOfCentralBody,
-                                                                 this,
-                                                                 std::placeholders::_1,
-                                                                 s21Index,
-                                                                 s22Index ),
+                    partialFunction = std::make_pair( [this, s21Index, s22Index](Eigen::MatrixXd& m) {
+                                                          this->wrtSineSphericalHarmonicCoefficientsOfCentralBody(m, s21Index, s22Index);
+                                                      },
                                                       coefficientsParameter->getParameterSize( ) );
                 }
 

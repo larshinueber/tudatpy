@@ -108,17 +108,11 @@ BOOST_AUTO_TEST_CASE( testExtendedKalmanFilterFirstCase )
 
     // Create extended Kalman filter object
     KalmanFilterDoublePointer extendedFilter = std::make_shared< ExtendedKalmanFilterDouble >(
-            std::bind( &stateFunction1,
-                       std::placeholders::_1,
-                       std::placeholders::_2,
-                       std::bind( &ControlWrapper< double, double, 2 >::getCurrentControlVector, control ) ),
-            std::bind( &measurementFunction1, std::placeholders::_1, std::placeholders::_2 ),
-            std::bind( &stateJacobianFunction1,
-                       std::placeholders::_1,
-                       std::placeholders::_2,
-                       std::bind( &ControlWrapper< double, double, 2 >::getCurrentControlVector, control ) ),
+            [control]( const double time, const Eigen::Vector2d& state ) { return stateFunction1( time, state, control->getCurrentControlVector( ) ); },
+            []( const double time, const Eigen::Vector2d& state ) { return measurementFunction1( time, state ); },
+            [control]( const double time, const Eigen::Vector2d& state ) { return stateJacobianFunction1( time, state, control->getCurrentControlVector( ) ); },
             [ & ]( const double, const Eigen::Vector2d& ) { return Eigen::Matrix2d::Identity( ); },
-            std::bind( &measurementJacobianFunction1, std::placeholders::_1, std::placeholders::_2 ),
+            []( const double time, const Eigen::Vector2d& state ) { return measurementJacobianFunction1( time, state ); },
             [ & ]( const double, const Eigen::Vector2d& ) { return Eigen::Vector1d::Identity( ); },
             systemUncertainty,
             measurementUncertainty,
@@ -266,17 +260,11 @@ BOOST_AUTO_TEST_CASE( testExtendedKalmanFilterSecondCase )
 
     // Create extended Kalman filter object
     KalmanFilterDoublePointer extendedFilter = std::make_shared< ExtendedKalmanFilterDouble >(
-            std::bind( &stateFunction2,
-                       std::placeholders::_1,
-                       std::placeholders::_2,
-                       std::bind( &ControlWrapper< double, double, 3 >::getCurrentControlVector, control ) ),
-            std::bind( &measurementFunction2, std::placeholders::_1, std::placeholders::_2 ),
-            std::bind( &stateJacobianFunction2,
-                       std::placeholders::_1,
-                       std::placeholders::_2,
-                       std::bind( &ControlWrapper< double, double, 3 >::getCurrentControlVector, control ) ),
+            [control]( const double time, const Eigen::Vector3d& state ) { return stateFunction2( time, state, control->getCurrentControlVector( ) ); },
+            []( const double time, const Eigen::Vector3d& state ) { return measurementFunction2( time, state ); },
+            [control]( const double time, const Eigen::Vector3d& state ) { return stateJacobianFunction2( time, state, control->getCurrentControlVector( ) ); },
             [ & ]( const double, const Eigen::Vector3d& ) { return Eigen::Matrix3d::Identity( ); },
-            std::bind( &measurementJacobianFunction2, std::placeholders::_1, std::placeholders::_2 ),
+            []( const double time, const Eigen::Vector3d& state ) { return measurementJacobianFunction2( time, state ); },
             [ & ]( const double, const Eigen::Vector3d& ) { return Eigen::Vector1d::Identity( ); },
             systemUncertainty,
             measurementUncertainty,

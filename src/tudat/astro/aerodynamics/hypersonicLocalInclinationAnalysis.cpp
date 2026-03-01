@@ -473,12 +473,14 @@ void HypersonicLocalInclinationAnalysis::updateCompressionPressures( const doubl
     switch( method )
     {
         case 0:
-            pressureFunction = std::bind( aerodynamics::computeNewtonianPressureCoefficient, std::placeholders::_1 );
+            pressureFunction = [](const double a) { return aerodynamics::computeNewtonianPressureCoefficient(a); };
             break;
 
         case 1:
-            pressureFunction = std::bind(
-                    aerodynamics::computeModifiedNewtonianPressureCoefficient, std::placeholders::_1, stagnationPressureCoefficient );
+        {
+            double stagCoeff = stagnationPressureCoefficient;
+            pressureFunction = [stagCoeff](const double a) { return aerodynamics::computeModifiedNewtonianPressureCoefficient(a, stagCoeff); };
+        }
             break;
 
         case 2:
@@ -491,28 +493,27 @@ void HypersonicLocalInclinationAnalysis::updateCompressionPressures( const doubl
 
         case 4:
             pressureFunction =
-                    std::bind( aerodynamics::computeEmpiricalTangentWedgePressureCoefficient, std::placeholders::_1, machNumber );
+                    [machNumber](const double a) { return aerodynamics::computeEmpiricalTangentWedgePressureCoefficient(a, machNumber); };
             break;
 
         case 5:
-            pressureFunction = std::bind( aerodynamics::computeEmpiricalTangentConePressureCoefficient, std::placeholders::_1, machNumber );
+            pressureFunction = [machNumber](const double a) { return aerodynamics::computeEmpiricalTangentConePressureCoefficient(a, machNumber); };
             break;
 
         case 6:
-            pressureFunction = std::bind( aerodynamics::computeModifiedDahlemBuckPressureCoefficient, std::placeholders::_1, machNumber );
+            pressureFunction = [machNumber](const double a) { return aerodynamics::computeModifiedDahlemBuckPressureCoefficient(a, machNumber); };
             break;
 
         case 7:
-            pressureFunction = std::bind(
-                    aerodynamics::computeVanDykeUnifiedPressureCoefficient, std::placeholders::_1, machNumber, ratioOfSpecificHeats, 1 );
+            pressureFunction = [machNumber, this](const double a) { return aerodynamics::computeVanDykeUnifiedPressureCoefficient(a, machNumber, ratioOfSpecificHeats, 1); };
             break;
 
         case 8:
-            pressureFunction = std::bind( aerodynamics::computeSmythDeltaWingPressureCoefficient, std::placeholders::_1, machNumber );
+            pressureFunction = [machNumber](const double a) { return aerodynamics::computeSmythDeltaWingPressureCoefficient(a, machNumber); };
             break;
 
         case 9:
-            pressureFunction = std::bind( aerodynamics::computeHankeyFlatSurfacePressureCoefficient, std::placeholders::_1, machNumber );
+            pressureFunction = [machNumber](const double a) { return aerodynamics::computeHankeyFlatSurfacePressureCoefficient(a, machNumber); };
             break;
 
         default:
@@ -544,7 +545,7 @@ void HypersonicLocalInclinationAnalysis::updateExpansionPressures( const double 
         switch( method )
         {
             case 0:
-                pressureFunction = std::bind( &aerodynamics::computeVacuumPressureCoefficient, machNumber, ratioOfSpecificHeats );
+                pressureFunction = [machNumber, this]() { return aerodynamics::computeVacuumPressureCoefficient(machNumber, ratioOfSpecificHeats); };
                 break;
 
             case 1:
@@ -552,7 +553,7 @@ void HypersonicLocalInclinationAnalysis::updateExpansionPressures( const double 
                 break;
 
             case 4:
-                pressureFunction = std::bind( &aerodynamics::computeHighMachBasePressure, machNumber );
+                pressureFunction = [machNumber]() { return aerodynamics::computeHighMachBasePressure(machNumber); };
                 break;
         }
 
@@ -584,23 +585,15 @@ void HypersonicLocalInclinationAnalysis::updateExpansionPressures( const double 
             case 3:
                 // Calculate freestream Prandtl-Meyer function.
                 freestreamPrandtlMeyerFunction = aerodynamics::computePrandtlMeyerFunction( machNumber, ratioOfSpecificHeats );
-                pressureFunction = std::bind( &aerodynamics::computePrandtlMeyerFreestreamPressureCoefficient,
-                                              std::placeholders::_1,
-                                              machNumber,
-                                              ratioOfSpecificHeats,
-                                              freestreamPrandtlMeyerFunction );
+                pressureFunction = [machNumber, this, freestreamPrandtlMeyerFunction](const double a) { return aerodynamics::computePrandtlMeyerFreestreamPressureCoefficient(a, machNumber, ratioOfSpecificHeats, freestreamPrandtlMeyerFunction); };
                 break;
 
             case 5:
-                pressureFunction = std::bind( &aerodynamics::computePrandtlMeyerFreestreamPressureCoefficient,
-                                              std::placeholders::_1,
-                                              machNumber,
-                                              ratioOfSpecificHeats,
-                                              -1 );
+                pressureFunction = [machNumber, this](const double a) { return aerodynamics::computePrandtlMeyerFreestreamPressureCoefficient(a, machNumber, ratioOfSpecificHeats, -1); };
                 break;
 
             case 6:
-                pressureFunction = std::bind( &aerodynamics::computeAcmEmpiricalPressureCoefficient, std::placeholders::_1, machNumber );
+                pressureFunction = [machNumber](const double a) { return aerodynamics::computeAcmEmpiricalPressureCoefficient(a, machNumber); };
                 break;
         }
 

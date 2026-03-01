@@ -77,8 +77,9 @@ public:
                                          forceCoefficientsFrame,
                                          momentCoefficientsFrame )
     {
-        coefficientFunction_ = std::bind(
-                &concatenateForceAndMomentCoefficients, forceCoefficientFunction, momentCoefficientFunction, std::placeholders::_1 );
+        coefficientFunction_ = [forceCoefficientFunction, momentCoefficientFunction]( const std::vector< double >& independentVariables ) {
+            return concatenateForceAndMomentCoefficients( forceCoefficientFunction, momentCoefficientFunction, independentVariables );
+        };
     }
 
     //! Constructor.

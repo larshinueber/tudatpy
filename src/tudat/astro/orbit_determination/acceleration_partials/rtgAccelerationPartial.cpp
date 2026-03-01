@@ -33,9 +33,7 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > RTGAccelerationParti
         {
             case rtg_force_vector: {
                     partialFunction =
-                            std::bind( &RTGAccelerationPartial::wrtRTGForceVector,
-                                       this,
-                                       std::placeholders::_1 );
+                            [this](Eigen::MatrixXd& m) { this->wrtRTGForceVector(m); };
                     numberOfRows = parameter->getParameterSize( );
                 break;
             }
@@ -63,9 +61,7 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > RTGAccelerationParti
         {
             case rtg_force_vector_magnitude: {
                 partialFunction =
-                        std::bind( &RTGAccelerationPartial::wrtRTGForceVectorMagnitude,
-                                   this,
-                                   std::placeholders::_1 );
+                        [this](Eigen::MatrixXd& m) { this->wrtRTGForceVectorMagnitude(m); };
                 numberOfRows = parameter->getParameterSize( );
 
                 break;

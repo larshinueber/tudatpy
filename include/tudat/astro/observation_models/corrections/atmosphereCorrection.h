@@ -721,9 +721,9 @@ public:
     {
         // Override default values for dry and wet zenith corrections
         dryZenithRangeCorrectionFunction_ =
-                std::bind( &SaastamoinenTroposphericCorrection::computeDryZenithRangeCorrection, this, std::placeholders::_1 );
+                [this]( const double time ) { return this->computeDryZenithRangeCorrection( time ); };
         wetZenithRangeCorrectionFunction_ =
-                std::bind( &SaastamoinenTroposphericCorrection::computeWetZenithRangeCorrection, this, std::placeholders::_1 );
+                [this]( const double time ) { return this->computeWetZenithRangeCorrection( time ); };
     }
 
 private:

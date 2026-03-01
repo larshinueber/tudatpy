@@ -171,7 +171,7 @@ BOOST_AUTO_TEST_CASE( test_CustomAccelerationPartials )
     std::map< std::string, std::vector< std::shared_ptr< AccelerationSettings > > > accelerationsOfVehicle;
     accelerationsOfVehicle[ "Earth" ].push_back( std::make_shared< AccelerationSettings >( basic_astrodynamics::point_mass_gravity ) );
     accelerationsOfVehicle[ "Vehicle" ].push_back( std::make_shared< CustomAccelerationSettings >(
-            std::bind( &TestAccelerationModel::customAccelerationFunction, &testAccelerationModel, std::placeholders::_1 ) ) );
+            [&testAccelerationModel](const double time) { return testAccelerationModel.customAccelerationFunction(time); } ) );
     //    accelerationsOfVehicle[ "Sun" ].push_back( std::make_shared< AccelerationSettings >(
     //                                                     basic_astrodynamics::point_mass_gravity ) );
     accelerationMap[ "Vehicle" ] = accelerationsOfVehicle;
@@ -246,10 +246,7 @@ BOOST_AUTO_TEST_CASE( test_CustomAccelerationPartials )
         else if( testCase == 2 )
         {
             parameterNames.at( 0 )->customPartialSettings_.push_back( std::make_shared< AnalyticalAccelerationPartialSettings >(
-                    std::bind( &TestAccelerationModel::customAccelerationPartialFunction,
-                               &testAccelerationModel,
-                               std::placeholders::_1,
-                               std::placeholders::_2 ),
+                    [&testAccelerationModel](const double time, const Eigen::Vector3d& acceleration) { return testAccelerationModel.customAccelerationPartialFunction(time, acceleration); },
                     "Vehicle",
                     "Vehicle",
                     custom_acceleration ) );
@@ -259,21 +256,15 @@ BOOST_AUTO_TEST_CASE( test_CustomAccelerationPartials )
             parameterNames.push_back( std::make_shared< CustomEstimatableParameterSettings >(
                     "CustomModel",
                     1,
-                    std::bind( &TestAccelerationModel::getParameterValue, &testAccelerationModel ),
-                    std::bind( &TestAccelerationModel::setParameterValue, &testAccelerationModel, std::placeholders::_1 ) ) );
+                    [&testAccelerationModel]() { return testAccelerationModel.getParameterValue(); },
+                    [&testAccelerationModel](const Eigen::VectorXd& val) { testAccelerationModel.setParameterValue(val); } ) );
             parameterNames.at( 0 )->customPartialSettings_.push_back( std::make_shared< AnalyticalAccelerationPartialSettings >(
-                    std::bind( &TestAccelerationModel::customAccelerationPartialFunction,
-                               &testAccelerationModel,
-                               std::placeholders::_1,
-                               std::placeholders::_2 ),
+                    [&testAccelerationModel](const double time, const Eigen::Vector3d& acceleration) { return testAccelerationModel.customAccelerationPartialFunction(time, acceleration); },
                     "Vehicle",
                     "Vehicle",
                     custom_acceleration ) );
             parameterNames.at( 1 )->customPartialSettings_.push_back( std::make_shared< AnalyticalAccelerationPartialSettings >(
-                    std::bind( &TestAccelerationModel::customAccelerationPartialFunctionWrtParameter,
-                               &testAccelerationModel,
-                               std::placeholders::_1,
-                               std::placeholders::_2 ),
+                    [&testAccelerationModel](const double time, const Eigen::Vector3d& acceleration) { return testAccelerationModel.customAccelerationPartialFunctionWrtParameter(time, acceleration); },
                     "Vehicle",
                     "Vehicle",
                     custom_acceleration ) );
@@ -494,7 +485,7 @@ BOOST_AUTO_TEST_CASE( test_CustomAccelerationEstimation )
     std::map< std::string, std::vector< std::shared_ptr< AccelerationSettings > > > accelerationsOfVehicle;
     accelerationsOfVehicle[ "Earth" ].push_back( std::make_shared< AccelerationSettings >( basic_astrodynamics::point_mass_gravity ) );
     accelerationsOfVehicle[ "Vehicle" ].push_back( std::make_shared< CustomAccelerationSettings >(
-            std::bind( &TestAccelerationModel::customAccelerationFunction, &testAccelerationModel, std::placeholders::_1 ) ) );
+            [&testAccelerationModel](const double time) { return testAccelerationModel.customAccelerationFunction(time); } ) );
 
     accelerationMap[ "Vehicle" ] = accelerationsOfVehicle;
 
@@ -555,22 +546,16 @@ BOOST_AUTO_TEST_CASE( test_CustomAccelerationEstimation )
     parameterNames.push_back( std::make_shared< CustomEstimatableParameterSettings >(
             "CustomModel",
             1,
-            std::bind( &TestAccelerationModel::getParameterValue, &testAccelerationModel ),
-            std::bind( &TestAccelerationModel::setParameterValue, &testAccelerationModel, std::placeholders::_1 ) ) );
+            [&testAccelerationModel]() { return testAccelerationModel.getParameterValue(); },
+            [&testAccelerationModel](const Eigen::VectorXd& val) { testAccelerationModel.setParameterValue(val); } ) );
 
     parameterNames.at( 0 )->customPartialSettings_.push_back(
-            std::make_shared< AnalyticalAccelerationPartialSettings >( std::bind( &TestAccelerationModel::customAccelerationPartialFunction,
-                                                                                  &testAccelerationModel,
-                                                                                  std::placeholders::_1,
-                                                                                  std::placeholders::_2 ),
+            std::make_shared< AnalyticalAccelerationPartialSettings >( [&testAccelerationModel](const double time, const Eigen::Vector3d& acceleration) { return testAccelerationModel.customAccelerationPartialFunction(time, acceleration); },
                                                                        "Vehicle",
                                                                        "Vehicle",
                                                                        custom_acceleration ) );
     parameterNames.at( 1 )->customPartialSettings_.push_back( std::make_shared< AnalyticalAccelerationPartialSettings >(
-            std::bind( &TestAccelerationModel::customAccelerationPartialFunctionWrtParameter,
-                       &testAccelerationModel,
-                       std::placeholders::_1,
-                       std::placeholders::_2 ),
+            [&testAccelerationModel](const double time, const Eigen::Vector3d& acceleration) { return testAccelerationModel.customAccelerationPartialFunctionWrtParameter(time, acceleration); },
             "Vehicle",
             "Vehicle",
             custom_acceleration ) );

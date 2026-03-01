@@ -119,11 +119,7 @@ public:
         if( rotationMatrixPartials_.count( std::make_pair( parameter->getParameterName( ).first, parameter->getSecondaryIdentifier( ) ) ) !=
             0 )
         {
-            partialFunction = std::make_pair( std::bind( &ThrustAccelerationPartial::wrtRotationModelParameter,
-                                                         this,
-                                                         std::placeholders::_1,
-                                                         parameter->getParameterName( ).first,
-                                                         parameter->getSecondaryIdentifier( ) ),
+            partialFunction = std::make_pair( [this, paramType = parameter->getParameterName( ).first, secId = parameter->getSecondaryIdentifier( )]( Eigen::MatrixXd& block ) { this->wrtRotationModelParameter( block, paramType, secId ); },
                                               1 );
         }
         else if( parameter->getParameterName( ).first == estimatable_parameters::constant_thrust_magnitude_parameter &&
@@ -132,7 +128,7 @@ public:
         {
             int engineIndex = getEngineModelIndex( parameter->getParameterName( ).second.second );
             partialFunction = std::make_pair(
-                    std::bind( &ThrustAccelerationPartial::wrtThrustMagnitude, this, std::placeholders::_1, engineIndex ), 1 );
+                    [this, engineIndex]( Eigen::MatrixXd& block ) { this->wrtThrustMagnitude( block, engineIndex ); }, 1 );
         }
         return partialFunction;
     }
@@ -146,11 +142,7 @@ public:
         if( rotationMatrixPartials_.count( std::make_pair( parameter->getParameterName( ).first, parameter->getSecondaryIdentifier( ) ) ) !=
             0 )
         {
-            partialFunction = std::make_pair( std::bind( &ThrustAccelerationPartial::wrtRotationModelParameter,
-                                                         this,
-                                                         std::placeholders::_1,
-                                                         parameter->getParameterName( ).first,
-                                                         parameter->getSecondaryIdentifier( ) ),
+            partialFunction = std::make_pair( [this, paramType = parameter->getParameterName( ).first, secId = parameter->getSecondaryIdentifier( )]( Eigen::MatrixXd& block ) { this->wrtRotationModelParameter( block, paramType, secId ); },
                                               parameter->getParameterSize( ) );
         }
         return partialFunction;

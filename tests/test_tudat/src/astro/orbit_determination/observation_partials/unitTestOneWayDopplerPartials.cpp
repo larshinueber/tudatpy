@@ -122,19 +122,17 @@ BOOST_AUTO_TEST_CASE( testOneWayDopplerPartials )
 
             // Compute unit vector derivative numerically
             std::function< Eigen::Vector3d( const double ) > unitVectorFunction =
-                    std::bind( &computeUnitVectorToReceiverFromTransmitterState,
-                               nominalReceiverState.segment( 0, 3 ),
-                               transmitterStateFunction,
-                               std::placeholders::_1 );
+                    [nominalReceiverPos = nominalReceiverState.segment( 0, 3 ), transmitterStateFunction](const double time) {
+                        return computeUnitVectorToReceiverFromTransmitterState(nominalReceiverPos, transmitterStateFunction, time);
+                    };
             Eigen::Vector3d numericalUnitVectorDerivative = numerical_derivatives::computeCentralDifferenceFromFunction(
                     unitVectorFunction, transmissionTime, timePerturbation, numerical_derivatives::order8 );
 
             // Compute projected velocoty vector derivative numerically
             std::function< double( const double ) > projectedVelocityFunction =
-                    std::bind( &calculateLineOfSightVelocityAsCFractionFromTransmitterStateFunction< double, double >,
-                               nominalReceiverState.segment( 0, 3 ),
-                               transmitterStateFunction,
-                               std::placeholders::_1 );
+                    [nominalReceiverPos = nominalReceiverState.segment( 0, 3 ), transmitterStateFunction](const double time) {
+                        return calculateLineOfSightVelocityAsCFractionFromTransmitterStateFunction< double, double >(nominalReceiverPos, transmitterStateFunction, time);
+                    };
             double numericalProjectedVelocityDerivative = numerical_derivatives::computeCentralDifferenceFromFunction(
                     projectedVelocityFunction, transmissionTime, timePerturbation, numerical_derivatives::order8 );
 
@@ -167,19 +165,18 @@ BOOST_AUTO_TEST_CASE( testOneWayDopplerPartials )
                     receiverStateFunction, receptionTime, timePerturbation, numerical_derivatives::order8 );
 
             // Compute unit vector derivative numerically
-            std::function< Eigen::Vector3d( const double ) > unitVectorFunction = std::bind( &computeUnitVectorToReceiverFromReceiverState,
-                                                                                             receiverStateFunction,
-                                                                                             nominalTransmitterState.segment( 0, 3 ),
-                                                                                             std::placeholders::_1 );
+            std::function< Eigen::Vector3d( const double ) > unitVectorFunction =
+                    [receiverStateFunction, nominalTransmitterPos = nominalTransmitterState.segment( 0, 3 )](const double time) {
+                        return computeUnitVectorToReceiverFromReceiverState(receiverStateFunction, nominalTransmitterPos, time);
+                    };
             Eigen::Vector3d numericalUnitVectorDerivative = numerical_derivatives::computeCentralDifferenceFromFunction(
                     unitVectorFunction, receptionTime, timePerturbation, numerical_derivatives::order8 );
 
             // Compute projected velocoty vector derivative numerically
             std::function< double( const double ) > projectedVelocityFunction =
-                    std::bind( &calculateLineOfSightVelocityAsCFractionFromReceiverStateFunction< double, double >,
-                               receiverStateFunction,
-                               nominalTransmitterState.segment( 0, 3 ),
-                               std::placeholders::_1 );
+                    [receiverStateFunction, nominalTransmitterPos = nominalTransmitterState.segment( 0, 3 )](const double time) {
+                        return calculateLineOfSightVelocityAsCFractionFromReceiverStateFunction< double, double >(receiverStateFunction, nominalTransmitterPos, time);
+                    };
             double numericalProjectedVelocityDerivative = numerical_derivatives::computeCentralDifferenceFromFunction(
                     projectedVelocityFunction, receptionTime, timePerturbation, numerical_derivatives::order8 );
 
@@ -429,11 +426,9 @@ BOOST_AUTO_TEST_CASE( testOneWayDopplerPartials )
             // Compute numerical proper time rate partials and compare to analytical results
             {
                 std::function< Eigen::VectorXd( const double ) > transmitterProperTimeRateFunction =
-                        std::bind( &getProperTimeRateInVectorForm,
-                                   transmitterProperTimeRateCalculator,
-                                   oneWayDopplerModel,
-                                   referenceLinkEnd,
-                                   std::placeholders::_1 );
+                        [transmitterProperTimeRateCalculator, oneWayDopplerModel, referenceLinkEnd](const double time) {
+                            return getProperTimeRateInVectorForm(transmitterProperTimeRateCalculator, oneWayDopplerModel, referenceLinkEnd, time);
+                        };
 
                 Eigen::Matrix< double, Eigen::Dynamic, 3 > numericalTransmitterProperTimePartialsWrtMarsPosition =
                         calculatePartialWrtConstantBodyState(
@@ -465,11 +460,9 @@ BOOST_AUTO_TEST_CASE( testOneWayDopplerPartials )
                                                    1.0E-6 );
 
                 std::function< Eigen::VectorXd( const double ) > receiverProperTimeRateFunction =
-                        std::bind( &getProperTimeRateInVectorForm,
-                                   receiverProperTimeRateCalculator,
-                                   oneWayDopplerModel,
-                                   referenceLinkEnd,
-                                   std::placeholders::_1 );
+                        [receiverProperTimeRateCalculator, oneWayDopplerModel, referenceLinkEnd](const double time) {
+                            return getProperTimeRateInVectorForm(receiverProperTimeRateCalculator, oneWayDopplerModel, referenceLinkEnd, time);
+                        };
                 Eigen::Matrix< double, Eigen::Dynamic, 3 > numericalReceiverProperTimePartialsWrtMarsPosition =
                         calculatePartialWrtConstantBodyState(
                                 "Mars", bodies, Eigen::Vector3d::Constant( 10000.0 ), receiverProperTimeRateFunction, 1.1E7, 1 );

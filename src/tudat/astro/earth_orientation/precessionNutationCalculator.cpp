@@ -30,25 +30,19 @@ PrecessionNutationCalculator::PrecessionNutationCalculator(
 {
     if( angleInterpolatorSettings != nullptr )
     {
-        std::function< Eigen::Vector3d( const double ) > angleFunction = std::bind( &sofa_interface::getPositionOfCipInGcrs,
-                                                                                    std::placeholders::_1,
-                                                                                    basic_astrodynamics::JULIAN_DAY_ON_J2000,
-                                                                                    precessionNutationTheory );
+        std::function< Eigen::Vector3d( const double ) > angleFunction = [precessionNutationTheory](const double a) {
+            return sofa_interface::getPositionOfCipInGcrs(a, basic_astrodynamics::JULIAN_DAY_ON_J2000, precessionNutationTheory);
+        };
         std::shared_ptr< interpolators::OneDimensionalInterpolator< double, Eigen::Vector3d > > angleInterpolator =
                 interpolators::createOneDimensionalInterpolator< double, Eigen::Vector3d >( angleFunction, angleInterpolatorSettings );
-        typedef interpolators::OneDimensionalInterpolator< double, Eigen::Vector3d > LocalInterpolator;
-        nominalCipPositionFunction_ =
-                std::bind( static_cast< Eigen::Vector3d ( LocalInterpolator::* )( const double ) >( &LocalInterpolator::interpolate ),
-                           angleInterpolator,
-                           std::placeholders::_1 );
+        nominalCipPositionFunction_ = [angleInterpolator](const double a) { return angleInterpolator->interpolate(a); };
     }
     else
     {
         // Link selected SOFA function wrapper for direct calculation of precession-nutation.
-        nominalCipPositionFunction_ = std::bind( sofa_interface::getPositionOfCipInGcrs,
-                                                 std::placeholders::_1,
-                                                 basic_astrodynamics::JULIAN_DAY_ON_J2000,
-                                                 precessionNutationTheory );
+        nominalCipPositionFunction_ = [precessionNutationTheory](const double a) {
+            return sofa_interface::getPositionOfCipInGcrs(a, basic_astrodynamics::JULIAN_DAY_ON_J2000, precessionNutationTheory);
+        };
     }
 }
 

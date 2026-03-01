@@ -90,7 +90,9 @@ public:
     CustomTorqueSettings( const std::function< Eigen::Vector3d( const double ) > torqueFunction,
                           std::function< double( const double ) > scalingFunction ):
         TorqueSettings( basic_astrodynamics::custom_torque ),
-        torqueFunction_( std::bind( &applyTorqueScalingFunction, torqueFunction, scalingFunction, std::placeholders::_1 ) )
+        torqueFunction_( [torqueFunction, scalingFunction]( const double time ) {
+            return applyTorqueScalingFunction( torqueFunction, scalingFunction, time );
+        } )
     {}
 
     std::function< Eigen::Vector3d( const double ) > torqueFunction_;

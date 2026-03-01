@@ -92,11 +92,9 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > EmpiricalAcceleratio
                 if( parameter->getParameterName( ).second.second == acceleratingBody_ )
                 {
                     partialFunction =
-                            std::bind( &EmpiricalAccelerationPartial::wrtEmpiricalAccelerationCoefficientFromIndices,
-                                       this,
-                                       parameter->getParameterSize( ),
-                                       std::dynamic_pointer_cast< EmpiricalAccelerationCoefficientsParameter >( parameter )->getIndices( ),
-                                       std::placeholders::_1 );
+                            [this, paramSize = parameter->getParameterSize( ), indices = std::dynamic_pointer_cast< EmpiricalAccelerationCoefficientsParameter >( parameter )->getIndices( )](Eigen::MatrixXd& m) {
+                                this->wrtEmpiricalAccelerationCoefficientFromIndices(paramSize, indices, m);
+                            };
                     numberOfRows = parameter->getParameterSize( );
                 }
                 break;
@@ -105,10 +103,9 @@ std::pair< std::function< void( Eigen::MatrixXd& ) >, int > EmpiricalAcceleratio
                 if( parameter->getParameterName( ).second.second == acceleratingBody_ )
                 {
                     partialFunction =
-                            std::bind( &EmpiricalAccelerationPartial::wrtArcWiseEmpiricalAccelerationCoefficient,
-                                       this,
-                                       std::dynamic_pointer_cast< ArcWiseEmpiricalAccelerationCoefficientsParameter >( parameter ),
-                                       std::placeholders::_1 );
+                            [this, arcWiseParam = std::dynamic_pointer_cast< ArcWiseEmpiricalAccelerationCoefficientsParameter >( parameter )](Eigen::MatrixXd& m) {
+                                this->wrtArcWiseEmpiricalAccelerationCoefficient(arcWiseParam, m);
+                            };
                     numberOfRows = parameter->getParameterSize( );
                 }
                 break;

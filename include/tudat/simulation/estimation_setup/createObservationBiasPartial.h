@@ -348,14 +348,12 @@ std::shared_ptr< ObservationPartial< ObservationSize > > createObservationPartia
                                             constantTimeBias->getReferenceLinkEnd( ),
                                             observationWrtTransmitterStatePartial,
                                             observationWrtReceiverStatePartial,
-                                            std::bind( &ephemerides::Ephemeris::getCartesianAcceleration,
-                                                       transmitterInertialEphemeris,
-                                                       std::placeholders::_1,
-                                                       30.0 ),
-                                            std::bind( &ephemerides::Ephemeris::getCartesianAcceleration,
-                                                       receiverInertialEphemeris,
-                                                       std::placeholders::_1,
-                                                       30.0 ) );
+                                            [transmitterInertialEphemeris]( const double time ) {
+                                                return transmitterInertialEphemeris->getCartesianAcceleration( time, 30.0 );
+                                            },
+                                            [receiverInertialEphemeris]( const double time ) {
+                                                return receiverInertialEphemeris->getCartesianAcceleration( time, 30.0 );
+                                            } );
                             //                    partialWrtParameterBodyState
                             observationPartial =
                                     std::make_shared< ObservationPartialWrtConstantTimeBias< ObservationSize > >( timeBiasPartial );
@@ -453,14 +451,12 @@ std::shared_ptr< ObservationPartial< ObservationSize > > createObservationPartia
                                             arcwiseTimeBias->getReferenceLinkEnd( ),
                                             observationWrtTransmitterStatePartial,
                                             observationWrtReceiverStatePartial,
-                                            std::bind( &ephemerides::Ephemeris::getCartesianAcceleration,
-                                                       transmitterInertialEphemeris,
-                                                       std::placeholders::_1,
-                                                       30.0 ),
-                                            std::bind( &ephemerides::Ephemeris::getCartesianAcceleration,
-                                                       receiverInertialEphemeris,
-                                                       std::placeholders::_1,
-                                                       30.0 ) );
+                                            [transmitterInertialEphemeris]( const double time ) {
+                                                return transmitterInertialEphemeris->getCartesianAcceleration( time, 30.0 );
+                                            },
+                                            [receiverInertialEphemeris]( const double time ) {
+                                                return receiverInertialEphemeris->getCartesianAcceleration( time, 30.0 );
+                                            } );
 
                             observationPartial = std::make_shared< ObservationPartialWrtArcWiseTimeBias< ObservationSize > >(
                                     timeBiasPartial,

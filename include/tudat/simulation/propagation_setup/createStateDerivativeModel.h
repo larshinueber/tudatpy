@@ -112,9 +112,9 @@ std::shared_ptr< CentralBodyData< StateScalarType, TimeType > > createCentralBod
         if( centralBodiesToUse.at( i ) != "SSB" )
         {
             bodyStateFunctions[ centralBodiesToUse.at( i ) ] =
-                    std::bind( &simulation_setup::Body::getStateInBaseFrameFromEphemeris< StateScalarType, TimeType >,
-                               bodies.at( centralBodiesToUse.at( i ) ),
-                               std::placeholders::_1 );
+                    [body = bodies.at( centralBodiesToUse.at( i ) )]( const TimeType time ) {
+                        return body->template getStateInBaseFrameFromEphemeris< StateScalarType, TimeType >( time );
+                    };
         }
         else
         {
@@ -134,9 +134,9 @@ std::shared_ptr< CentralBodyData< StateScalarType, TimeType > > createCentralBod
     else
     {
         globalFrameOriginBarycentricFunction =
-                std::bind( &simulation_setup::Body::getGlobalFrameOriginBarycentricStateFromEphemeris< StateScalarType, TimeType >,
-                           bodies.at( globalFrameOrigin ),
-                           std::placeholders::_1 );
+                [body = bodies.at( globalFrameOrigin )]( const TimeType time ) {
+                    return body->template getGlobalFrameOriginBarycentricStateFromEphemeris< StateScalarType, TimeType >( time );
+                };
     }
 
     return std::make_shared< CentralBodyData< StateScalarType, TimeType > >(
@@ -287,8 +287,9 @@ std::shared_ptr< SingleStateTypeDerivative< StateScalarType, TimeType > > create
     std::vector< std::function< Eigen::Matrix3d( ) > > momentOfInertiaFunctions;
     for( unsigned int i = 0; i < rotationPropagatorSettings->bodiesToIntegrate_.size( ); i++ )
     {
-        momentOfInertiaFunctions.push_back( std::bind( &simulation_setup::Body::getBodyInertiaTensor,
-                                                       bodies.at( rotationPropagatorSettings->bodiesToIntegrate_.at( i ) ) ) );
+        momentOfInertiaFunctions.push_back( [body = bodies.at( rotationPropagatorSettings->bodiesToIntegrate_.at( i ) )]( ) {
+            return body->getBodyInertiaTensor( );
+        } );
     }
 
     // Check propagator type and create corresponding state derivative object.

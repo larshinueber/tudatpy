@@ -306,7 +306,7 @@ std::map< double, double > findLocalMinimaOfTargetDistance( const double lowerBo
                                             threshold,
                                             tolerance,
                                             initialSearchTimeStep,
-                                            std::bind( &Ephemeris::getCartesianPosition, ephemeris, std::placeholders::_1 ) );
+                                            [ephemeris]( const double time ) { return ephemeris->getCartesianPosition( time ); } );
 }
 
 void getCloseApproachTimes( const double initialTime,
@@ -325,12 +325,10 @@ void getCloseApproachTimes( const double initialTime,
                                                  approachThreshold,
                                                  5.0,
                                                  1800.0,
-                                                 std::bind( spice_interface::getBodyCartesianPositionAtEpoch,
-                                                            "-28",
-                                                            galileanSatelliteNames.at( i ),
-                                                            "ECLIPJ2000",
-                                                            "None",
-                                                            std::placeholders::_1 ) );
+                                                 [satName = galileanSatelliteNames.at( i )]( const double time ) {
+                                                     return spice_interface::getBodyCartesianPositionAtEpoch(
+                                                             "-28", satName, "ECLIPJ2000", "None", time );
+                                                 } );
         if( localDistanceMinima.size( ) > 0 )
         {
             closeApproachTimes[ galileanSatelliteNames.at( i ) ] = localDistanceMinima;

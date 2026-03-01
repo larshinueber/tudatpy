@@ -42,24 +42,25 @@ std::shared_ptr< reference_frames::AerodynamicAngleCalculator > createAerodynami
     else
     {
         // Create function to rotate state from intertial to body-fixed frame.
-        std::function< Eigen::Quaterniond( ) > rotationToFrameFunction = std::bind( &Body::getCurrentRotationToLocalFrame, centralBody );
+        std::function< Eigen::Quaterniond( ) > rotationToFrameFunction = [centralBody]() { return centralBody->getCurrentRotationToLocalFrame(); };
         std::function< Eigen::Matrix3d( ) > rotationMatrixToFrameDerivativeFunction =
-                std::bind( &Body::getCurrentRotationMatrixDerivativeToLocalFrame, centralBody );
+                [centralBody]() { return centralBody->getCurrentRotationMatrixDerivativeToLocalFrame(); };
 
-        std::function< Eigen::Matrix< double, 6, 1 >( ) > bodyStateFunction = std::bind( &Body::getState, bodyWithFlightConditions );
-        std::function< Eigen::Matrix< double, 6, 1 >( ) > centralBodyStateFunction = std::bind( &Body::getState, centralBody );
+        std::function< Eigen::Matrix< double, 6, 1 >( ) > bodyStateFunction = [bodyWithFlightConditions]() { return bodyWithFlightConditions->getState(); };
+        std::function< Eigen::Matrix< double, 6, 1 >( ) > centralBodyStateFunction = [centralBody]() { return centralBody->getState(); };
 
         std::function< Eigen::Matrix< double, 6, 1 >( ) > relativeBodyFixedStateFunction =
-                std::bind( &ephemerides::transformRelativeStateToFrame< double >,
+                [bodyStateFunction, centralBodyStateFunction, rotationToFrameFunction, rotationMatrixToFrameDerivativeFunction]() {
+                    return ephemerides::transformRelativeStateToFrame< double >(
                            bodyStateFunction,
                            centralBodyStateFunction,
                            rotationToFrameFunction,
-                           rotationMatrixToFrameDerivativeFunction );
+                           rotationMatrixToFrameDerivativeFunction ); };
 
         // Create aerodynamic angles calculator and set in flight conditions.
         return std::make_shared< reference_frames::AerodynamicAngleCalculator >(
                 relativeBodyFixedStateFunction,
-                std::bind( &simulation_setup::Body::getCurrentRotationToGlobalFrame, centralBody ),
+                [centralBody]() { return centralBody->getCurrentRotationToGlobalFrame(); },
                 nameOfBodyExertingAcceleration,
                 1 );
     }
@@ -112,9 +113,8 @@ std::shared_ptr< aerodynamics::AtmosphericFlightConditions > createAtmosphericFl
     std::function< double( const std::string& ) > controlSurfaceDeflectionFunction;
     if( bodyWithFlightConditions->getVehicleSystems( ) != nullptr )
     {
-        controlSurfaceDeflectionFunction = std::bind( &system_models::VehicleSystems::getCurrentControlSurfaceDeflection,
-                                                      bodyWithFlightConditions->getVehicleSystems( ),
-                                                      std::placeholders::_1 );
+        controlSurfaceDeflectionFunction = [vehicleSystems = bodyWithFlightConditions->getVehicleSystems( )](const std::string& surfaceName) {
+                                                      return vehicleSystems->getCurrentControlSurfaceDeflection( surfaceName ); };
     }
     std::shared_ptr< aerodynamics::AtmosphericFlightConditions > flightConditions =
             std::make_shared< aerodynamics::AtmosphericFlightConditions >( centralBody->getAtmosphereModel( ),

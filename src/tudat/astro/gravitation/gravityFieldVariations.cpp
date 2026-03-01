@@ -166,11 +166,9 @@ std::function< void( const double, Eigen::MatrixXd&, Eigen::MatrixXd& ) > create
                                                             variationObject->getNumberOfOrders( ) );
 
     // Create update function.
-    return std::bind( &PairInterpolationInterface::getCosineSinePair,
-                      interpolationInterface,
-                      std::placeholders::_1,
-                      std::placeholders::_2,
-                      std::placeholders::_3 );
+    return [interpolationInterface](const double time, Eigen::MatrixXd& sineCoefficients, Eigen::MatrixXd& cosineCoefficients) {
+        interpolationInterface->getCosineSinePair(time, sineCoefficients, cosineCoefficients);
+    };
 }
 
 //! Class constructor.
@@ -248,11 +246,9 @@ std::vector< std::function< void( const double, Eigen::MatrixXd&, Eigen::MatrixX
         // pointer by to current GravityFieldVariations object.
         else
         {
-            variationFunctions.push_back( std::bind( &GravityFieldVariations::addSphericalHarmonicsCorrections,
-                                                     variationObjects_[ i ],
-                                                     std::placeholders::_1,
-                                                     std::placeholders::_2,
-                                                     std::placeholders::_3 ) );
+            variationFunctions.push_back( [obj = variationObjects_[ i ]](const double time, Eigen::MatrixXd& sineCoefficients, Eigen::MatrixXd& cosineCoefficients) {
+                obj->addSphericalHarmonicsCorrections(time, sineCoefficients, cosineCoefficients);
+            } );
         }
     }
 

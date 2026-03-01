@@ -183,9 +183,9 @@ public:
 //            ThrustDirectionSettings(mee_costate_based_thrust_direction, centralBodyName ),
 //            vehicleName_( vehicleName ),
 //            costateFunction_(
-//            std::bind( static_cast< Eigen::VectorXd( interpolators::OneDimensionalInterpolator< double, Eigen::VectorXd >::* )
-//                       ( const double ) >( &interpolators::OneDimensionalInterpolator< double, Eigen::VectorXd >::interpolate ),
-//                       costateInterpolator, std::placeholders::_1 ) ){ }
+//            [costateInterpolator]( const double time ) {
+//                return costateInterpolator->interpolate( time );
+//            } ){ }
 
 //    // Constructor with costate function
 //    /*
@@ -416,10 +416,9 @@ public:
 //            const std::function< void( const double ) > customThrustResetFunction = std::function< void( const double ) >( ) ):
 //        ThrustMagnitudeSettings( bang_bang_thrust_magnitude_from_mee_costates, "" ),
 //        maximumThrustMagnitude_( thrustMagnitude ), specificImpulseFunction_( specificImpulseFunction ),
-//        costatesFunction_( std::bind( static_cast< Eigen::VectorXd( interpolators::OneDimensionalInterpolator< double, Eigen::VectorXd
-//        >::* )
-//                                      ( const double ) >( &interpolators::OneDimensionalInterpolator< double, Eigen::VectorXd
-//                                      >::interpolate ), costateInterpolator, std::placeholders::_1 ) ),
+//        costatesFunction_( [costateInterpolator]( const double time ) {
+//            return costateInterpolator->interpolate( time );
+//        } ),
 //        vehicleName_( vehicleName ), centralBodyName_( centralBodyName ), bodyFixedThrustDirection_( bodyFixedThrustDirection ),
 //        customThrustResetFunction_( customThrustResetFunction ){ }
 
@@ -841,12 +840,12 @@ public:
                     std::vector< std::function< double( ) > >( ),
             const std::function< void( const double ) > inputUpdateFunction = std::function< void( const double ) >( ) ):
         ThrustMagnitudeSettings( thrust_magnitude_from_dependent_variables, "" ),
-        thrustMagnitudeFunction_( std::bind( &interpolators::Interpolator< double, double >::interpolate,
-                                             thrustMagnitudeInterpolator,
-                                             std::placeholders::_1 ) ),
-        specificImpulseFunction_( std::bind( &interpolators::Interpolator< double, double >::interpolate,
-                                             specificImpulseInterpolator,
-                                             std::placeholders::_1 ) ),
+        thrustMagnitudeFunction_( [thrustMagnitudeInterpolator]( const std::vector< double >& independentVariables ) {
+            return thrustMagnitudeInterpolator->interpolate( independentVariables );
+        } ),
+        specificImpulseFunction_( [specificImpulseInterpolator]( const std::vector< double >& independentVariables ) {
+            return specificImpulseInterpolator->interpolate( independentVariables );
+        } ),
         thrustIndependentVariables_( thrustIndependentVariables ), specificImpulseDependentVariables_( specificImpulseDependentVariables ),
         thrustGuidanceInputVariables_( thrustGuidanceInputVariables ),
         specificImpulseGuidanceInputVariables_( specificImpulseGuidanceInputVariables ), inputUpdateFunction_( inputUpdateFunction )
@@ -877,9 +876,9 @@ public:
             const std::vector< std::function< double( ) > > thrustGuidanceInputVariables = std::vector< std::function< double( ) > >( ),
             const std::function< void( const double ) > inputUpdateFunction = std::function< void( const double ) >( ) ):
         ThrustMagnitudeSettings( thrust_magnitude_from_dependent_variables, "" ),
-        thrustMagnitudeFunction_( std::bind( &interpolators::Interpolator< double, double >::interpolate,
-                                             thrustMagnitudeInterpolator,
-                                             std::placeholders::_1 ) ),
+        thrustMagnitudeFunction_( [thrustMagnitudeInterpolator]( const std::vector< double >& independentVariables ) {
+            return thrustMagnitudeInterpolator->interpolate( independentVariables );
+        } ),
         specificImpulseFunction_( [ = ]( const std::vector< double >& ) { return constantSpecificImpulse; } ),
         thrustIndependentVariables_( thrustIndependentVariables ), thrustGuidanceInputVariables_( thrustGuidanceInputVariables ),
         inputUpdateFunction_( inputUpdateFunction )

@@ -119,7 +119,7 @@ public:
         ppnGammaParameterFunction_ = accelerationModel->getPpnParameterGammaFunction_( );
         ppnBetaParameterFunction_ = accelerationModel->getPpnParameterBetaFunction_( );
         centralBodyGravitationalParameterFunction_ = accelerationModel->getGravitationalParameterFunctionOfCentralBody( );
-        currentAccelerationFunction_ = std::bind( &relativity::RelativisticAccelerationCorrection::getAcceleration, accelerationModel );
+        currentAccelerationFunction_ = [accelerationModel]() { return accelerationModel->getAcceleration( ); };
     }
 
     //! Function for calculating the partial of the acceleration w.r.t. the position of body undergoing acceleration.

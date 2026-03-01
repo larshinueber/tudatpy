@@ -409,12 +409,12 @@ createTabulatedControlSurfaceIncrementAerodynamicCoefficientInterface(
 
     // Create aerodynamic coefficient interface.
     return std::make_shared< aerodynamics::CustomControlSurfaceIncrementAerodynamicInterface >(
-            std::bind( &interpolators::MultiLinearInterpolator< double, Eigen::Vector3d, NumberOfDimensions >::interpolate,
-                       forceInterpolator,
-                       std::placeholders::_1 ),
-            std::bind( &interpolators::MultiLinearInterpolator< double, Eigen::Vector3d, NumberOfDimensions >::interpolate,
-                       momentInterpolator,
-                       std::placeholders::_1 ),
+            [forceInterpolator]( const std::vector< double >& independentVariables ) {
+                return forceInterpolator->interpolate( independentVariables );
+            },
+            [momentInterpolator]( const std::vector< double >& independentVariables ) {
+                return momentInterpolator->interpolate( independentVariables );
+            },
             independentVariableNames );
 }
 

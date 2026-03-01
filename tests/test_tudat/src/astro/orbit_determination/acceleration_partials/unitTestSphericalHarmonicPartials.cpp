@@ -754,10 +754,10 @@ BOOST_AUTO_TEST_CASE( testSphericalHarmonicAccelerationPartial )
         velocityPerturbation << 1.0E-3, 1.0E-3, 1.0E-3;
 
         // Create state access/modification functions for bodies.
-        std::function< void( Eigen::Vector6d ) > earthStateSetFunction = std::bind( &Body::setState, earth, std::placeholders::_1 );
-        std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction = std::bind( &Body::setState, vehicle, std::placeholders::_1 );
-        std::function< Eigen::Vector6d( ) > earthStateGetFunction = std::bind( &Body::getState, earth );
-        std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = std::bind( &Body::getState, vehicle );
+        std::function< void( Eigen::Vector6d ) > earthStateSetFunction = [earth](const Eigen::Vector6d& state) { earth->setState(state); };
+        std::function< void( Eigen::Vector6d ) > vehicleStateSetFunction = [vehicle](const Eigen::Vector6d& state) { vehicle->setState(state); };
+        std::function< Eigen::Vector6d( ) > earthStateGetFunction = [earth]() { return earth->getState(); };
+        std::function< Eigen::Vector6d( ) > vehicleStateGetFunction = [vehicle]() { return vehicle->getState(); };
 
         std::vector< std::shared_ptr< EstimatableParameterSettings > > parameterNames;
         parameterNames.push_back(
@@ -921,7 +921,7 @@ BOOST_AUTO_TEST_CASE( testSphericalHarmonicAccelerationPartial )
         orientationPerturbation << 1.0E-8, 1.0E-8, 1.0E-8, 1.0E-8;
 
         std::function< void( Eigen::Vector7d ) > earthRotationalStateSetFunction =
-                std::bind( &Body::setCurrentRotationalStateToLocalFrame, earth, std::placeholders::_1 );
+                [earth](const Eigen::Vector7d& state) { earth->setCurrentRotationalStateToLocalFrame(state); };
         std::vector< Eigen::Vector4d > appliedQuaternionPerturbation;
         Eigen::MatrixXd accelerationDeviations = calculateAccelerationDeviationDueToOrientationChange( earthRotationalStateSetFunction,
                                                                                                        gravitationalAcceleration,
@@ -945,7 +945,7 @@ BOOST_AUTO_TEST_CASE( testSphericalHarmonicAccelerationPartial )
                 1.0E-12,
                 &emptyFunction,
                 testTime,
-                std::bind( &Body::setCurrentRotationToLocalFrameFromEphemeris, earth, std::placeholders::_1 ) );
+                [earth](const double time) { earth->setCurrentRotationToLocalFrameFromEphemeris(time); } );
 
         std::map< int, std::shared_ptr< EstimatableParameter< Eigen::VectorXd > > > vectorParameters = parameterSet->getVectorParameters( );
         std::map< int, std::shared_ptr< EstimatableParameter< Eigen::VectorXd > > >::iterator vectorParametersIterator =
@@ -957,13 +957,11 @@ BOOST_AUTO_TEST_CASE( testSphericalHarmonicAccelerationPartial )
                 Eigen::Vector2d::Constant( 1.0E-6 ),
                 &emptyFunction,
                 testTime,
-                std::bind( &Body::setCurrentRotationToLocalFrameFromEphemeris, earth, std::placeholders::_1 ) );
+                [earth](const double time) { earth->setCurrentRotationToLocalFrameFromEphemeris(time); } );
         vectorParametersIterator++;
 
         std::function< void( ) > sphericalHarmonicFieldUpdate =
-                std::bind( &tudat::gravitation::TimeDependentSphericalHarmonicsGravityField::update,
-                           std::dynamic_pointer_cast< TimeDependentSphericalHarmonicsGravityField >( earthGravityField ),
-                           testTime );
+                [tdGravField = std::dynamic_pointer_cast< TimeDependentSphericalHarmonicsGravityField >( earthGravityField ), testTime]() { tdGravField->update(testTime); };
 
         Eigen::MatrixXd partialWrtCosineCoefficients = accelerationPartial->wrtParameter( vectorParametersIterator->second );
         Eigen::MatrixXd testPartialWrtCosineCoefficients =
@@ -1138,10 +1136,10 @@ BOOST_AUTO_TEST_CASE( testSphericalHarmonicAccelerationPartialWithSynchronousRot
     velocityPerturbation << 1.0, 1.0E-1, 1.0;
 
     // Create state access/modification functions for bodies.
-    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = std::bind( &Body::setState, earth, std::placeholders::_1 );
-    std::function< void( Eigen::Vector6d ) > moonStateSetFunction = std::bind( &Body::setState, moon, std::placeholders::_1 );
-    std::function< Eigen::Vector6d( ) > earthStateGetFunction = std::bind( &Body::getState, earth );
-    std::function< Eigen::Vector6d( ) > moonStateGetFunction = std::bind( &Body::getState, moon );
+    std::function< void( Eigen::Vector6d ) > earthStateSetFunction = [earth](const Eigen::Vector6d& state) { earth->setState(state); };
+    std::function< void( Eigen::Vector6d ) > moonStateSetFunction = [moon](const Eigen::Vector6d& state) { moon->setState(state); };
+    std::function< Eigen::Vector6d( ) > earthStateGetFunction = [earth]() { return earth->getState(); };
+    std::function< Eigen::Vector6d( ) > moonStateGetFunction = [moon]() { return moon->getState(); };
 
     // Define estimated parameters
     std::vector< std::shared_ptr< EstimatableParameterSettings > > parameterNames;
@@ -1173,7 +1171,7 @@ BOOST_AUTO_TEST_CASE( testSphericalHarmonicAccelerationPartialWithSynchronousRot
 
     // Calculate numerical partials.
     std::function< void( ) > updateFunction =
-            std::bind( &Body::setCurrentRotationToLocalFrameFromEphemeris, bodies.at( "Earth" ), testTime );
+            [earthBody = bodies.at( "Earth" ), testTime]() { earthBody->setCurrentRotationToLocalFrameFromEphemeris(testTime); };
 
     testPartialWrtMoonPosition = calculateAccelerationWrtStatePartials(
             moonStateSetFunction, gravitationalAcceleration, moon->getState( ), positionPerturbation, 0, updateFunction );

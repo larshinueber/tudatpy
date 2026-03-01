@@ -44,15 +44,15 @@ namespace simulation_setup
 ////        {
 ////            // Retrieve state function of body for which thrust is to be computed.
 ////            std::function< Eigen::Vector6d( ) > bodyStateFunction =
-////                    std::bind( &Body::getState, bodies.at( nameOfBodyWithGuidance ) );
+////                    [body = bodies.at( nameOfBodyWithGuidance )]() { return body->getState(); };
 ////            std::function< Eigen::Vector6d( ) > centralBodyStateFunction;
 
 ////            // Retrieve state function of central body (or set to zero if inertial)
 ////            if( thrustDirectionFromStateGuidanceSettings->relativeBody_ != "SSB" &&
 ////                    thrustDirectionFromStateGuidanceSettings->relativeBody_ != "" )
 ////            {
-////                centralBodyStateFunction = std::bind( &Body::getState, bodies.at(
-////                                                            thrustDirectionFromStateGuidanceSettings->relativeBody_ ) );
+////                centralBodyStateFunction = [body = bodies.at(
+////                                                            thrustDirectionFromStateGuidanceSettings->relativeBody_ )]() { return body->getState(); };
 ////                magnitudeUpdateSettings[ propagators::body_translational_state_update ].push_back(
 ////                            thrustDirectionFromStateGuidanceSettings->relativeBody_ );
 ////            }
@@ -63,22 +63,22 @@ namespace simulation_setup
 
 ////            // Define relative state function
 ////            std::function< void( Eigen::Vector6d& ) > stateFunction =
-////                    std::bind(
-////                        &ephemerides::getRelativeState, std::placeholders::_1, bodyStateFunction, centralBodyStateFunction );
+////                    [bodyStateFunction, centralBodyStateFunction](Eigen::Vector6d& relativeState) {
+////                        ephemerides::getRelativeState( relativeState, bodyStateFunction, centralBodyStateFunction ); };
 ////            std::function< Eigen::Vector3d( const double ) > thrustDirectionFunction;
 
 ////            // Create force direction function.
 ////            if( thrustDirectionFromStateGuidanceSettings->isColinearWithVelocity_ )
 ////            {
 ////                thrustDirectionFunction =
-////                        std::bind( &propulsion::getForceDirectionColinearWithVelocity, stateFunction, std::placeholders::_1,
-////                                     thrustDirectionFromStateGuidanceSettings->directionIsOppositeToVector_ );
+////                        [stateFunction, directionIsOpposite = thrustDirectionFromStateGuidanceSettings->directionIsOppositeToVector_](const double time) {
+////                            return propulsion::getForceDirectionColinearWithVelocity( stateFunction, time, directionIsOpposite ); };
 ////            }
 ////            else
 ////            {
 ////                thrustDirectionFunction =
-////                        std::bind( &propulsion::getForceDirectionColinearWithPosition, stateFunction, std::placeholders::_1,
-////                                     thrustDirectionFromStateGuidanceSettings->directionIsOppositeToVector_ );
+////                        [stateFunction, directionIsOpposite = thrustDirectionFromStateGuidanceSettings->directionIsOppositeToVector_](const double time) {
+////                            return propulsion::getForceDirectionColinearWithPosition( stateFunction, time, directionIsOpposite ); };
 ////            }
 
 ////            // Create direction guidance
@@ -97,18 +97,16 @@ namespace simulation_setup
 //        // Retrieve existing body rotation model and set associated update settings.
 //        if( bodyWithGuidance->getFlightConditions( ) != nullptr )
 //        {
-//            rotationFunction = std::bind(
-//                        &simulation_setup::Body::getCurrentRotationToGlobalFrame,
-//                        bodyWithGuidance );
+//            rotationFunction = [bodyWithGuidance]() {
+//                        return bodyWithGuidance->getCurrentRotationToGlobalFrame(); };
 
 //            magnitudeUpdateSettings[ propagators::vehicle_flight_conditions_update ].push_back( nameOfBodyWithGuidance );
 //            magnitudeUpdateSettings[ propagators::body_rotational_state_update ].push_back( nameOfBodyWithGuidance );
 //        }
 //        else if( bodyWithGuidance->getRotationalEphemeris( ) != nullptr )
 //        {
-//            rotationFunction = std::bind(
-//                        &simulation_setup::Body::getCurrentRotationToGlobalFrame,
-//                        bodyWithGuidance );
+//            rotationFunction = [bodyWithGuidance]() {
+//                        return bodyWithGuidance->getCurrentRotationToGlobalFrame(); };
 //            magnitudeUpdateSettings[ propagators::body_rotational_state_update ].push_back( nameOfBodyWithGuidance );
 //        }
 //        else
@@ -179,12 +177,12 @@ namespace simulation_setup
 /// std::runtime_error( "Error when getting thrust guidance with mee_costate_based_thrust_direction, central body " + /
 /// meeCostateBasedThrustSettings->relativeBody_ + " has no gravity field." ); /            } /            else /            { / // Retrieve
 /// required functions and create guidance object /                std::function< Eigen::Vector6d( ) > thrustingBodyStateFunction = /
-/// std::bind( &simulation_setup::Body::getState, /                                     bodies.at(
-/// meeCostateBasedThrustSettings->vehicleName_ ) ); /                std::function< Eigen::Vector6d( ) > centralBodyStateFunction = /
-/// std::bind( &simulation_setup::Body::getState, /                                     bodies.at(
-/// meeCostateBasedThrustSettings->relativeBody_ ) ); /                std::function< double( ) > centralBodyGravitationalParameterFunction
-/// = /                        std::bind( &gravitation::GravityFieldModel::getGravitationalParameter, / bodies.at(
-///meeCostateBasedThrustSettings->relativeBody_ )->getGravityFieldModel( ) );
+/// [body = bodies.at( meeCostateBasedThrustSettings->vehicleName_ )]() { return body->getState(); };
+/// /                std::function< Eigen::Vector6d( ) > centralBodyStateFunction = /
+/// [body = bodies.at( meeCostateBasedThrustSettings->relativeBody_ )]() { return body->getState(); };
+/// /                std::function< double( ) > centralBodyGravitationalParameterFunction
+/// = /                        [gravityField = bodies.at(
+///meeCostateBasedThrustSettings->relativeBody_ )->getGravityFieldModel( )]() { return gravityField->getGravitationalParameter(); };
 
 ////                thrustGuidance =  std::make_shared< propulsion::MeeCostateBasedThrustGuidance >(
 ////                            thrustingBodyStateFunction, centralBodyStateFunction,
@@ -349,18 +347,14 @@ std::shared_ptr< propulsion::ThrustMagnitudeWrapper > createThrustMagnitudeWrapp
             //            {
             //                // Retrieve required functions and create guidance object
             //                std::function< Eigen::Vector6d( ) > thrustingBodyStateFunction =
-            //                        std::bind( &simulation_setup::Body::getState,
-            //                                     bodies.at( fromMeeCostatesBangBangThrustMagnitudeSettings->vehicleName_ ) );
+            //                        [body = bodies.at( fromMeeCostatesBangBangThrustMagnitudeSettings->vehicleName_ )]() { return body->getState(); };
             //                std::function< double( ) > thrustingBodyMassFunction =
-            //                        std::bind( &simulation_setup::Body::getBodyMass,
-            //                                     bodies.at( fromMeeCostatesBangBangThrustMagnitudeSettings->vehicleName_ ) );
+            //                        [body = bodies.at( fromMeeCostatesBangBangThrustMagnitudeSettings->vehicleName_ )]() { return body->getBodyMass(); };
             //                std::function< Eigen::Vector6d( ) > centralBodyStateFunction =
-            //                        std::bind( &simulation_setup::Body::getState,
-            //                                     bodies.at( fromMeeCostatesBangBangThrustMagnitudeSettings->centralBodyName_ ) );
+            //                        [body = bodies.at( fromMeeCostatesBangBangThrustMagnitudeSettings->centralBodyName_ )]() { return body->getState(); };
             //                std::function< double( ) > centralBodyGravitationalParameterFunction =
-            //                        std::bind( &gravitation::GravityFieldModel::getGravitationalParameter,
-            //                                     bodies.at( fromMeeCostatesBangBangThrustMagnitudeSettings->centralBodyName_
-            //                                     )->getGravityFieldModel( ) );
+            //                        [gravityField = bodies.at( fromMeeCostatesBangBangThrustMagnitudeSettings->centralBodyName_
+            //                                     )->getGravityFieldModel( )]() { return gravityField->getGravitationalParameter(); };
 
             //                // Create thrust magnitude wrapper
             //                thrustMagnitudeWrapper = std::make_shared< propulsion::MeeCostatesBangBangThrustMagnitudeWrapper >(

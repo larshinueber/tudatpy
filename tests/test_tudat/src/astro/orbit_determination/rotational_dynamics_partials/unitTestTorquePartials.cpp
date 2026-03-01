@@ -234,9 +234,9 @@ BOOST_AUTO_TEST_CASE( testSecondDegreeGravitationalTorquePartials )
 
         // Create state access/modification functions for bodies.
         std::function< void( Eigen::Vector7d ) > phobosRotationalStateSetFunction =
-                std::bind( &Body::setCurrentRotationalStateToLocalFrame, phobos, std::placeholders::_1 );
+                [phobos](const Eigen::Vector7d& state) { phobos->setCurrentRotationalStateToLocalFrame(state); };
         std::function< void( Eigen::Vector7d ) > marsRotationalStateSetFunction =
-                std::bind( &Body::setCurrentRotationalStateToLocalFrame, mars, std::placeholders::_1 );
+                [mars](const Eigen::Vector7d& state) { mars->setCurrentRotationalStateToLocalFrame(state); };
 
         // Calculate numerical partials wrt rotational state.
         std::vector< Eigen::Vector4d > appliedQuaternionPerturbation;
@@ -261,8 +261,8 @@ BOOST_AUTO_TEST_CASE( testSecondDegreeGravitationalTorquePartials )
                                                                                           4,
                                                                                           3 );
 
-        std::function< void( Eigen::Vector6d ) > phobosStateSetFunction = std::bind( &Body::setState, phobos, std::placeholders::_1 );
-        std::function< void( Eigen::Vector6d ) > marsStateSetFunction = std::bind( &Body::setState, mars, std::placeholders::_1 );
+        std::function< void( Eigen::Vector6d ) > phobosStateSetFunction = [phobos](const Eigen::Vector6d& state) { phobos->setState(state); };
+        std::function< void( Eigen::Vector6d ) > marsStateSetFunction = [mars](const Eigen::Vector6d& state) { mars->setState(state); };
 
         Eigen::Vector3d positionPerturbation;
         positionPerturbation << 1.0, 1.0, 100.0;
@@ -285,8 +285,7 @@ BOOST_AUTO_TEST_CASE( testSecondDegreeGravitationalTorquePartials )
         Eigen::Vector3d testPartialWrtMeanMomentOfInertia =
                 calculateTorqueWrtParameterPartials( phobosMeanMomentOfInertia, gravitationalTorque, 1.0E-1 );
         std::function< void( ) > updateFunction =
-                std::bind( &RigidBodyProperties::update, bodies.at( "Phobos" )->getMassProperties( ), testTime );
-        // std::bind( &Body::setBodyInertiaTensorFromGravityFieldAndExistingMeanMoment, bodies.at( "Phobos" ), true );
+                [massProps = bodies.at( "Phobos" )->getMassProperties(), testTime]() { massProps->update(testTime); };
         Eigen::MatrixXd testPartialWrtPhobosCosineCoefficients = calculateTorqueWrtParameterPartials(
                 phobosCosineCoefficientsParameter,
                 gravitationalTorque,
@@ -525,9 +524,9 @@ BOOST_AUTO_TEST_CASE( testInertialTorquePartials )
 
     // Create state access/modification functions for bodies.
     std::function< void( Eigen::Vector7d ) > phobosRotationalStateSetFunction =
-            std::bind( &Body::setCurrentRotationalStateToLocalFrame, phobos, std::placeholders::_1 );
+            [phobos](const Eigen::Vector7d& state) { phobos->setCurrentRotationalStateToLocalFrame(state); };
     std::function< void( Eigen::Vector7d ) > marsRotationalStateSetFunction =
-            std::bind( &Body::setCurrentRotationalStateToLocalFrame, mars, std::placeholders::_1 );
+            [mars](const Eigen::Vector7d& state) { mars->setCurrentRotationalStateToLocalFrame(state); };
 
     // Calculate numerical partials.
     std::vector< Eigen::Vector4d > appliedQuaternionPerturbation;
@@ -548,8 +547,8 @@ BOOST_AUTO_TEST_CASE( testInertialTorquePartials )
     testPartialWrtMarsRotationalVelocity = calculateTorqueWrtRotationalStatePartials(
             marsRotationalStateSetFunction, inertialTorqueModel, mars->getRotationalStateVector( ), rotationalVelocityPerturbation, 4, 3 );
 
-    std::function< void( Eigen::Vector6d ) > phobosStateSetFunction = std::bind( &Body::setState, phobos, std::placeholders::_1 );
-    std::function< void( Eigen::Vector6d ) > marsStateSetFunction = std::bind( &Body::setState, mars, std::placeholders::_1 );
+    std::function< void( Eigen::Vector6d ) > phobosStateSetFunction = [phobos](const Eigen::Vector6d& state) { phobos->setState(state); };
+    std::function< void( Eigen::Vector6d ) > marsStateSetFunction = [mars](const Eigen::Vector6d& state) { mars->setState(state); };
 
     Eigen::Vector3d positionPerturbation;
     positionPerturbation << 1.0, 1.0, 100.0;
@@ -567,8 +566,7 @@ BOOST_AUTO_TEST_CASE( testInertialTorquePartials )
             phobosStateSetFunction, inertialTorqueModel, phobos->getState( ), velocityPerturbation, 3 );
 
     std::function< void( ) > updateFunction =
-            std::bind( &RigidBodyProperties::update, bodies.at( "Phobos" )->getMassProperties( ), testTime );
-    //            std::bind( &Body::setBodyInertiaTensorFromGravityFieldAndExistingMeanMoment, bodies.at( "Phobos" ), true );
+            [massProps = bodies.at( "Phobos" )->getMassProperties(), testTime]() { massProps->update(testTime); };
     Eigen::Vector3d testPartialWrtPhobosGravitationalParameter =
             calculateTorqueWrtParameterPartials( phobosGravitationalParameterParameter, inertialTorqueModel, 1.0E8, updateFunction );
     Eigen::MatrixXd testPartialWrtMeanMomentOfInertia =
@@ -775,7 +773,7 @@ BOOST_AUTO_TEST_CASE( testConstantTorquePartials )
     torqueList[ "Phobos" ].push_back( inertialTorqueModel );
 
     std::shared_ptr< EffectiveTorqueModel > effectiveTorqueModel =
-            std::make_shared< EffectiveTorqueModel >( std::bind( &Body::getBodyInertiaTensor, bodies.at( "Phobos" ) ), torqueList );
+            std::make_shared< EffectiveTorqueModel >( [phobosBody = bodies.at( "Phobos" )]() { return phobosBody->getBodyInertiaTensor(); }, torqueList );
     effectiveTorqueModel->updateMembers( 0.0 );
 
     // Create central gravity partial.
@@ -845,9 +843,9 @@ BOOST_AUTO_TEST_CASE( testConstantTorquePartials )
 
     // Create state access/modification functions for bodies.
     std::function< void( Eigen::Vector7d ) > phobosRotationalStateSetFunction =
-            std::bind( &Body::setCurrentRotationalStateToLocalFrame, phobos, std::placeholders::_1 );
+            [phobos](const Eigen::Vector7d& state) { phobos->setCurrentRotationalStateToLocalFrame(state); };
     std::function< void( Eigen::Vector7d ) > marsRotationalStateSetFunction =
-            std::bind( &Body::setCurrentRotationalStateToLocalFrame, mars, std::placeholders::_1 );
+            [mars](const Eigen::Vector7d& state) { mars->setCurrentRotationalStateToLocalFrame(state); };
 
     //    // Calculate numerical partials.
     std::vector< Eigen::Vector4d > appliedQuaternionPerturbation;
@@ -868,8 +866,8 @@ BOOST_AUTO_TEST_CASE( testConstantTorquePartials )
     testPartialWrtMarsRotationalVelocity = calculateTorqueWrtRotationalStatePartials(
             marsRotationalStateSetFunction, effectiveTorqueModel, mars->getRotationalStateVector( ), rotationalVelocityPerturbation, 4, 3 );
 
-    std::function< void( Eigen::Vector6d ) > phobosStateSetFunction = std::bind( &Body::setState, phobos, std::placeholders::_1 );
-    std::function< void( Eigen::Vector6d ) > marsStateSetFunction = std::bind( &Body::setState, mars, std::placeholders::_1 );
+    std::function< void( Eigen::Vector6d ) > phobosStateSetFunction = [phobos](const Eigen::Vector6d& state) { phobos->setState(state); };
+    std::function< void( Eigen::Vector6d ) > marsStateSetFunction = [mars](const Eigen::Vector6d& state) { mars->setState(state); };
 
     Eigen::Vector3d positionPerturbation;
     positionPerturbation << 1.0, 1.0, 100.0;
@@ -887,8 +885,7 @@ BOOST_AUTO_TEST_CASE( testConstantTorquePartials )
             phobosStateSetFunction, effectiveTorqueModel, phobos->getState( ), velocityPerturbation, 3 );
 
     std::function< void( ) > updateFunction =
-            std::bind( &RigidBodyProperties::update, bodies.at( "Phobos" )->getMassProperties( ), testTime );
-    // std::bind( &Body::setBodyInertiaTensorFromGravityFieldAndExistingMeanMoment, bodies.at( "Phobos" ), true );
+            [massProps = bodies.at( "Phobos" )->getMassProperties(), testTime]() { massProps->update(testTime); };
     Eigen::Vector3d testPartialWrtPhobosGravitationalParameter =
             calculateTorqueWrtParameterPartials( phobosGravitationalParameterParameter, effectiveTorqueModel, 1.0E2, updateFunction );
     Eigen::MatrixXd testPartialWrtMeanMomentOfInertia =

@@ -76,10 +76,7 @@ BOOST_AUTO_TEST_CASE( testStateDerivativeCircularRestrictedThreeBodyProblem )
 
         // Declare Runge-Kutta 4 integrator.
         numerical_integrators::RungeKutta4IntegratorXd rungeKutta4Integrator(
-                std::bind( &StateDerivativeCircularRestrictedThreeBodyProblem::computeStateDerivative,
-                           &stateDerivative,
-                           std::placeholders::_1,
-                           std::placeholders::_2 ),
+                [&stateDerivative]( const double t, const Eigen::VectorXd& x ) { return stateDerivative.computeStateDerivative( t, x ); },
                 0.0,
                 initialStateOnHaloOrbit,
                 0.1 );
