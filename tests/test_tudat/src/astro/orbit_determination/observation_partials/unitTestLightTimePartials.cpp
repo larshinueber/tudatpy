@@ -113,7 +113,7 @@ BOOST_AUTO_TEST_CASE( testOneWayRangePartialsWrtLightTimeParameters )
 
         // Compute numerical partials for each parameter and compare to analytical result.
         std::function< double( const double ) > observationFunction =
-                [oneWayRangeModel, transmitter]( const double t ) { return oneWayRangeModel->computeObservationEntry( t, transmitter, 0, nullptr ); };
+                [oneWayRangeModel]( const double t ) { return oneWayRangeModel->computeObservationEntry( t, transmitter, 0, nullptr ); };
         for( SingleLinkObservationPartialList::iterator partialIterator = partialList.first.begin( );
              partialIterator != partialList.first.end( );
              partialIterator++ )
