@@ -386,8 +386,9 @@ Examples
            py::arg( "file_names" ),
            py::arg( "body_with_atmosphere_name" ) = "Earth",
            py::arg( "mapping_model" ) = tom::TroposphericMappingModel::niell,
+           py::arg( "seasonal_correction_file_name" ) = "",
            R"doc(
-           
+
            Function for creating settings for DSN tabulated tropospheric light-time corrections.
 
            The tabulated tropospheric correction settings are created based on files according to the TRK-2-23 Media Calibration Interface document.
@@ -404,12 +405,14 @@ Examples
                Name of the body with the troposphere.
            mapping_model : TroposphericMappingModel, default = niell
                Mapping model used to map the zenith delay to the slant range.
+           seasonal_correction_file_name : str, default = ""
+               Path to the CSP file containing the seasonal tropospheric correction model. If empty, the DSN default seasonal model is used.
 
            Returns
            -------
            :class:`~tudatpy.estimation.observable_models_setup.light_time_corrections.LightTimeCorrectionSettings`
                Instance of the :class:`~tudatpy.estimation.observable_models_setup.light_time_corrections.LightTimeCorrectionSettings` configured for DSN tabulated tropospheric corrections.
-           
+
            )doc" );
 
     m.def( "saastamoinen_tropospheric_light_time_correction",
