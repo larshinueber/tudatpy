@@ -1156,7 +1156,7 @@ class Builder:
                         )
 
                 # Add build and source directories
-                cmake_command.extend(["-B", f"{self.build_dir}", "-S", ".."])
+                cmake_command.extend(["-B", f"{self.build_dir}", "-S", "..", "-G", "Ninja"])
 
                 if _output_dest is None:
                     outcome = subprocess.run(cmake_command)
