@@ -24,14 +24,9 @@
 #include <Eigen/Core>
 
 #include "tudat/math/integrators/numericalIntegrator.h"
-#include "tudat/astro/basic_astro/timeConversions.h"
-#include "tudat/basics/timeType.h"
-#include "tudat/astro/propagators/singleStateTypeDerivative.h"
 #include "tudat/math/integrators/createNumericalIntegrator.h"
-#include "tudat/math/interpolators/lagrangeInterpolator.h"
 #include "tudat/math/root_finders/createRootFinder.h"
 #include "tudat/simulation/propagation_setup/propagationTermination.h"
-#include "tudat/simulation/propagation_setup/propagationResults.h"
 
 namespace tudat
 {

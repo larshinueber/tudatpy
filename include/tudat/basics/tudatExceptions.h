@@ -11,7 +11,6 @@
 #ifndef TUDAT_EXCEPTIONS_H
 #define TUDAT_EXCEPTIONS_H
 
-#include <iostream>
 #include <string>
 #include <tudat/astro/basic_astro/dateTime.h>
 

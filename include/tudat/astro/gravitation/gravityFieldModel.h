@@ -14,7 +14,6 @@
 
 #include <memory>
 #include <Eigen/Core>
-#include "tudat/math/basic/mathematicalConstants.h"
 
 #include "tudat/astro/gravitation/centralGravityModel.h"
 

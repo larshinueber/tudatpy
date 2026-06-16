@@ -1,15 +1,9 @@
 
 
 #include "tudat/math/basic/mathematicalConstants.h"
-
-#include "tudat/io/basicInputOutput.h"
 #include "tudat/io/matrixTextFileReader.h"
 #include "tudat/astro/ground_stations/iers2010SolidTidalBodyDeformation.h"
 #include "tudat/astro/basic_astro/sphericalBodyShapeModel.h"
-#include "tudat/astro/ephemerides/ephemeris.h"
-#include "tudat/astro/ephemerides/rotationalEphemeris.h"
-
-#include "tudat/basics/utilities.h"
 
 namespace tudat
 {

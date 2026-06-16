@@ -8,7 +8,6 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include <vector>
 #include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/math/basic/coordinateConversions.h"
 #include "tudat/astro/basic_astro/stateVectorIndices.h"

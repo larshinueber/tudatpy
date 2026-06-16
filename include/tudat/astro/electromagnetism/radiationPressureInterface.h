@@ -14,14 +14,12 @@
 #define TUDAT_RADIATIONPRESSUREINTERFACE_H
 
 #include <vector>
-#include <iostream>
 
 #include <functional>
 
 #include <Eigen/Geometry>
 #include <Eigen/Core>
 
-#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat

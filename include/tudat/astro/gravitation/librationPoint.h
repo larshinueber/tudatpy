@@ -21,9 +21,6 @@
 
 #include <Eigen/Core>
 
-#include "tudat/math/basic/mathematicalConstants.h"
-
-#include "tudat/math/root_finders/newtonRaphson.h"
 #include "tudat/math/root_finders/rootFinder.h"
 
 namespace tudat

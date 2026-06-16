@@ -7,15 +7,14 @@
  *    a copy of the license with this file. If not, please or visit:
  *    http://tudat.tudelft.nl/LICENSE.
  */
-#include "tudat/astro/aerodynamics/mcdAtmosphereModel.h"
-#include "tudat/astro/basic_astro/physicalConstants.h"
-#include "tudat/astro/basic_astro/unitConversions.h"
-#include "tudat/astro/basic_astro/timeConversions.h"
-#include "tudat/basics/utilities.h"
-#include "tudat/io/basicInputOutput.h"
-#include "mcd.h"
+
 #include <cmath>
 #include <stdexcept>
+
+#include "tudat/astro/aerodynamics/mcdAtmosphereModel.h"
+#include "tudat/astro/basic_astro/unitConversions.h"
+#include "tudat/astro/basic_astro/timeConversions.h"
+#include "mcd.h"
 
 namespace tudat
 {

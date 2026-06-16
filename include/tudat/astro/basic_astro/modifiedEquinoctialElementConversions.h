@@ -20,7 +20,6 @@
 #ifndef TUDAT_MODIFIED_EQUINOCTIAL_ELEMENT_CONVERSIONS_H
 #define TUDAT_MODIFIED_EQUINOCTIAL_ELEMENT_CONVERSIONS_H
 
-#include "tudat/basics/basicTypedefs.h"
 #include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/math/basic/basicMathematicsFunctions.h"
 #include "tudat/astro/basic_astro/stateVectorIndices.h"

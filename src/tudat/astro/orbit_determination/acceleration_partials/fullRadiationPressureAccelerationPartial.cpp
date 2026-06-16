@@ -9,6 +9,7 @@
  */
 
 #include "tudat/astro/orbit_determination/acceleration_partials/fullRadiationPressureAccelerationPartial.h"
+#include "tudat/astro/orbit_determination/acceleration_partials/radiationPressureAccelerationPartial.h"
 
 namespace tudat
 {

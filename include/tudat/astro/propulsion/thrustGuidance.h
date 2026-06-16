@@ -11,16 +11,12 @@
 #ifndef TUDAT_THRUSTGUIDANCE_H
 #define TUDAT_THRUSTGUIDANCE_H
 
-#include <iostream>
 #include <functional>
 
 #include "tudat/astro/ephemerides/directionBasedRotationalEphemeris.h"
-#include "tudat/astro/reference_frames/referenceFrameTransformations.h"
 // #include "tudat/astro/reference_frames/dependentOrientationCalculator.h"
 
 #include "tudat/basics/basicTypedefs.h"
-#include "tudat/math/basic/linearAlgebra.h"
-#include "tudat/astro/ephemerides/rotationalEphemeris.h"
 #include "tudat/astro/system_models/engineModel.h"
 
 namespace tudat

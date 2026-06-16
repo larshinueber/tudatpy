@@ -27,7 +27,6 @@
 
 #include "tudat/math/root_finders/newtonRaphson.h"
 #include "tudat/math/root_finders/rootFinder.h"
-#include "tudat/math/root_finders/terminationConditions.h"
 
 namespace tudat
 {

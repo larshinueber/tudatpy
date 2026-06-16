@@ -14,7 +14,6 @@
 
 #include <type_traits>
 
-#include "tudat/basics/basicTypedefs.h"
 #include "tudat/basics/tudatTypeTraits.h"
 #include "tudat/math/basic/mathematicalConstants.h"
 

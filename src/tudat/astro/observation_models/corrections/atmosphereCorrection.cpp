@@ -14,7 +14,6 @@
 #include "tudat/basics/utilities.h"
 #include "tudat/interface/sofa/sofaTimeConversions.h"
 #include "tudat/io/matrixTextFileReader.h"
-#include "tudat/math/basic/legendrePolynomials.h"
 
 namespace tudat
 {

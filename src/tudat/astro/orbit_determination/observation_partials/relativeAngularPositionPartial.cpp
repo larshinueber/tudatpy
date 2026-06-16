@@ -9,6 +9,7 @@
  */
 
 #include "tudat/astro/orbit_determination/observation_partials/relativeAngularPositionPartial.h"
+#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/orbit_determination/observation_partials/angularPositionPartial.h"
 
 namespace tudat

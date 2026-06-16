@@ -11,7 +11,6 @@
 #ifndef TUDAT_STATETRANSITIONMATRIXINTERFACE_H
 #define TUDAT_STATETRANSITIONMATRIXINTERFACE_H
 
-#include <iostream>
 #include <vector>
 
 #include <memory>
@@ -20,7 +19,6 @@
 
 #include "tudat/math/interpolators/oneDimensionalInterpolator.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/initialTranslationalState.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameterSet.h"
 
 namespace tudat

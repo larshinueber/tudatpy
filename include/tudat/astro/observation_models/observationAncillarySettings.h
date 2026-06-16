@@ -12,18 +12,12 @@
 #define TUDAT_ANCILLARYSETTINGS_H
 
 #include <Eigen/Core>
-#include <functional>
 #include <memory>
 #include <vector>
 
-#include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/astro/observation_models/observableTypes.h"
 #include "tudat/astro/observation_models/observationFrequencies.h"
-#include "tudat/astro/ground_stations/groundStation.h"
-#include "tudat/basics/basicTypedefs.h"
-#include "tudat/basics/timeType.h"
-#include "tudat/basics/tudatTypeTraits.h"
-#include "tudat/basics/utilities.h"
+#include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat
 {

@@ -1,6 +1,3 @@
-#include "tudat/math/basic/coordinateConversions.h"
-#include "tudat/math/basic/mathematicalConstants.h"
-
 /*    Copyright (c) 2010-2019, Delft University of Technology
  *    All rigths reserved
  *
@@ -15,6 +12,7 @@
 #include "tudat/astro/basic_astro/oblateSpheroidBodyShapeModel.h"
 #include "tudat/astro/ground_stations/groundStationState.h"
 #include "tudat/astro/reference_frames/referenceFrameTransformations.h"
+#include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat
 {

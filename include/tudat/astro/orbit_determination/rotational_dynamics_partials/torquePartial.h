@@ -12,15 +12,11 @@
 #define TUDAT_TORQUE_PARTIAL_H
 
 #include <string>
-#include <map>
 #include <Eigen/Core>
 
 #include <boost/assign/list_of.hpp>
 
-#include "tudat/astro/basic_astro/accelerationModel.h"
-#include "tudat/astro/basic_astro/accelerationModelTypes.h"
 #include "tudat/astro/basic_astro/torqueModelTypes.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
 #include "tudat/astro/orbit_determination/stateDerivativePartial.h"
 
 namespace tudat

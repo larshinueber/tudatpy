@@ -13,7 +13,6 @@
 #define TUDAT_BASE_FUNCTIONS_HODOGRAPHIC_SHAPING_H
 
 #include <vector>
-#include <cmath>
 #include <memory>
 
 namespace tudat

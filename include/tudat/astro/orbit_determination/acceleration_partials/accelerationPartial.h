@@ -12,7 +12,6 @@
 #define TUDAT_ACCELERATIONPARTIALS_H
 
 #include <string>
-#include <map>
 #include <Eigen/Core>
 
 #include "tudat/astro/basic_astro/accelerationModel.h"

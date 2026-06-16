@@ -22,7 +22,6 @@
 #include <Eigen/Core>
 
 #include "tudat/basics/basicTypedefs.h"
-#include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat
 {

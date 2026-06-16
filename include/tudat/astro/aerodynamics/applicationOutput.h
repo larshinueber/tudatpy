@@ -10,6 +10,8 @@
 #ifndef TUDAT_APPLICATIONOUTPUT_H
 #define TUDAT_APPLICATIONOUTPUT_H
 
+#include <string>
+
 namespace tudat_applications
 {
 

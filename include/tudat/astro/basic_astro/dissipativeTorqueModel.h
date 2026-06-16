@@ -1,7 +1,6 @@
 #ifndef TUDAT_DISSIPATIVETORQUEMODEL_H
 #define TUDAT_DISSIPATIVETORQUEMODEL_H
 
-#include <iomanip>
 #include <functional>
 
 #include "tudat/astro/basic_astro/torqueModel.h"

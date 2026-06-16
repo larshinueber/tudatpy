@@ -11,16 +11,9 @@
 #ifndef TUDAT_ONEWAYRANGEPARTIAL_H
 #define TUDAT_ONEWAYRANGEPARTIAL_H
 
-#include <functional>
-
 #include <Eigen/Core>
 
-#include "tudat/astro/basic_astro/physicalConstants.h"
-#include "tudat/astro/ephemerides/ephemeris.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
 #include "tudat/astro/orbit_determination/observation_partials/observationPartial.h"
-#include "tudat/astro/orbit_determination/observation_partials/positionPartials.h"
-#include "tudat/astro/orbit_determination/observation_partials/lightTimeCorrectionPartial.h"
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 
 namespace tudat

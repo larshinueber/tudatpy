@@ -16,15 +16,12 @@
 #ifndef TUDAT_APPROXIMATE_PLANET_POSITIONS_BASE_H
 #define TUDAT_APPROXIMATE_PLANET_POSITIONS_BASE_H
 
-#include <cmath>
 #include <map>
 #include <string>
 
 #include <memory>
 
 #include <Eigen/Core>
-
-#include "tudat/math/basic/basicMathematicsFunctions.h"
 
 #include "tudat/astro/ephemerides/approximatePlanetPositionsDataContainer.h"
 #include "tudat/astro/ephemerides/ephemeris.h"

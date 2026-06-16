@@ -16,8 +16,6 @@ extern "C" {
 #include <sofa/sofam.h>
 }
 
-#include <map>
-
 #include <Eigen/Core>
 
 #include "tudat/astro/basic_astro/timeConversions.h"

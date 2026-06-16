@@ -11,7 +11,6 @@
 #include <functional>
 #include <memory>
 #include <Eigen/Core>
-#include "tudat/astro/system_models/selfShadowing.h"
 #include "tudat/astro/aerodynamics/gasSurfaceInteractionModel.h"
 
 namespace tudat

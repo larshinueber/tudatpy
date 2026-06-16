@@ -13,7 +13,6 @@
  *
  */
 
-#include <vector>
 #include <cmath>
 
 #include "tudat/astro/basic_astro/unitConversions.h"

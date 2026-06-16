@@ -8,11 +8,12 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
+#include <iostream>
+
+#include "tudat/astro/aerodynamics/aerodynamicUtilities.h"
 #include "tudat/astro/aerodynamics/nrlmsise00Atmosphere.h"
 #include "tudat/astro/aerodynamics/gasProperties.h"
-#include "tudat/astro/basic_astro/geodeticCoordinateConversions.h"
 #include "tudat/math/basic/mathematicalConstants.h"
-#include <iostream>
 
 //! Tudat library namespace.
 namespace tudat

@@ -19,7 +19,6 @@
 
 #include "tudat/math/basic/basicMathematicsFunctions.h"
 #include "tudat/math/basic/coordinateConversions.h"
-#include "tudat/astro/basic_astro/physicalConstants.h"
 
 namespace tudat
 {

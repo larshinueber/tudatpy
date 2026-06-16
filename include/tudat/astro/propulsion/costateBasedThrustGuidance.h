@@ -18,14 +18,7 @@
  *    M.Sc. Thesis, Delft University of Technology
  */
 
-#include <cmath>
-
-#include <functional>
-
 #include <Eigen/Core>
-
-#include "tudat/astro/basic_astro/missionGeometry.h"
-#include "tudat/astro/propulsion/thrustGuidance.h"
 
 namespace tudat
 {

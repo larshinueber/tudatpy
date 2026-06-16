@@ -13,15 +13,12 @@
 #define TUDAT_TABULATEDROTATIONALEPHEMERIS_H
 
 #include <map>
-#include <vector>
 
 #include <memory>
 
 #include <Eigen/Core>
 
-#include "tudat/math/interpolators/lookupScheme.h"
 #include "tudat/math/interpolators/createInterpolator.h"
-#include "tudat/basics/timeType.h"
 #include "tudat/astro/ephemerides/rotationalEphemeris.h"
 
 namespace tudat

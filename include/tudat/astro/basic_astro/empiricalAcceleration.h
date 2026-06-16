@@ -20,7 +20,6 @@
 #include "tudat/astro/basic_astro/orbitalElementConversions.h"
 #include "tudat/astro/basic_astro/accelerationModel.h"
 
-#include "tudat/astro/ephemerides/rotationalEphemeris.h"
 #include "tudat/astro/reference_frames/referenceFrameTransformations.h"
 
 namespace tudat

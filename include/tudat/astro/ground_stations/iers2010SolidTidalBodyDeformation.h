@@ -21,7 +21,6 @@
 #include <functional>
 #include <memory>
 
-#include "tudat/astro/basic_astro/stateRepresentationConversions.h"
 #include "tudat/astro/ground_stations/basicTidalBodyDeformation.h"
 #include "tudat/interface/sofa/fundamentalArguments.h"
 

@@ -18,9 +18,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
-#include <fstream>
 #include <iomanip>
-#include <unordered_set>
 
 #include <functional>
 #include <boost/multi_array.hpp>

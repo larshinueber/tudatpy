@@ -11,13 +11,11 @@
 #ifndef TUDAT_GRAVITYFIELDVARIATIONPARAMETERS_H
 #define TUDAT_GRAVITYFIELDVARIATIONPARAMETERS_H
 
-#include <iostream>
 #include <vector>
 #include <string>
 #include <vector>
 #include <map>
 
-#include <type_traits>
 #include <memory>
 #include <Eigen/Geometry>
 

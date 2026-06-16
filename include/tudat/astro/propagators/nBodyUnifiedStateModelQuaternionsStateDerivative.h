@@ -11,8 +11,8 @@
 #ifndef TUDAT_NUNIFIEDSTATEMODELQUATERNIONSSTATEDERIVATIVE_H
 #define TUDAT_NUNIFIEDSTATEMODELQUATERNIONSSTATEDERIVATIVE_H
 
+#include "tudat/astro/basic_astro/unifiedStateModelQuaternionElementConversions.h"
 #include "tudat/astro/propagators/nBodyStateDerivative.h"
-#include "tudat/astro/basic_astro/stateRepresentationConversions.h"
 #include "tudat/astro/reference_frames/referenceFrameTransformations.h"
 
 namespace tudat

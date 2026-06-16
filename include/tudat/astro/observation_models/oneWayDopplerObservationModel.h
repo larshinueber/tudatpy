@@ -20,7 +20,7 @@
 #include "tudat/astro/observation_models/observationModel.h"
 #include "tudat/astro/observation_models/lightTimeSolution.h"
 #include "tudat/astro/relativity/relativisticTimeConversion.h"
-#include "tudat/astro/relativity/metric.h"
+
 namespace tudat
 {
 

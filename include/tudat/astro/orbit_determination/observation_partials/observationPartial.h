@@ -14,19 +14,16 @@
 #include <vector>
 #include <map>
 
-#include <memory>
-
 #include <Eigen/Core>
 
+#include "tudat/astro/observation_models/observationAncillarySettings.h"
 #include "tudat/basics/basicTypedefs.h"
 
-#include "tudat/astro/observation_models/observationModel.h"
 #include "tudat/astro/observation_models/observableTypes.h"
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/observationBiasParameter.h"
-#include "tudat/astro/observation_models/corrections/lightTimeCorrection.h"
 #include "tudat/math/basic/mathematicalConstants.h"
+#include "tudat/math/interpolators/lookupScheme.h"
 
 namespace tudat
 {

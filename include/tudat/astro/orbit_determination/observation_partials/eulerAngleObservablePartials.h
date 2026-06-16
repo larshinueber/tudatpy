@@ -16,12 +16,8 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#include <functional>
-
 #include "tudat/basics/basicTypedefs.h"
 
-#include "tudat/astro/ephemerides/simpleRotationalEphemeris.h"
-#include "tudat/astro/orbit_determination/observation_partials/rotationMatrixPartial.h"
 #include "tudat/astro/orbit_determination/observation_partials/observationPartial.h"
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/math/basic/rotationRepresentations.h"

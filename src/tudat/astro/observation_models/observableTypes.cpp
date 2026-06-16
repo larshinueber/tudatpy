@@ -11,7 +11,6 @@
 #include <iostream>
 
 #include "tudat/astro/observation_models/observableTypes.h"
-#include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat
 {

@@ -8,6 +8,8 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
+#include <fstream>
+
 #include "tudat/basics/utilities.h"
 
 namespace tudat

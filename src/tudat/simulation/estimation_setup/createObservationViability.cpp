@@ -11,6 +11,7 @@
 #include <map>
 
 #include <functional>
+#include "tudat/astro/ground_stations/groundStation.h"
 
 #include "tudat/simulation/estimation_setup/createObservationViability.h"
 

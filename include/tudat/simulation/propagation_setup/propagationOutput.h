@@ -13,6 +13,7 @@
 
 #include <functional>
 
+#include "tudat/astro/basic_astro/modifiedEquinoctialElementConversions.h"
 #include "tudat/basics/utilities.h"
 #include "tudat/astro/basic_astro/astrodynamicsFunctions.h"
 #include "tudat/astro/aerodynamics/aerodynamicUtilities.h"

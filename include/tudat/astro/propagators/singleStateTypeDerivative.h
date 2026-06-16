@@ -11,11 +11,8 @@
 #ifndef TUDAT_STATEDERIVATIVE_H
 #define TUDAT_STATEDERIVATIVE_H
 
-#include <map>
-
 #include <Eigen/Core>
 
-#include "tudat/basics/timeType.h"
 #include <tudat/basics/utilityMacros.h>
 
 namespace tudat

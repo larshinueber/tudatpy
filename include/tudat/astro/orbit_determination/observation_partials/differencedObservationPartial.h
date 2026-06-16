@@ -16,10 +16,7 @@
 #include <Eigen/Core>
 
 #include "tudat/astro/observation_models/observationAncillarySettings.h"
-#include "tudat/astro/observation_models/observableTypes.h"
-#include "tudat/astro/orbit_determination/observation_partials/oneWayRangePartial.h"
 #include "tudat/astro/orbit_determination/observation_partials/observationPartial.h"
-#include "tudat/basics/utilities.h"
 
 namespace tudat
 {

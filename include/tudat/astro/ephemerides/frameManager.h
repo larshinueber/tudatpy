@@ -13,8 +13,6 @@
 #include <map>
 #include <vector>
 
-#include "tudat/math/basic/mathematicalConstants.h"
-
 #include "tudat/astro/ephemerides/ephemeris.h"
 
 #include "tudat/astro/ephemerides/compositeEphemeris.h"

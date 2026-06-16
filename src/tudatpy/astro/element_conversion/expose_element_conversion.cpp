@@ -19,6 +19,12 @@
 #include <tudat/astro/basic_astro/attitudeElementConversions.h>
 #include <tudat/astro/basic_astro/sphericalStateConversions.h>
 #include <tudat/astro/basic_astro/stateRepresentationConversions.h>
+#include "tudat/astro/basic_astro/geodeticCoordinateConversions.h"
+#include "tudat/astro/basic_astro/modifiedEquinoctialElementConversions.h"
+#include "tudat/astro/basic_astro/orbitalElementConversions.h"
+#include "tudat/astro/basic_astro/unifiedStateModelExponentialMapElementConversions.h"
+#include "tudat/astro/basic_astro/unifiedStateModelModifiedRodriguesParameterElementConversions.h"
+#include "tudat/astro/basic_astro/unifiedStateModelQuaternionElementConversions.h"
 #include <tudat/astro/ephemerides/rotationalEphemeris.h>
 #include <tudat/interface/spice/spiceInterface.h>
 

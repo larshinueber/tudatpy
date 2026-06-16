@@ -9,7 +9,6 @@
  *
  */
 
-#include <cmath>
 #include <iostream>
 #include "tudat/astro/low_thrust/shape_based/compositeFunctionHodographicShaping.h"
 

@@ -11,8 +11,6 @@
 #ifndef TUDAT_SPHERICALHARMONICCOSINECOEFFICIENTS_H
 #define TUDAT_SPHERICALHARMONICCOSINECOEFFICIENTS_H
 
-#include <map>
-
 #include <functional>
 
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"

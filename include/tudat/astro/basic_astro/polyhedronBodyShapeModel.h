@@ -20,7 +20,6 @@
 #include "tudat/astro/basic_astro/bodyShapeModel.h"
 #include "tudat/astro/basic_astro/polyhedronFuntions.h"
 #include "tudat/math/basic/polyhedron.h"
-#include <iostream>
 
 namespace tudat
 {

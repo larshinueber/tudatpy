@@ -10,8 +10,6 @@
 
 #include "tudat/astro/observation_models/observationFrequencies.h"
 
-#include <iostream>
-
 namespace tudat
 {
 

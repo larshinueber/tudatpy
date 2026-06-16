@@ -17,8 +17,6 @@
 #include "tudat/astro/orbit_determination/observation_partials/rotationMatrixPartial.h"
 #include "tudat/astro/gravitation/polyhedronGravityField.h"
 
-#include "tudat/math/basic/coordinateConversions.h"
-
 namespace tudat
 {
 namespace acceleration_partials

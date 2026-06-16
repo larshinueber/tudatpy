@@ -9,6 +9,7 @@
  */
 
 #include "tudat/astro/propagators/nBodyGaussKeplerStateDerivative.h"
+#include "tudat/astro/basic_astro/astrodynamicsFunctions.h"
 
 namespace tudat
 {

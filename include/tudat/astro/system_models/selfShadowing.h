@@ -10,12 +10,8 @@
 #ifndef TUDAT_SELFSHADOWING_H
 #define TUDAT_SELFSHADOWING_H
 
-#include <map>
-#include <iostream>
-#include <algorithm>
 #include <memory>
 
-#include <thread>
 #include "tudat/astro/system_models/panelGeometryUtils.h"
 #include "tudat/astro/system_models/vehicleExteriorPanels.h"
 

@@ -10,7 +10,6 @@
  */
 
 #include "tudat/astro/ephemerides/keplerEphemeris.h"
-#include "tudat/astro/basic_astro/astrodynamicsFunctions.h"
 #include "tudat/astro/basic_astro/convertMeanToEccentricAnomalies.h"
 #include "tudat/astro/basic_astro/orbitalElementConversions.h"
 

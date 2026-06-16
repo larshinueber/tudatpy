@@ -9,7 +9,6 @@
  *
  */
 
-#include "tudat/math/interpolators/createInterpolator.h"
 #include "tudat/astro/earth_orientation/earthOrientationCalculator.h"
 
 namespace tudat

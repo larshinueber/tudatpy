@@ -14,8 +14,6 @@
  *
  */
 
-#include <iomanip>
-
 #include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/gravitation/sphericalHarmonicsGravityField.h"
 #include "tudat/math/basic/legendrePolynomials.h"

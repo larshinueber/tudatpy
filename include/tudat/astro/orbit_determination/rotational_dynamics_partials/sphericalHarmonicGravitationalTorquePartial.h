@@ -14,7 +14,6 @@
 #include "tudat/astro/gravitation/sphericalHarmonicGravitationalTorque.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/sphericalHarmonicAccelerationPartial.h"
 #include "tudat/astro/orbit_determination/rotational_dynamics_partials/torquePartial.h"
-#include "tudat/math/basic/linearAlgebra.h"
 
 namespace tudat
 {

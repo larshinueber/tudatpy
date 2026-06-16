@@ -9,7 +9,6 @@
  */
 
 #include "tudat/astro/aerodynamics/equilibriumWallTemperature.h"
-#include "tudat/math/root_finders/rootFinder.h"
 #include "tudat/math/root_finders/terminationConditions.h"
 #include "tudat/math/root_finders/bisection.h"
 #include "tudat/math/root_finders/secantRootFinder.h"

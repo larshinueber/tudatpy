@@ -7,9 +7,6 @@
 
 #include <Eigen/Core>
 
-// #include "Tudat/Mathematics/BasicMathematics/basicMathematicsFunctions.h"
-
-#include "tudat/astro/basic_astro/timeConversions.h"
 #include "tudat/astro/ground_stations/bodyDeformationModel.h"
 #include "tudat/interface/sofa/fundamentalArguments.h"
 

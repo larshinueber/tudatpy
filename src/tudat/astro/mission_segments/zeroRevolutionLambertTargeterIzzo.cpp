@@ -26,7 +26,6 @@
 #include "tudat/math/basic/mathematicalConstants.h"
 
 #include "tudat/astro/mission_segments/zeroRevolutionLambertTargeterIzzo.h"
-#include "tudat/math/basic/convergenceException.h"
 
 namespace tudat
 {

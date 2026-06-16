@@ -11,7 +11,6 @@
 #ifndef TUDAT_GASSURFACEINTERACTIONMODEL_H
 #define TUDAT_GASSURFACEINTERACTIONMODEL_H
 
-#include <functional>
 #include <memory>
 
 #include <Eigen/Core>

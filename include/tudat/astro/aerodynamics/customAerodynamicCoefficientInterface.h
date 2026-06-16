@@ -14,8 +14,6 @@
 #include <functional>
 
 #include "tudat/astro/aerodynamics/aerodynamicCoefficientInterface.h"
-#include "tudat/astro/aerodynamics/aerodynamicCoefficientGenerator.h"
-#include "tudat/astro/aerodynamics/hypersonicLocalInclinationAnalysis.h"
 #include "tudat/basics/basicTypedefs.h"
 
 namespace tudat

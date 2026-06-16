@@ -11,10 +11,11 @@
 #ifndef TUDAT_SPHERICALHARMONICPARTIALFUNCTIONS_H
 #define TUDAT_SPHERICALHARMONICPARTIALFUNCTIONS_H
 
-#include <memory>
-
 #include <Eigen/Core>
+#include <map>
 
+#include "tudat/astro/gravitation/sphericalHarmonicsGravityField.h"
+#include "tudat/math/basic/coordinateConversions.h"
 #include "tudat/math/basic/sphericalHarmonics.h"
 
 namespace tudat

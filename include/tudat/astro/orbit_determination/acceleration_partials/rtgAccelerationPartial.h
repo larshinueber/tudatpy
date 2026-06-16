@@ -15,8 +15,6 @@
 #include <memory>
 
 #include "tudat/astro/orbit_determination/acceleration_partials/accelerationPartial.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/rtgForceVector.h"
-#include "tudat/math/basic/linearAlgebra.h"
 #include "tudat/astro/system_models/rtgAccelerationModel.h"
 
 namespace tudat

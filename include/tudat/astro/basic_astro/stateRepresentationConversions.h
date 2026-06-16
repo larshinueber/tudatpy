@@ -11,15 +11,6 @@
 #ifndef TUDAT_STATEREPRESENTATIONCONVERSIONS_H
 #define TUDAT_STATEREPRESENTATIONCONVERSIONS_H
 
-#include "tudat/astro/basic_astro/convertMeanToEccentricAnomalies.h"
-#include "tudat/astro/basic_astro/geodeticCoordinateConversions.h"
-#include "tudat/astro/basic_astro/orbitalElementConversions.h"
-#include "tudat/astro/basic_astro/modifiedEquinoctialElementConversions.h"
-#include "tudat/astro/basic_astro/unifiedStateModelQuaternionElementConversions.h"
-#include "tudat/astro/basic_astro/unifiedStateModelModifiedRodriguesParameterElementConversions.h"
-#include "tudat/astro/basic_astro/unifiedStateModelExponentialMapElementConversions.h"
-#include "tudat/astro/basic_astro/attitudeElementConversions.h"
-#include "tudat/astro/basic_astro/stateVectorIndices.h"
 #include "tudat/astro/basic_astro/bodyShapeModel.h"
 
 namespace tudat

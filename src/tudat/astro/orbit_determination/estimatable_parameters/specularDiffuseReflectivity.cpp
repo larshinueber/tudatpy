@@ -8,6 +8,9 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
+#include <iostream>
+#include <numeric>
+
 #include "tudat/astro/orbit_determination/estimatable_parameters/specularDiffuseReflectivity.h"
 
 namespace tudat

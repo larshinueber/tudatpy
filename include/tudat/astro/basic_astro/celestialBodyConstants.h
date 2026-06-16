@@ -34,8 +34,6 @@
 #ifndef TUDAT_CELESTIAL_BODY_CONSTANTS_H
 #define TUDAT_CELESTIAL_BODY_CONSTANTS_H
 
-#include <map>
-
 namespace tudat
 {
 namespace celestial_body_constants

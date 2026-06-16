@@ -1,5 +1,6 @@
 #include "tudat/astro/mission_segments/transferTrajectory.h"
 #include "tudat/astro/low_thrust/shape_based/hodographicShapingLeg.h"
+#include "tudat/astro/reference_frames/referenceFrameTransformations.h"
 
 namespace tudat
 {

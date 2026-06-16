@@ -14,7 +14,6 @@
 #include <functional>
 #include <Eigen/Core>
 
-#include "tudat/basics/basicTypedefs.h"
 #include "tudat/math/interpolators/createInterpolator.h"
 
 namespace tudat

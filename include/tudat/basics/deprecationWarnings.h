@@ -11,7 +11,6 @@
 #ifndef TUDAT_DEPRECATION_WARNINGS_H
 #define TUDAT_DEPRECATION_WARNINGS_H
 
-#include <iostream>
 #include <string>
 
 namespace tudat

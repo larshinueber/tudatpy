@@ -16,6 +16,7 @@
 #include <functional>
 
 #include "tudat/astro/observation_models/observationSimulator.h"
+#include "tudat/astro/observation_models/observationViabilityCalculator.h"
 #include "tudat/simulation/estimation_setup/observationCollection.h"
 #include "tudat/basics/utilities.h"
 #include "tudat/math/basic/leastSquaresEstimation.h"

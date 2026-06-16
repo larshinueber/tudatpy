@@ -14,7 +14,6 @@
 
 #include <Eigen/Geometry>
 
-#include "tudat/astro/basic_astro/timeConversions.h"
 #include "tudat/astro/ephemerides/rotationalEphemeris.h"
 
 namespace tudat

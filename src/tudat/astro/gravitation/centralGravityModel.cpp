@@ -9,8 +9,6 @@
  *
  */
 
-#include <cmath>
-
 #include "tudat/astro/gravitation/centralGravityModel.h"
 
 namespace tudat

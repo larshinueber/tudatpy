@@ -12,8 +12,6 @@
 #ifndef TUDAT_CREATE_BASE_FUNCTION_HODOGRAPHIC_SHAPING_H
 #define TUDAT_CREATE_BASE_FUNCTION_HODOGRAPHIC_SHAPING_H
 
-#include <cmath>
-
 #include "tudat/astro/low_thrust/shape_based/baseFunctionsHodographicShaping.h"
 
 namespace tudat

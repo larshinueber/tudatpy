@@ -30,20 +30,15 @@
 #include <string>
 #include <stdexcept>
 
-#include "tudat/math/basic/linearAlgebra.h"
-
+#include "tudat/astro/gravitation/gravityFieldModel.h"
 #include "tudat/simulation/environment_setup/body.h"
-#include "tudat/astro/basic_astro/timeConversions.h"
-#include "tudat/interface/sofa/sofaTimeConversions.h"
-#include "tudat/astro/ephemerides/customEphemeris.h"
-#include "tudat/simulation/propagation_setup/createEnvironmentUpdater.h"
 #include "tudat/astro/propagators/singleStateTypeDerivative.h"
 #include "tudat/astro/relativity/relativisticPotentials.h"
 #include "tudat/astro/relativity/metric.h"
 #include "tudat/astro/relativity/relativisticTimeConversion.h"
 #include "tudat/astro/relativity/relativisticEquationsOfMotion.h"
-#include "tudat/math/integrators/createNumericalIntegrator.h"
 #include "tudat/simulation/environment_setup/createGroundStations.h"
+#include "tudat/simulation/propagation_setup/environmentUpdater.h"
 
 namespace tudat
 {

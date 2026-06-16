@@ -1,7 +1,10 @@
 #include "tudat/astro/mission_segments/createTransferTrajectory.h"
-#include "tudat/astro/low_thrust/shape_based/getRecommendedBaseFunctionsHodographicShaping.h"
 #include "tudat/astro/gravitation/gravityFieldModel.h"
+#include "tudat/astro/low_thrust/shape_based/getRecommendedBaseFunctionsHodographicShaping.h"
+#include "tudat/astro/low_thrust/shape_based/hodographicShapingLeg.h"
+#include "tudat/astro/low_thrust/shape_based/sphericalShapingLeg.h"
 #include "tudat/astro/propulsion/thrustMagnitudeWrapper.h"
+#include "tudat/astro/system_models/engineModel.h"
 #include "tudat/astro/system_models/vehicleSystems.h"
 #include "tudat/simulation/environment_setup/body.h"
 

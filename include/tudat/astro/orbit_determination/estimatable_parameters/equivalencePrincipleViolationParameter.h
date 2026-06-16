@@ -13,7 +13,6 @@
 
 #include <functional>
 
-#include "tudat/astro/relativity/metric.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
 
 namespace tudat

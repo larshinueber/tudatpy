@@ -13,8 +13,6 @@
 
 #include <map>
 
-#include <functional>
-
 #include <Eigen/Core>
 
 #include "tudat/astro/basic_astro/physicalConstants.h"

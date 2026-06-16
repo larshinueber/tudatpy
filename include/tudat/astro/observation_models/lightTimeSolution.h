@@ -13,12 +13,8 @@
 
 #include <memory>
 
-#include <algorithm>
 #include <functional>
 #include <iostream>
-#include <iomanip>
-#include <map>
-#include <numeric>
 #include <vector>
 
 #include "tudat/basics/basicTypedefs.h"
@@ -27,6 +23,7 @@
 #include "tudat/astro/observation_models/observationAncillarySettings.h"
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/astro/observation_models/corrections/lightTimeCorrection.h"
+#include "tudat/basics/tudatExceptions.h"
 
 namespace tudat
 {

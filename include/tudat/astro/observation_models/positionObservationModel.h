@@ -13,8 +13,6 @@
 
 #include <functional>
 
-#include "tudat/astro/ephemerides/ephemeris.h"
-
 #include "tudat/astro/observation_models/observationModel.h"
 
 namespace tudat

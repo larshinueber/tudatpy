@@ -9,6 +9,7 @@
  */
 
 #include "tudat/astro/basic_astro/timeConversions.h"
+#include "tudat/interface/sofa/sofaTimeConversions.h"
 #include "tudat/interface/sofa/fundamentalArguments.h"
 
 namespace tudat

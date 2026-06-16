@@ -8,11 +8,11 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include "tudat/math/basic/sphericalHarmonics.h"
 #include "tudat/math/basic/basicMathematicsFunctions.h"
 
 #include "tudat/astro/orbit_determination/acceleration_partials/tidalLoveNumberPartialInterface.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/tidalLoveNumber.h"
+#include "tudat/math/basic/coordinateConversions.h"
 
 namespace tudat
 {

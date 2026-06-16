@@ -11,14 +11,12 @@
 #ifndef TUDAT_FIRSTORDERRELATIVISTICLIGHTTIMECORRECTION_H
 #define TUDAT_FIRSTORDERRELATIVISTICLIGHTTIMECORRECTION_H
 
-#include <cmath>
 #include <vector>
 #include <functional>
 
 #include <Eigen/Core>
 
 #include "tudat/basics/basicTypedefs.h"
-#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/observation_models/corrections/lightTimeCorrection.h"
 
 namespace tudat

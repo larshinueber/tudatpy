@@ -13,7 +13,6 @@
 #define TUDAT_SOLAR_SYSTEM_METRIC_H
 
 #include "tudat/astro/gravitation/sphericalHarmonicsGravityModel.h"
-#include "tudat/math/basic/linearAlgebra.h"
 
 #include "tudat/astro/gravitation/sphericalHarmonicsGravityField.h"
 #include "tudat/astro/relativity/relativisticPotentials.h"
@@ -21,7 +20,6 @@
 #include "tudat/simulation/environment_setup/body.h"
 
 #include <functional>
-#include <stdexcept>
 #include <map>
 #include <memory>
 #include <vector>

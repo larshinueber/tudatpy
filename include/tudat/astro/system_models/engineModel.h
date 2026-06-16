@@ -14,7 +14,6 @@
 #include <Eigen/Core>
 #include <functional>
 
-#include "tudat/astro/propulsion/thrustFunctions.h"
 #include "tudat/astro/propulsion/thrustMagnitudeWrapper.h"
 
 #include "tudat/math/basic/mathematicalConstants.h"

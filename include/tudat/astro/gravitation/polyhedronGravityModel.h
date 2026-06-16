@@ -13,11 +13,9 @@
 #define TUDAT_POLYHEDRONGRAVITYMODEL_H
 
 #include <memory>
-#include <cmath>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <vector>
-#include <iostream>
 
 #include "tudat/astro/basic_astro/accelerationModel.h"
 #include "tudat/astro/gravitation/polyhedronGravityField.h"

@@ -11,11 +11,9 @@
 #ifndef TUDAT_NUNIFIEDSTATEMODELMODIFIEDRODRIGUESPARAMETERSSTATEDERIVATIVE_H
 #define TUDAT_NUNIFIEDSTATEMODELMODIFIEDRODRIGUESPARAMETERSSTATEDERIVATIVE_H
 
+#include "tudat/astro/basic_astro/unifiedStateModelModifiedRodriguesParameterElementConversions.h"
 #include "tudat/astro/propagators/nBodyStateDerivative.h"
-#include "tudat/astro/basic_astro/stateRepresentationConversions.h"
 #include "tudat/astro/reference_frames/referenceFrameTransformations.h"
-
-#include "tudat/math/basic/linearAlgebra.h"
 
 namespace tudat
 {

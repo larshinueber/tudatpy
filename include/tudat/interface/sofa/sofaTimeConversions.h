@@ -11,8 +11,6 @@
 #ifndef TUDAT_SOFATIMECONVERSIONS_H
 #define TUDAT_SOFATIMECONVERSIONS_H
 
-#include <vector>
-
 #include <Eigen/Core>
 
 extern "C" {

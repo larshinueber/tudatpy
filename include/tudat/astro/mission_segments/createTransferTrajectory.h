@@ -27,11 +27,11 @@
 
 #include <Eigen/Core>
 
+#include "tudat/astro/low_thrust/shape_based/baseFunctionsHodographicShaping.h"
 #include "tudat/astro/mission_segments/transferLeg.h"
 #include "tudat/astro/mission_segments/transferNode.h"
 #include "tudat/astro/mission_segments/transferTrajectory.h"
-#include "tudat/astro/low_thrust/shape_based/sphericalShapingLeg.h"
-#include "tudat/astro/low_thrust/shape_based/hodographicShapingLeg.h"
+#include "tudat/math/root_finders/createRootFinder.h"
 
 namespace tudat
 {

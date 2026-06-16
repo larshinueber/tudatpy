@@ -8,6 +8,7 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
+#include "tudat/astro/ground_stations/groundStation.h"
 #include "tudat/io/readViennaMappingFunctionData.h"
 #include "tudat/io/readSinexFile.h"
 #include "tudat/io/readIonexFile.h"

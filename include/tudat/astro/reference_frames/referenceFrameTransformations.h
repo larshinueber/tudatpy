@@ -16,7 +16,6 @@
 #ifndef TUDAT_REFERENCE_FRAME_TRANSFORMATIONS_H
 #define TUDAT_REFERENCE_FRAME_TRANSFORMATIONS_H
 
-#include <cmath>
 #include <vector>
 
 #include <functional>
@@ -25,7 +24,6 @@
 #include <Eigen/Geometry>
 
 #include "tudat/math/basic/mathematicalConstants.h"
-#include "tudat/math/basic/basicMathematicsFunctions.h"
 #include "tudat/basics/basicTypedefs.h"
 
 namespace tudat

@@ -14,7 +14,6 @@
 #include <Eigen/Eigen>
 
 #include "tudat/basics/basicTypedefs.h"
-#include "tudat/astro/basic_astro/physicalConstants.h"
 
 namespace tudat
 {

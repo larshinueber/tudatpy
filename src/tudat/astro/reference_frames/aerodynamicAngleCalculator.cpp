@@ -8,16 +8,12 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include <iostream>
-
 #include <memory>
 
-#include "tudat/astro/basic_astro/sphericalStateConversions.h"
 #include "tudat/astro/reference_frames/aerodynamicAngleCalculator.h"
 #include "tudat/astro/reference_frames/referenceFrameTransformations.h"
 #include "tudat/math/basic/coordinateConversions.h"
 #include "tudat/math/basic/mathematicalConstants.h"
-#include "tudat/math/basic/rotationRepresentations.h"
 #include "tudat/basics/deprecationWarnings.h"
 
 namespace tudat

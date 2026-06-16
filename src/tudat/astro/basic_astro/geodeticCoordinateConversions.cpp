@@ -12,7 +12,6 @@
  *
  */
 
-#include <vector>
 #include <cmath>
 
 #include "tudat/math/basic/coordinateConversions.h"

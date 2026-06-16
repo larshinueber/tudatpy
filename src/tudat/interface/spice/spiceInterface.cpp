@@ -11,8 +11,8 @@
 
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/astro/basic_astro/unitConversions.h"
+#include "tudat/interface/spice/spiceError.h"
 #include "tudat/io/basicInputOutput.h"
-#include "tudat/paths.hpp"
 
 #include <math.h>
 

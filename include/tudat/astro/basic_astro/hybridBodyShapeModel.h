@@ -12,9 +12,7 @@
 #ifndef TUDAT_HYBRIDBODYSHAPEMODEL_H
 #define TUDAT_HYBRIDBODYSHAPEMODEL_H
 
-#include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/astro/basic_astro/bodyShapeModel.h"
-#include <iostream>
 
 namespace tudat
 {

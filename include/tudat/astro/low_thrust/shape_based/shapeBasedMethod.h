@@ -12,7 +12,6 @@
 #ifndef TUDAT_SHAPE_BASED_METHOD_H
 #define TUDAT_SHAPE_BASED_METHOD_H
 
-#include <cmath>
 #include <vector>
 #include <Eigen/Dense>
 #include <map>

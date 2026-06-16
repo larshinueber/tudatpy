@@ -11,12 +11,8 @@
 #ifndef TUDAT_MCD_ATMOSPHERE_MODEL_H
 #define TUDAT_MCD_ATMOSPHERE_MODEL_H
 
-#include <iostream>
 #include <vector>
-#include <map>
 #include "tudat/astro/aerodynamics/atmosphereModel.h"
-#include "tudat/astro/basic_astro/timeConversions.h"
-#include "tudat/astro/basic_astro/dateTime.h"
 
 namespace tudat
 {

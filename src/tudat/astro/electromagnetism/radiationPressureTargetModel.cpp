@@ -13,7 +13,6 @@
 #include <Eigen/Core>
 
 #include "tudat/astro/basic_astro/physicalConstants.h"
-#include "tudat/astro/system_models/selfShadowing.h"
 
 namespace tudat
 {

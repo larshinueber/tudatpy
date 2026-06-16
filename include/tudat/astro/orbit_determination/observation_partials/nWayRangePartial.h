@@ -11,13 +11,7 @@
 #ifndef TUDAT_NWAYRANGEPARTIAL_H
 #define TUDAT_NWAYRANGEPARTIAL_H
 
-#include <functional>
-
 #include <Eigen/Core>
-
-#include "tudat/astro/basic_astro/physicalConstants.h"
-
-#include "tudat/astro/ephemerides/ephemeris.h"
 
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
 #include "tudat/astro/orbit_determination/observation_partials/observationPartial.h"

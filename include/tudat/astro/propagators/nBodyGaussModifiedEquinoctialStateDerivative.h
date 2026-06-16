@@ -11,9 +11,9 @@
 #ifndef TUDAT_NGAUSSMODIFIEDEQUINOCTIALSTATEDERIVATIVE_H
 #define TUDAT_NGAUSSMODIFIEDEQUINOCTIALSTATEDERIVATIVE_H
 
+#include "tudat/astro/basic_astro/modifiedEquinoctialElementConversions.h"
+#include "tudat/astro/basic_astro/stateVectorIndices.h"
 #include "tudat/astro/propagators/nBodyStateDerivative.h"
-#include "tudat/astro/basic_astro/stateRepresentationConversions.h"
-#include "tudat/astro/basic_astro/astrodynamicsFunctions.h"
 #include "tudat/astro/reference_frames/referenceFrameTransformations.h"
 
 namespace tudat

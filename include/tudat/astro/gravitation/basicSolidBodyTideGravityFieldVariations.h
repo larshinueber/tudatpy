@@ -21,7 +21,6 @@
 #include <complex>
 #include <map>
 
-#include "tudat/math/basic/coordinateConversions.h"
 #include "tudat/basics/basicTypedefs.h"
 #include "tudat/math/basic/legendrePolynomials.h"
 #include "tudat/astro/gravitation/gravityFieldVariations.h"

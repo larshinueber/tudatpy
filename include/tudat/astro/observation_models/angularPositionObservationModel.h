@@ -14,7 +14,6 @@
 #include <map>
 #include <Eigen/Core>
 
-#include "tudat/math/basic/coordinateConversions.h"
 #include "tudat/astro/observation_models/lightTimeSolution.h"
 #include "tudat/astro/observation_models/observationModel.h"
 

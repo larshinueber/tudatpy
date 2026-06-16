@@ -15,13 +15,10 @@
 #ifndef TUDAT_RTGACCELERATIONMODEL_H
 #define TUDAT_RTGACCELERATIONMODEL_H
 
-#include <memory>
 #include <cmath>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-#include <vector>
 #include <functional>
-#include <iostream>
 
 #include "tudat/astro/basic_astro/accelerationModel.h"
 

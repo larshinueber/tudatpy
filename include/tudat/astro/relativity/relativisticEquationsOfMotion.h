@@ -29,8 +29,8 @@
 #include <Eigen/Core>
 
 #include "tudat/astro/basic_astro/accelerationModel.h"
-
 #include "tudat/astro/relativity/metric.h"
+#include "tudat/basics/basicTypedefs.h"
 
 namespace tudat
 {

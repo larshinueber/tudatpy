@@ -18,6 +18,7 @@
 #include <Eigen/Geometry>
 
 #include "tudat/astro/basic_astro/accelerationModel.h"
+#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/electromagnetism/radiationSourceModel.h"
 #include "tudat/astro/electromagnetism/radiationPressureTargetModel.h"
 #include "tudat/astro/electromagnetism/occultationModel.h"

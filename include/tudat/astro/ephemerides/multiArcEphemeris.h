@@ -17,7 +17,6 @@
 
 #include "tudat/astro/ephemerides/ephemeris.h"
 #include "tudat/math/interpolators/lookupScheme.h"
-#include "tudat/basics/tudatExceptions.h"
 #include "tudat/basics/utilities.h"
 
 namespace tudat

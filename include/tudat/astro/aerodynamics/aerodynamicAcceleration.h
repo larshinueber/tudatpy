@@ -18,7 +18,6 @@
 #include <Eigen/Core>
 
 #include "tudat/astro/aerodynamics/aerodynamicCoefficientInterface.h"
-#include "tudat/astro/aerodynamics/aerodynamicForce.h"
 #include "tudat/astro/basic_astro/accelerationModel.h"
 #include "tudat/astro/aerodynamics/flightConditions.h"
 

@@ -16,12 +16,8 @@
 #include <stdexcept>
 #include <string>
 
-#include "tudat/astro/observation_models/nWayRangeObservationModel.h"
 #include "tudat/astro/observation_models/observableTypes.h"
-#include "tudat/astro/observation_models/observationFrequencies.h"
-#include "tudat/astro/observation_models/oneWayDopplerObservationModel.h"  // Include this header
-#include "tudat/astro/observation_models/twoWayDopplerObservationModel.h"  // Include this header
-#include "tudat/simulation/simulation.h"
+#include "tudat/astro/observation_models/oneWayDopplerObservationModel.h"
 
 namespace tudat
 {

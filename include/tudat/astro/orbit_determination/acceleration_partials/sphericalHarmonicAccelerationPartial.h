@@ -11,14 +11,10 @@
 #ifndef TUDAT_SPHERICALHARMONICACCELERATIONPARTIAL_H
 #define TUDAT_SPHERICALHARMONICACCELERATIONPARTIAL_H
 
-#include "tudat/math/basic/coordinateConversions.h"
-
 #include "tudat/astro/gravitation/sphericalHarmonicsGravityModel.h"
 
-#include "tudat/astro/reference_frames/referenceFrameTransformations.h"
 #include "tudat/astro/gravitation/sphericalHarmonicsGravityField.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/accelerationPartial.h"
-#include "tudat/astro/orbit_determination/acceleration_partials/sphericalHarmonicAccelerationPartial.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/tidalLoveNumberPartialInterface.h"
 #include "tudat/astro/orbit_determination/observation_partials/rotationMatrixPartial.h"
 

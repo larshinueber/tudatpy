@@ -9,10 +9,7 @@
  */
 
 #include "tudat/math/basic/basicMathematicsFunctions.h"
-#include "tudat/math/basic/coordinateConversions.h"
 #include "tudat/astro/basic_astro/stateVectorIndices.h"
-
-#include "tudat/astro/gravitation/sphericalHarmonicsGravityModel.h"
 
 #include "tudat/astro/orbit_determination/acceleration_partials/sphericalHarmonicPartialFunctions.h"
 

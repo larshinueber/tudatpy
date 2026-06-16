@@ -17,11 +17,9 @@
 #define TUDAT_POLYHEDRONGRAVITYFIELD_H
 
 #include <memory>
-#include <cmath>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <vector>
-#include <iostream>
 
 #include "tudat/astro/gravitation/gravityFieldModel.h"
 #include "tudat/astro/basic_astro/physicalConstants.h"

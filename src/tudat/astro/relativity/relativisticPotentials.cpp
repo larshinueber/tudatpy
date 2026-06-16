@@ -9,9 +9,6 @@
  *
  */
 
-#include <iostream>
-#include <iomanip>
-
 #include <Eigen/Geometry>
 
 #include "tudat/astro/basic_astro/physicalConstants.h"

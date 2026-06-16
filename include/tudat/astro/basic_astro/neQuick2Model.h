@@ -18,7 +18,7 @@
 #define TUDAT_NEQUICK2MODEL_H
 
 #include <functional>
-#include <cmath>
+
 #include <Eigen/Core>
 
 #include "tudat/astro/basic_astro/ionosphereModel.h"

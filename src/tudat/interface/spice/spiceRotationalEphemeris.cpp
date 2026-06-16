@@ -7,10 +7,7 @@
  *    a copy of the license with this file. If not, please or visit:
  *    http://tudat.tudelft.nl/LICENSE.
  */
-#include <stdexcept>
 
-#include "tudat/astro/basic_astro/physicalConstants.h"
-#include "tudat/astro/basic_astro/timeConversions.h"
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/interface/spice/spiceRotationalEphemeris.h"
 

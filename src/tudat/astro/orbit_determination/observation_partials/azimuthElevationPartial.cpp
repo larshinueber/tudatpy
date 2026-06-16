@@ -10,6 +10,7 @@
 
 #include "tudat/astro/orbit_determination/observation_partials/azimuthElevationPartial.h"
 
+#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/orbit_determination/observation_partials/angularPositionPartial.h"
 #include "tudat/math/basic/mathematicalConstants.h"
 

@@ -9,6 +9,8 @@
  */
 
 #include <cmath>
+#include "tudat/math/basic/linearAlgebra.h"
+#include "tudat/math/basic/mathematicalConstants.h"
 
 #include "tudat/astro/observation_models/observationViabilityCalculator.h"
 

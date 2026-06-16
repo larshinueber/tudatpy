@@ -15,8 +15,6 @@
 
 #include <vector>
 
-#include "tudat/math/interpolators/cubicSplineInterpolator.h"
-
 #include "tudat/astro/gravitation/sphericalHarmonicsGravityField.h"
 #include "tudat/astro/gravitation/gravityFieldVariations.h"
 

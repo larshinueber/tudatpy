@@ -12,7 +12,6 @@
 #ifndef TUDAT_READAMPLITUDEANDARGUMENTMULTIPLIERS_H
 #define TUDAT_READAMPLITUDEANDARGUMENTMULTIPLIERS_H
 
-#include <cmath>
 #include <string>
 
 #include <Eigen/Core>

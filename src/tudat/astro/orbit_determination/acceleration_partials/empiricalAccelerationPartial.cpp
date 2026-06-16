@@ -8,6 +8,8 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
+#include "tudat/math/basic/linearAlgebra.h"
+
 #include "tudat/astro/orbit_determination/acceleration_partials/empiricalAccelerationPartial.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/empiricalAccelerationCoefficients.h"
 

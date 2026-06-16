@@ -9,6 +9,9 @@
  */
 
 #include "tudat/astro/orbit_determination/acceleration_partials/einsteinInfeldHoffmannPartials.h"
+#include "tudat/astro/basic_astro/physicalConstants.h"
+#include "tudat/astro/orbit_determination/acceleration_partials/centralGravityAccelerationPartial.h"
+#include "tudat/basics/utilities.h"
 
 namespace tudat
 {

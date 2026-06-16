@@ -19,6 +19,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include "tudat/astro/ground_stations/groundStation.h"
 #include "scalarTypes.h"
 #include "tudat/astro/ground_stations/pointingAnglesCalculator.h"
 #include "tudat/simulation/estimation_setup/simulateObservations.h"

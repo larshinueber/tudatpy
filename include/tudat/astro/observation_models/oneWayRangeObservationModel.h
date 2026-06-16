@@ -13,16 +13,12 @@
 
 #include <map>
 
-#include <functional>
-
 #include <Eigen/Geometry>
 
 #include "tudat/astro/basic_astro/physicalConstants.h"
 
-#include "tudat/astro/ephemerides/simpleRotationalEphemeris.h"
 #include "tudat/astro/observation_models/observationModel.h"
 #include "tudat/astro/observation_models/lightTimeSolution.h"
-#include "tudat/astro/observation_models/transmissionFrequencyInterface.h"
 
 namespace tudat
 {

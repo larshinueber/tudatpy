@@ -25,9 +25,7 @@
 
 #include <Eigen/Core>
 
-#include "tudat/astro/basic_astro/keplerPropagator.h"
 #include "tudat/astro/ephemerides/ephemeris.h"
-#include "tudat/astro/mission_segments/lambertTargeterIzzo.h"
 #include "tudat/basics/utilities.h"
 
 namespace tudat

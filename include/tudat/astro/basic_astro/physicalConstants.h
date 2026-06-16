@@ -26,8 +26,6 @@
 #ifndef TUDAT_PHYSICAL_CONSTANTS_H
 #define TUDAT_PHYSICAL_CONSTANTS_H
 
-#include <cmath>
-
 #include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat

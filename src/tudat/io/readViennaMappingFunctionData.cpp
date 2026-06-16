@@ -8,6 +8,8 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
+#include <fstream>
+
 #include "tudat/io/readViennaMappingFunctionData.h"
 #include "tudat/astro/basic_astro/timeConversions.h"
 #include "tudat/interface/sofa/sofaTimeConversions.h"

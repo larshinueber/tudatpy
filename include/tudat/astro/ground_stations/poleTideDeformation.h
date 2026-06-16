@@ -1,10 +1,8 @@
 #ifndef TUDAT_POLETIDEDEFORMATION_H
 #define TUDAT_POLETIDEDEFORMATION_H
 
-#include "tudat/astro/basic_astro/timeConversions.h"
 #include "tudat/astro/earth_orientation/polarMotionCalculator.h"
 #include "tudat/astro/ground_stations/bodyDeformationModel.h"
-#include "tudat/interface/sofa/fundamentalArguments.h"
 
 namespace tudat
 {

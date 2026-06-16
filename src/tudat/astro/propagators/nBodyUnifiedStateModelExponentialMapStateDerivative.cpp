@@ -15,6 +15,7 @@
 #include "tudat/astro/basic_astro/attitudeElementConversions.h"
 
 #include "tudat/astro/propagators/nBodyUnifiedStateModelExponentialMapStateDerivative.h"
+#include "tudat/astro/basic_astro/stateVectorIndices.h"
 #include "tudat/astro/propagators/rotationalMotionExponentialMapStateDerivative.h"
 
 namespace tudat

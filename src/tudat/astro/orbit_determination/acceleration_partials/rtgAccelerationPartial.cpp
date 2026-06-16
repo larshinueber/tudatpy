@@ -9,7 +9,6 @@
  */
 
 #include "tudat/astro/orbit_determination/acceleration_partials/rtgAccelerationPartial.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/rtgForceVector.h"
 
 namespace tudat
 {
@@ -75,9 +74,6 @@ void RTGAccelerationPartial::update( const double currentTime )
 {
     if( !( currentTime_ == currentTime ) )
     {
-        using namespace tudat::basic_mathematics;
-        using namespace tudat::linear_algebra;
-
         rtgAcceleration_->updateMembers( currentTime );
 
         currentTime_ = currentTime;

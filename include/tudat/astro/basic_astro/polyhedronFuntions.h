@@ -20,8 +20,6 @@
 #include <Eigen/Geometry>
 #include <Eigen/Eigenvalues>
 
-#include <iostream>
-
 namespace tudat
 {
 namespace basic_astrodynamics

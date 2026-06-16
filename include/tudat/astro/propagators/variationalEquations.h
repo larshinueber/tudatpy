@@ -16,16 +16,11 @@
 
 #include <memory>
 
-#include "tudat/math/basic/linearAlgebra.h"
-
-#include "tudat/astro/basic_astro/accelerationModel.h"
-
+#include "tudat/astro/orbit_determination/stateDerivativePartial.h"
 #include "tudat/astro/propagators/nBodyStateDerivative.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameterSet.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/initialTranslationalState.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/initialRotationalState.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/initialMassState.h"
-#include "tudat/astro/orbit_determination/acceleration_partials/accelerationPartial.h"
 
 namespace tudat
 {
@@ -339,8 +334,6 @@ private:
             std::multimap< std::pair< int, int >, std::function< void( Eigen::Block< Eigen::MatrixXd > ) > >& functionListOfBody,
             const int totalParameterVectorIndicesToSubtract = 0 )
     {
-        using namespace acceleration_partials;
-
         // Iterate over all parameters.
         for( typename std::map< int,
                                 std::shared_ptr< estimatable_parameters::EstimatableParameter< CurrentParameterType > > >::const_iterator

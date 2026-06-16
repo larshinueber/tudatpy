@@ -11,6 +11,7 @@
 
 #include "tudat/astro/basic_astro/celestialBodyConstants.h"
 #include "tudat/math/basic/coordinateConversions.h"
+#include "tudat/math/interpolators/createInterpolator.h"
 #include "tudat/astro/low_thrust/shape_based/sphericalShapingLeg.h"
 
 namespace tudat

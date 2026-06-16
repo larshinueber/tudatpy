@@ -19,7 +19,6 @@
 #ifndef TUDAT_REFLECTIONLAW_H
 #define TUDAT_REFLECTIONLAW_H
 
-#include <iostream>
 #include <memory>
 
 #include <Eigen/Core>

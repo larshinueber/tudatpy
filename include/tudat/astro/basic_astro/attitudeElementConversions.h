@@ -11,13 +11,8 @@
 #ifndef TUDAT_ATTITUDE_ELEMENT_CONVERSIONS_H
 #define TUDAT_ATTITUDE_ELEMENT_CONVERSIONS_H
 
-#include <cmath>
-#include <limits>
-
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-
-#include "tudat/basics/basicTypedefs.h"
 
 namespace tudat
 {

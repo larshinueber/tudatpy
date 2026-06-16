@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <vector>
-#include <utility>
 #include <stdexcept>
 #include <Eigen/Core>
 

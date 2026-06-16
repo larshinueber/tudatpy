@@ -1,3 +1,4 @@
+#include <iostream>
 #include "tudat/basics/deprecationWarnings.h"
 
 namespace tudat

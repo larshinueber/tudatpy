@@ -11,12 +11,7 @@
 #ifndef TUDAT_INERTIATENSORPARTIALS_H
 #define TUDAT_INERTIATENSORPARTIALS_H
 
-#include "tudat/astro/gravitation/secondDegreeGravitationalTorque.h"
-#include "tudat/astro/orbit_determination/rotational_dynamics_partials/torquePartial.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/sphericalHarmonicCosineCoefficients.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/sphericalHarmonicSineCoefficients.h"
-#include "tudat/math/basic/linearAlgebra.h"
-
+#include <Eigen/Core>
 namespace tudat
 {
 

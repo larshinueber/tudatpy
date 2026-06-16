@@ -9,6 +9,7 @@
  */
 
 #include "tudat/astro/orbit_determination/acceleration_partials/yarkovskyAccelerationPartial.h"
+#include "tudat/astro/basic_astro/physicalConstants.h"
 
 namespace tudat
 {

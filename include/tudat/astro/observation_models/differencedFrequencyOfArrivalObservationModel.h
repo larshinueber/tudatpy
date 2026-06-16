@@ -11,17 +11,12 @@
 #ifndef TUDAT_DIFFERENCEDFREQUENCYOFARRIVALOBSERVATIONMODEL_H
 #define TUDAT_DIFFERENCEDFREQUENCYOFARRIVALOBSERVATIONMODEL_H
 
-#include <iostream>
 #include <stdexcept>
-
-#include <functional>
 
 #include <Eigen/Core>
 
-#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/observation_models/observationModel.h"
 #include "tudat/astro/observation_models/lightTimeSolution.h"
-#include "tudat/astro/earth_orientation/terrestrialTimeScaleConverter.h"
 #include "tudat/astro/observation_models/oneWayDopplerMeasuredFrequencyObservationModel.h"
 #include "tudat/astro/basic_astro/timeConversions.h"
 

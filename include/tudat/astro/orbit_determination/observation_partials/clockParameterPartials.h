@@ -1,8 +1,6 @@
 #ifndef CLOCKPARAMETERPARTIALS_H
 #define CLOCKPARAMETERPARTIALS_H
 
-#include <cmath>
-
 #include "tudat/astro/orbit_determination/observation_partials/observationPartial.h"
 #include "tudat/astro/system_models/timingSystem.h"
 

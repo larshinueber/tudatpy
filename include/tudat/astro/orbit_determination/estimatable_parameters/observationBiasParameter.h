@@ -15,8 +15,9 @@
 #include <iostream>
 #include <vector>
 
-#include "tudat/astro/observation_models/observationBias.h"
+#include "tudat/astro/observation_models/observableTypes.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
+#include "tudat/math/interpolators/lookupScheme.h"
 
 namespace tudat
 {

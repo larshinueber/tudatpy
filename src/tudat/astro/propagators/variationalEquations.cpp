@@ -16,8 +16,6 @@
 #include "tudat/astro/propagators/variationalEquations.h"
 #include "tudat/astro/propagators/rotationalMotionQuaternionsStateDerivative.h"
 
-#include "tudat/astro/orbit_determination/acceleration_partials/accelerationPartial.h"
-
 namespace tudat
 {
 

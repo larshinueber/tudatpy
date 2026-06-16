@@ -18,7 +18,6 @@
 #include "tudat/basics/basicTypedefs.h"
 
 #include "tudat/astro/observation_models/linkTypeDefs.h"
-#include "tudat/astro/observation_models/lightTimeSolution.h"
 #include "tudat/astro/observation_models/corrections/lightTimeCorrection.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
 

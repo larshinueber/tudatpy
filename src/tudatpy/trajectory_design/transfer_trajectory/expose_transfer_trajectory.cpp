@@ -19,6 +19,8 @@
 #include <tudat/astro/mission_segments/createTransferTrajectory.h>
 #include <tudat/simulation/environment_setup/body.h>
 #include <tudat/simulation/propagation_setup/accelerationSettings.h>
+#include <tudat/astro/low_thrust/shape_based/sphericalShapingLeg.h>
+#include <tudat/astro/low_thrust/shape_based/hodographicShapingLeg.h>
 
 #include "tudat/astro/mission_segments/createTransferTrajectory.h"
 #include "tudat/math/root_finders/createRootFinder.h"

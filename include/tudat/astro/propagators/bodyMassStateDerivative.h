@@ -11,12 +11,12 @@
 #ifndef TUDAT_BODYMASSSTATEDERIVATIVE_H
 #define TUDAT_BODYMASSSTATEDERIVATIVE_H
 
+#include <iostream>
 #include <vector>
 #include <map>
 #include <string>
 
 #include <memory>
-#include <functional>
 
 #include "tudat/astro/basic_astro/massRateModel.h"
 #include "tudat/astro/propagators/singleStateTypeDerivative.h"

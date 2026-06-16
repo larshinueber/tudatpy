@@ -16,8 +16,8 @@
 
 #include <cmath>
 
+#include "tudat/basics/basicTypedefs.h"
 #include "tudat/math/basic/mathematicalConstants.h"
-#include "tudat/math/basic/basicMathematicsFunctions.h"
 
 #include "tudat/astro/basic_astro/attitudeElementConversions.h"
 #include "tudat/astro/basic_astro/stateVectorIndices.h"

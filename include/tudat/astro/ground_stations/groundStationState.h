@@ -16,6 +16,7 @@
 #include "tudat/astro/basic_astro/bodyShapeModel.h"
 #include "tudat/astro/basic_astro/stateRepresentationConversions.h"
 #include "tudat/astro/basic_astro/timeConversions.h"
+#include "tudat/basics/basicTypedefs.h"
 #include "tudat/math/interpolators/lookupScheme.h"
 #include "tudat/basics/utilities.h"
 

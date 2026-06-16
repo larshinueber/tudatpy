@@ -12,8 +12,6 @@
 #ifndef TUDAT_POLARMOTIONCALCULATOR_H
 #define TUDAT_POLARMOTIONCALCULATOR_H
 
-#include <functional>
-
 #include <Eigen/Core>
 
 #include "tudat/math/interpolators/oneDimensionalInterpolator.h"

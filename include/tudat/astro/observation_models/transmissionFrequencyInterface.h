@@ -11,14 +11,9 @@
 #ifndef TUDAT_TRANSMISSIONFREQUENCYINTERFACE_h
 #define TUDAT_TRANSMISSIONFREQUENCYINTERFACE_h
 
-#include <map>
-
-#include <functional>
-
 #include <Eigen/Geometry>
 
-#include "tudat/astro/basic_astro/physicalConstants.h"
-
+#include "tudat/astro/earth_orientation/terrestrialTimeScaleConverter.h"
 #include "tudat/astro/ground_stations/transmittingFrequencies.h"
 #include "tudat/astro/observation_models/lightTimeSolution.h"
 

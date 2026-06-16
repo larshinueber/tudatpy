@@ -9,7 +9,6 @@
  */
 
 #include "tudat/astro/basic_astro/polyhedronBodyShapeModel.h"
-#include "tudat/astro/gravitation/polyhedronGravityField.h"
 
 namespace tudat
 {

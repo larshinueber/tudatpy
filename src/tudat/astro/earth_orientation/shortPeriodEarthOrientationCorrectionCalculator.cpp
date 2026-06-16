@@ -10,6 +10,8 @@
  */
 
 #include "tudat/astro/earth_orientation/shortPeriodEarthOrientationCorrectionCalculator.h"
+#include "tudat/astro/basic_astro/unitConversions.h"
+#include "tudat/io/basicInputOutput.h"
 
 namespace tudat
 {

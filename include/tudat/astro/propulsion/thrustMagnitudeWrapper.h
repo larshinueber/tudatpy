@@ -11,12 +11,8 @@
 #ifndef TUDAT_THRUSTMAGNITUDEWRAPPER_H
 #define TUDAT_THRUSTMAGNITUDEWRAPPER_H
 
-#include <memory>
 #include <functional>
-#include <iostream>
 
-#include "tudat/math/interpolators/interpolator.h"
-#include "tudat/astro/basic_astro/modifiedEquinoctialElementConversions.h"
 #include "tudat/astro/propulsion/thrustFunctions.h"
 #include "tudat/astro/ephemerides/directionBasedRotationalEphemeris.h"
 

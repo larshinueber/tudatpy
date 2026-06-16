@@ -2,13 +2,10 @@
 #define TUDAT_PANELLED_AERODYNAMIC_COEFFICIENT_INTERFACE_H
 
 #include <vector>
-#include <map>
 
 #include <memory>
 #include <Eigen/Core>
 
-#include "tudat/astro/system_models/selfShadowing.h"
-#include "tudat/astro/system_models/vehicleExteriorPanels.h"
 #include "tudat/astro/aerodynamics/gasSurfaceInteractionModel.h"
 #include "tudat/astro/aerodynamics/aerodynamicCoefficientInterface.h"
 

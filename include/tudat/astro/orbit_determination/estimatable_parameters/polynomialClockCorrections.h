@@ -1,6 +1,7 @@
 #ifndef POLYNOMIALCLOCKCORRECTIONS_H
 #define POLYNOMIALCLOCKCORRECTIONS_H
 
+#include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/astro/system_models/timingSystem.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
 

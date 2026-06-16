@@ -11,7 +11,6 @@
 #ifndef TUDAT_MEANMOMENTOFINERTIAPARAMETER_H
 #define TUDAT_MEANMOMENTOFINERTIAPARAMETER_H
 
-#include "tudat/astro/gravitation/gravityFieldModel.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
 
 namespace tudat

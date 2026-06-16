@@ -14,9 +14,8 @@
 
 #include <Eigen/Geometry>
 
-#include "tudat/astro/basic_astro/timeConversions.h"
 #include "tudat/astro/ephemerides/ephemeris.h"
-#include "tudat/math/root_finders/newtonRaphson.h"
+#include "tudat/math/root_finders/rootFinder.h"
 
 namespace tudat
 {

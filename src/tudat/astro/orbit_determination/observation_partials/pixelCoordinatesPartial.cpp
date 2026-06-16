@@ -9,6 +9,7 @@
  */
 
 #include <cmath>
+#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/orbit_determination/observation_partials/pixelCoordinatesPartial.h"
 
 namespace tudat

@@ -9,7 +9,6 @@
  *
  */
 
-#include <cmath>
 #include <stdexcept>
 
 #include "tudat/astro/low_thrust/shape_based/baseFunctionsSphericalShaping.h"

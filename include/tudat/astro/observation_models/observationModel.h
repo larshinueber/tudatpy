@@ -17,16 +17,14 @@
 #include <memory>
 #include <vector>
 
+#include "tudat/astro/ground_stations/transmittingFrequencies.h"
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/astro/observation_models/observableTypes.h"
 #include "tudat/astro/observation_models/observationBias.h"
 #include "tudat/astro/observation_models/lightTimeSolution.h"
 #include "tudat/astro/observation_models/observationAncillarySettings.h"
 #include "tudat/astro/earth_orientation/terrestrialTimeScaleConverter.h"
-#include "tudat/basics/basicTypedefs.h"
-#include "tudat/basics/timeType.h"
 #include "tudat/basics/tudatTypeTraits.h"
-#include "tudat/basics/utilities.h"
 
 namespace tudat
 {

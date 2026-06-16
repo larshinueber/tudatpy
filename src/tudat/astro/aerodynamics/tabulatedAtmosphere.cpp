@@ -10,10 +10,10 @@
  */
 
 #include "tudat/astro/aerodynamics/tabulatedAtmosphere.h"
-
-#include <iostream>
-
 #include "tudat/io/matrixTextFileReader.h"
+#include "tudat/io/tabulatedAtmosphereReader.h"
+#include "tudat/math/interpolators/cubicSplineInterpolator.h"
+#include "tudat/math/interpolators/multiLinearInterpolator.h"
 
 namespace tudat
 {

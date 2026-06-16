@@ -11,6 +11,7 @@
 #ifndef TUDAT_AREATOMASSSCALINGFACTOR_H
 #define TUDAT_AREATOMASSSCALINGFACTOR_H
 
+#include <iostream>
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
 
 namespace tudat

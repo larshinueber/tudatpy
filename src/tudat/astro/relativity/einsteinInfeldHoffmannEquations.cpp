@@ -1,5 +1,3 @@
-#include <iostream>
-#include <iomanip>
 
 #include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/relativity/einsteinInfeldHoffmannEquations.h"

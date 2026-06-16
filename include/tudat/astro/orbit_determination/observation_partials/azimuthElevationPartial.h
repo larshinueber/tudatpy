@@ -14,7 +14,6 @@
 #include "tudat/astro/ground_stations/pointingAnglesCalculator.h"
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/astro/orbit_determination/observation_partials/observationPartial.h"
-#include "tudat/astro/orbit_determination/observation_partials/positionPartials.h"
 
 namespace tudat
 {

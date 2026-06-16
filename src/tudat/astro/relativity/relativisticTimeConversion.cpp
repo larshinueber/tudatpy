@@ -7,10 +7,8 @@
  *    a copy of the license with this file. If not, please or visit:
  *    http://tudat.tudelft.nl/LICENSE.
  */
-#include <iostream>
 #include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/relativity/relativisticTimeConversion.h"
-#include <iomanip>
 
 namespace tudat
 {

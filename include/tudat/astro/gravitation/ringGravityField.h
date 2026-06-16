@@ -16,11 +16,8 @@
 #define TUDAT_RINGGRAVITYFIELD_H
 
 #include <memory>
-#include <cmath>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-#include <vector>
-#include <iostream>
 
 #include "tudat/astro/gravitation/gravityFieldModel.h"
 

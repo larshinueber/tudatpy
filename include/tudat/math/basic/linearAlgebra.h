@@ -14,8 +14,6 @@
 #ifndef TUDAT_LINEAR_ALGEBRA_H
 #define TUDAT_LINEAR_ALGEBRA_H
 
-#include <map>
-
 #include <functional>
 #include <vector>
 

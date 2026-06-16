@@ -16,11 +16,8 @@ extern "C" {
 #include <sofa/sofam.h>
 }
 
-#include <vector>
-
 #include <Eigen/Core>
 
-#include "tudat/interface/sofa/sofaTimeConversions.h"
 #include "tudat/basics/basicTypedefs.h"
 
 namespace tudat

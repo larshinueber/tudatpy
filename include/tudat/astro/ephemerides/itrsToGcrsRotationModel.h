@@ -14,8 +14,6 @@
 
 // #if TUDAT_BUILD_WITH_SOFA_INTERFACE
 
-#include "tudat/math/basic/linearAlgebra.h"
-#include "tudat/math/interpolators/interpolator.h"
 #include "tudat/astro/ephemerides/rotationalEphemeris.h"
 #include "tudat/astro/earth_orientation/earthOrientationCalculator.h"
 #include "tudat/interface/spice/spiceInterface.h"

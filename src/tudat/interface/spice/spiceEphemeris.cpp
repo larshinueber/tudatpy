@@ -12,6 +12,7 @@
 #include <stdexcept>
 
 #include "tudat/astro/basic_astro/physicalConstants.h"
+#include "tudat/interface/spice/spiceInterface.h"
 
 #include "tudat/interface/spice/spiceEphemeris.h"
 

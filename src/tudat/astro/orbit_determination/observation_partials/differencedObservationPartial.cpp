@@ -9,6 +9,7 @@
  */
 
 #include "tudat/astro/orbit_determination/observation_partials/differencedObservationPartial.h"
+#include "tudat/basics/utilities.h"
 namespace tudat
 {
 

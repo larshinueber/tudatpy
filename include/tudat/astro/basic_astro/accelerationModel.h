@@ -13,9 +13,7 @@
 #define TUDAT_ACCELERATION_MODEL_H
 
 #include <vector>
-#include <map>
 #include <unordered_map>
-
 #include <memory>
 
 #include <Eigen/Core>

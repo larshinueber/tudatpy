@@ -15,8 +15,6 @@
 
 #include <Eigen/Core>
 
-#include "tudat/astro/basic_astro/physicalConstants.h"
-
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
 #include "tudat/astro/orbit_determination/observation_partials/observationPartial.h"
 #include "tudat/astro/orbit_determination/observation_partials/oneWayDopplerPartial.h"

@@ -18,14 +18,11 @@
 
 #include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/mission_segments/transferLeg.h"
-#include "tudat/astro/low_thrust/shape_based/baseFunctionsSphericalShaping.h"
 #include "tudat/astro/low_thrust/shape_based/compositeFunctionSphericalShaping.h"
 #include "tudat/math/basic/basicFunction.h"
+#include "tudat/math/interpolators/oneDimensionalInterpolator.h"
 #include "tudat/math/root_finders/createRootFinder.h"
 #include "tudat/math/quadrature/createNumericalQuadrature.h"
-#include "tudat/math/interpolators/createInterpolator.h"
-#include <cmath>
-#include <vector>
 #include <Eigen/Dense>
 #include <map>
 

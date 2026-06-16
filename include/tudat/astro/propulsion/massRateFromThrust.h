@@ -11,9 +11,7 @@
 #ifndef TUDAT_FROMTHRUSTMASSRATEMODEL_H
 #define TUDAT_FROMTHRUSTMASSRATEMODEL_H
 
-#include <map>
 #include <vector>
-#include <functional>
 #include <memory>
 
 #include <Eigen/Core>

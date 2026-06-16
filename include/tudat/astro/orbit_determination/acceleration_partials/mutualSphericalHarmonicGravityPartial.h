@@ -12,7 +12,6 @@
 #define TUDAT_MUTUALSPHERICALHARMONICGRAVITYPARTIAL_H
 
 #include "tudat/astro/gravitation/mutualSphericalHarmonicGravityModel.h"
-#include "tudat/astro/gravitation/sphericalHarmonicsGravityField.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/accelerationPartial.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/sphericalHarmonicAccelerationPartial.h"
 

@@ -28,13 +28,12 @@
  *    C++ transliteration for Tudat.
  */
 
+#include <cmath>
+#include <algorithm>
+
 #include "tudat/astro/basic_astro/neQuick2Model.h"
 #include "tudat/astro/basic_astro/timeConversions.h"
 #include "tudat/math/quadrature/gaussianQuadrature.h"
-
-#include <cmath>
-#include <stdexcept>
-#include <algorithm>
 
 namespace tudat
 {

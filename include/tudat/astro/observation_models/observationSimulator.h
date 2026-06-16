@@ -14,7 +14,6 @@
 #include "tudat/basics/utilities.h"
 #include "tudat/astro/observation_models/observableTypes.h"
 #include "tudat/astro/observation_models/observationModel.h"
-#include "tudat/astro/observation_models/observationViabilityCalculator.h"
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 
 namespace tudat

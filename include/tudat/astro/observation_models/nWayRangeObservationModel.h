@@ -11,7 +11,8 @@
 #ifndef TUDAT_NWAYRANGEOBSERVATIONMODEL_H
 #define TUDAT_NWAYRANGEOBSERVATIONMODEL_H
 
-#include "tudat/astro/observation_models/oneWayRangeObservationModel.h"
+#include "tudat/astro/observation_models/observationModel.h"
+
 namespace tudat
 {
 

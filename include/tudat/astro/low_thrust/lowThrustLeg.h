@@ -17,7 +17,6 @@
 #ifndef TUDAT_LOW_THRUST_LEG_H
 #define TUDAT_LOW_THRUST_LEG_H
 
-#include <iostream>
 #include <vector>
 #include <map>
 

@@ -16,9 +16,8 @@
 
 #include <iostream>
 
-#include "tudat/math/quadrature/trapezoidQuadrature.h"
+#include "tudat/basics/timeType.h"
 #include "tudat/math/interpolators/lookupScheme.h"
-#include "tudat/astro/basic_astro/dateTime.h"
 
 namespace tudat
 {

@@ -13,10 +13,7 @@
 
 #include <boost/math/special_functions/factorials.hpp>
 
-#include "tudat/astro/gravitation/sphericalHarmonicsGravityModel.h"
-
 #include "tudat/astro/gravitation/basicSolidBodyTideGravityFieldVariations.h"
-#include "tudat/astro/orbit_determination/acceleration_partials/sphericalHarmonicPartialFunctions.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/tidalLoveNumber.h"
 
 namespace tudat

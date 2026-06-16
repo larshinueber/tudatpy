@@ -11,16 +11,13 @@
 #ifndef TUDAT_VEHICLEEXTERIORPANELS_H
 #define TUDAT_VEHICLEEXTERIORPANELS_H
 
-#include <map>
-#include <iostream>
-
+#include <Eigen/Geometry>
 #include <memory>
 
 #include "tudat/astro/electromagnetism/reflectionLaw.h"
-#include "tudat/astro/ephemerides/rotationalEphemeris.h"
-#include "tudat/astro/system_models/engineModel.h"
 
 #include "tudat/astro/system_models/panelGeometryUtils.h"
+#include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat
 {

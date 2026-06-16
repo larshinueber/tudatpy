@@ -1,7 +1,6 @@
 #ifndef TUDAT_AERODYNAMIC_ANGLE_ROTATIONAL_EPHEMERIS_H
 #define TUDAT_AERODYNAMIC_ANGLE_ROTATIONAL_EPHEMERIS_H
 
-#include "tudat/astro/aerodynamics/trimOrientation.h"
 #include "tudat/astro/ephemerides/rotationalEphemeris.h"
 #include "tudat/astro/reference_frames/aerodynamicAngleCalculator.h"
 

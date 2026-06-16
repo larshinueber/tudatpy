@@ -13,7 +13,6 @@
 
 #include "tudat/astro/relativity/einsteinInfeldHoffmannEquations.h"
 
-#include "tudat/astro/orbit_determination/acceleration_partials/centralGravityAccelerationPartial.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/accelerationPartial.h"
 
 namespace tudat

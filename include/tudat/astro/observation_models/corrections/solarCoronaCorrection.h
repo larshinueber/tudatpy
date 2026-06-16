@@ -22,6 +22,7 @@
 #ifndef TUDAT_SOLARCORONACORRECTION_H
 #define TUDAT_SOLARCORONACORRECTION_H
 
+#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/observation_models/observableTypes.h"
 #include "tudat/astro/observation_models/corrections/lightTimeCorrection.h"
 

@@ -15,8 +15,6 @@
 #include <Eigen/Core>
 
 #include "tudat/astro/aerodynamics/aerodynamicCoefficientInterface.h"
-#include "tudat/basics/utilityMacros.h"
-#include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat
 {

@@ -9,6 +9,9 @@
  */
 
 #include "tudat/astro/orbit_determination/rotational_dynamics_partials/secondDegreeGravitationalTorquePartial.h"
+#include "tudat/astro/orbit_determination/estimatable_parameters/sphericalHarmonicCosineCoefficients.h"
+#include "tudat/astro/orbit_determination/estimatable_parameters/sphericalHarmonicSineCoefficients.h"
+#include "tudat/astro/orbit_determination/rotational_dynamics_partials/inertiaTensorPartial.h"
 #include "tudat/math/basic/legendrePolynomials.h"
 #include "tudat/math/basic/linearAlgebra.h"
 

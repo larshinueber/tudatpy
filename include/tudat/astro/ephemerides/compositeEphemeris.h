@@ -20,7 +20,6 @@
 #include "tudat/astro/ephemerides/ephemeris.h"
 
 #include "tudat/astro/ephemerides/rotationalEphemeris.h"
-#include "tudat/astro/ephemerides/constantEphemeris.h"
 
 namespace tudat
 {

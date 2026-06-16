@@ -12,7 +12,6 @@
 #define TUDAT_NRLMSISE00_INPUT_FUNCTIONS_H
 
 #include <vector>
-#include <cmath>
 
 #include "tudat/io/solarActivityData.h"
 

@@ -15,7 +15,6 @@
 #define TUDAT_LUMINOSITYMODEL_H
 
 #include <functional>
-#include <memory>
 
 #include "tudat/math/basic/mathematicalConstants.h"
 

@@ -19,14 +19,12 @@
 #include <Eigen/Core>
 
 #include "tudat/astro/basic_astro/physicalConstants.h"
-#include "tudat/math/basic/mathematicalConstants.h"
 
 #include "tudat/io/basicInputOutput.h"
 
 #include "tudat/astro/basic_astro/timeConversions.h"
 #include "tudat/basics/utilities.h"
 #include "tudat/interface/sofa/earthOrientation.h"
-#include "tudat/paths.hpp"
 
 namespace tudat
 {

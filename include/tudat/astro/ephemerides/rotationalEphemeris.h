@@ -21,8 +21,6 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#include "tudat/astro/basic_astro/timeConversions.h"
-#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/math/basic/linearAlgebra.h"
 #include "tudat/basics/basicTypedefs.h"
 #include "tudat/basics/timeType.h"

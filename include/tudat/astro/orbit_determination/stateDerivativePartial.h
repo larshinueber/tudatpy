@@ -11,13 +11,11 @@
 #ifndef TUDAT_STATEDERIVATIVEPARTIAL_H
 #define TUDAT_STATEDERIVATIVEPARTIAL_H
 
+#include <iostream>
 #include <string>
 #include <map>
 #include <Eigen/Core>
 
-#include "tudat/astro/basic_astro/accelerationModel.h"
-
-#include "tudat/astro/basic_astro/accelerationModelTypes.h"
 #include "tudat/astro/propagators/singleStateTypeDerivative.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
 

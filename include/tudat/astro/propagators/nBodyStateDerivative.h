@@ -11,6 +11,7 @@
 #ifndef TUDAT_NBODYSTATEDERIVATIVE_H
 #define TUDAT_NBODYSTATEDERIVATIVE_H
 
+#include <iostream>
 #include <vector>
 #include <map>
 #include <string>

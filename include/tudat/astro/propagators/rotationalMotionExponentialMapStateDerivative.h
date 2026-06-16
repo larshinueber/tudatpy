@@ -15,8 +15,6 @@
 #include "tudat/astro/propagators/rotationalMotionStateDerivative.h"
 #include "tudat/astro/basic_astro/attitudeElementConversions.h"
 
-#include "tudat/basics/utilities.h"
-
 namespace tudat
 {
 

@@ -17,7 +17,7 @@
 #include "tudat/interface/spice/spiceInterface.h"
 
 #include "tudat/astro/ephemerides/rotationalEphemeris.h"
-#include "tudat/math/interpolators/lagrangeInterpolator.h"
+#include "tudat/math/interpolators/cubicSplineInterpolator.h"
 
 namespace tudat
 {

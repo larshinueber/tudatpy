@@ -44,8 +44,6 @@ PolyhedronGravityPartial::PolyhedronGravityPartial(
 
 void PolyhedronGravityPartial::update( const double currentTime )
 {
-    using namespace tudat::coordinate_conversions;
-
     if( !( currentTime_ == currentTime ) )
     {
         // Update acceleration model

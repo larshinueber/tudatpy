@@ -16,7 +16,6 @@
 
 #include "tudat/astro/orbit_determination/acceleration_partials/accelerationPartial.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/empiricalAccelerationCoefficients.h"
-#include "tudat/math/basic/linearAlgebra.h"
 #include "tudat/astro/basic_astro/empiricalAcceleration.h"
 
 namespace tudat

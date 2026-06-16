@@ -16,9 +16,6 @@
 #include <string>
 #include <functional>
 
-#include "tudat/math/basic/linearAlgebra.h"
-#include "tudat/simulation/environment_setup/body.h"
-#include "tudat/astro/relativity/relativisticPotentials.h"
 #include "tudat/astro/relativity/metric.h"
 
 namespace tudat

@@ -10,6 +10,7 @@
  */
 
 #include <iostream>
+#include "tudat/astro/basic_astro/physicalConstants.h"
 
 #include "tudat/astro/electromagnetism/yarkovskyAcceleration.h"
 

@@ -31,7 +31,6 @@
 #include <Eigen/Geometry>
 
 #include "tudat/basics/basicTypedefs.h"
-#include "tudat/io/basicInputOutput.h"
 
 extern "C" {
 #include <cspice/SpiceUsr.h>
@@ -40,7 +39,6 @@ extern "C" {
 }
 
 #include "tudat/astro/ephemerides/tleEphemeris.h"
-#include "tudat/interface/spice/spiceError.h"
 
 namespace tudat
 {

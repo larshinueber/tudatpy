@@ -13,9 +13,9 @@
  *
  */
 
-#include <iostream>
-#include <Eigen/Core>
 #include <cmath>
+
+#include <Eigen/Core>
 
 #include "tudat/astro/basic_astro/missionGeometry.h"
 #include "tudat/math/basic/mathematicalConstants.h"

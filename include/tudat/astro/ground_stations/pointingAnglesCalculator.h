@@ -19,9 +19,7 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-
-#include "tudat/astro/ephemerides/rotationalEphemeris.h"
-#include "tudat/astro/ground_stations/groundStationState.h"
+#include "tudat/basics/basicTypedefs.h"
 
 namespace tudat
 {

@@ -16,10 +16,8 @@
 #include <functional>
 
 #include "tudat/astro/basic_astro/accelerationModel.h"
-#include "tudat/astro/basic_astro/massRateModel.h"
 #include "tudat/astro/propagators/environmentUpdateTypes.h"
 #include "tudat/astro/propulsion/thrustGuidance.h"
-#include "tudat/astro/propulsion/thrustMagnitudeWrapper.h"
 #include "tudat/astro/system_models/engineModel.h"
 #include "tudat/math/interpolators/lookupScheme.h"
 

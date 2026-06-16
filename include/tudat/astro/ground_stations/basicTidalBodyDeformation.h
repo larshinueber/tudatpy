@@ -21,7 +21,6 @@
 #include <functional>
 #include <memory>
 
-#include "tudat/astro/basic_astro/stateRepresentationConversions.h"
 #include "tudat/astro/ground_stations/bodyDeformationModel.h"
 
 namespace tudat

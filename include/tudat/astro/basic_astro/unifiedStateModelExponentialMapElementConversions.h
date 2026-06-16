@@ -16,7 +16,7 @@
 #ifndef TUDAT_UNIFIED_STATE_MODEL_EXPONENTIAL_MAP_ELEMENT_CONVERSIONS_H
 #define TUDAT_UNIFIED_STATE_MODEL_EXPONENTIAL_MAP_ELEMENT_CONVERSIONS_H
 
-#include "tudat/basics/basicTypedefs.h"
+#include <Eigen/Core>
 
 namespace tudat
 {

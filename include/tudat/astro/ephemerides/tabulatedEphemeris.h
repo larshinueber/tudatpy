@@ -16,10 +16,8 @@
 
 #include <Eigen/Core>
 
-#include "tudat/astro/basic_astro/timeConversions.h"
 #include "tudat/astro/ephemerides/ephemeris.h"
 #include "tudat/math/interpolators/createInterpolator.h"
-#include "tudat/math/interpolators/lagrangeInterpolator.h"
 
 namespace tudat
 {

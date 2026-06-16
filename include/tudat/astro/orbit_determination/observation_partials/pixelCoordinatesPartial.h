@@ -13,11 +13,7 @@
 
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/astro/orbit_determination/observation_partials/observationPartial.h"
-#include "tudat/astro/orbit_determination/observation_partials/positionPartials.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
-#include "tudat/astro/orbit_determination/observation_partials/lightTimeCorrectionPartial.h"
 #include "tudat/astro/observation_models/observableTypes.h"
-#include "tudat/astro/system_models/camera.h"
 #include <functional>
 #include <Eigen/Core>
 

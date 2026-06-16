@@ -10,6 +10,7 @@
 
 #include "tudat/astro/ground_stations/pointingAnglesCalculator.h"
 #include "tudat/math/basic/linearAlgebra.h"
+#include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat
 {

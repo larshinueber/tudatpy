@@ -1,6 +1,7 @@
 #include "tudat/astro/ground_stations/poleTideDeformation.h"
 #include "tudat/astro/basic_astro/unitConversions.h"
 #include "tudat/astro/earth_orientation/polarMotionCalculator.h"
+#include "tudat/interface/sofa/sofaTimeConversions.h"
 
 namespace tudat
 {

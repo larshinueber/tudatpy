@@ -19,7 +19,6 @@
  *      clarity, or work with directional cosine matrices.
  */
 
-#include <iostream>
 #include "tudat/math/basic/coordinateConversions.h"
 #include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/math/basic/basicMathematicsFunctions.h"

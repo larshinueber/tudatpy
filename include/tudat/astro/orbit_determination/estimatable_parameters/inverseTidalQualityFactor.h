@@ -11,6 +11,7 @@
 #ifndef TUDAT_INVERSETIDALQUALITYFACTOR_H
 #define TUDAT_INVERSETIDALQUALITYFACTOR_H
 
+#include <iostream>
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
 #include "tudat/astro/gravitation/directTidalDissipationAcceleration.h"
 

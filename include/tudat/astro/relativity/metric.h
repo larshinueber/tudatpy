@@ -15,8 +15,6 @@
 
 #include <Eigen/Core>
 
-#include "tudat/astro/relativity/relativisticPotentials.h"
-
 namespace tudat
 {
 

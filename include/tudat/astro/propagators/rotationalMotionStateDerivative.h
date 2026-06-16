@@ -12,6 +12,7 @@
 #ifndef TUDAT_ROTATIONAL_MOTION_STATE_DERIVATIVE_H
 #define TUDAT_ROTATIONAL_MOTION_STATE_DERIVATIVE_H
 
+#include <iostream>
 #include <vector>
 #include <map>
 #include <string>

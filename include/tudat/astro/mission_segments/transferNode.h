@@ -26,8 +26,6 @@
 #include <Eigen/Core>
 
 #include "tudat/astro/ephemerides/ephemeris.h"
-#include "tudat/astro/mission_segments/escapeAndCapture.h"
-#include "tudat/astro/mission_segments/gravityAssist.h"
 
 namespace tudat
 {

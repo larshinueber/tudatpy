@@ -14,7 +14,6 @@
 
 #include <memory>
 
-#include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/astro/aerodynamics/windModel.h"
 
 namespace tudat

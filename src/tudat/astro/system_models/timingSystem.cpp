@@ -1,12 +1,9 @@
 #include <cmath>
 #include <iostream>
-#include <iomanip>
 #include <string>
 
 #include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/astro/system_models/timingSystem.h"
-#include "tudat/math/basic/linearAlgebra.h"
-#include "tudat/math/interpolators/linearInterpolator.h"
 #include "tudat/math/quadrature/gaussianQuadrature.h"
 #if ( TUDAT_BUILD_WITH_FFTW3 )
 #include "tudat/math/statistics/powerLawNoiseGeneration.h"

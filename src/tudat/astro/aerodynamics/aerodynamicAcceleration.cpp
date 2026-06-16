@@ -10,6 +10,7 @@
  */
 
 #include "tudat/astro/aerodynamics/aerodynamicAcceleration.h"
+#include "tudat/astro/aerodynamics/aerodynamicForce.h"
 
 namespace tudat
 {

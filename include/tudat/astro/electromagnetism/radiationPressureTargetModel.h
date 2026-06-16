@@ -21,7 +21,6 @@
 #include <Eigen/Core>
 
 #include "tudat/math/basic/mathematicalConstants.h"
-#include "tudat/astro/electromagnetism/reflectionLaw.h"
 #include "tudat/astro/system_models/vehicleExteriorPanels.h"
 #include "tudat/astro/system_models/selfShadowing.h"
 

@@ -13,7 +13,6 @@
 #define TUDAT_AERODYNAMIC_TORQUE_H
 
 #include <functional>
-#include <memory>
 
 #include <Eigen/Core>
 

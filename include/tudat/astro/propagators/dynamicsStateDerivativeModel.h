@@ -20,6 +20,7 @@
 #include <Eigen/Core>
 
 #include "tudat/astro/basic_astro/torqueModelTypes.h"
+#include "tudat/astro/orbit_determination/acceleration_partials/accelerationPartial.h"
 #include "tudat/astro/propagators/bodyMassStateDerivative.h"
 #include "tudat/astro/propagators/singleStateTypeDerivative.h"
 #include "tudat/astro/propagators/nBodyStateDerivative.h"

@@ -16,11 +16,8 @@
 #ifndef TUDAT_APPROXIMATE_PLANET_POSITIONS_H
 #define TUDAT_APPROXIMATE_PLANET_POSITIONS_H
 
-#include <memory>
-
 #include "tudat/math/basic/mathematicalConstants.h"
 
-#include "tudat/astro/basic_astro/convertMeanToEccentricAnomalies.h"
 #include "tudat/astro/ephemerides/approximatePlanetPositionsBase.h"
 #include "tudat/basics/basicTypedefs.h"
 

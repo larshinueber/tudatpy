@@ -15,7 +15,6 @@
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/interface/sofa/earthOrientation.h"
 #include "tudat/interface/sofa/sofaTimeConversions.h"
-#include "boost/algorithm/string.hpp"
 
 namespace tudat
 {

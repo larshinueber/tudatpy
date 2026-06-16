@@ -11,13 +11,7 @@
 #ifndef TUDAT_RELATIVISTICLIGHTTIMECORRECTIONS_H
 #define TUDAT_RELATIVISTICLIGHTTIMECORRECTIONS_H
 
-#include "tudat/astro/basic_astro/physicalConstants.h"
-#include <cmath>
-#include <vector>
-
 #include <Eigen/Core>
-
-#include "tudat/basics/basicTypedefs.h"
 
 namespace tudat
 {

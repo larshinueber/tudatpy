@@ -14,7 +14,6 @@
 
 #include <Eigen/Core>
 
-#include <memory>
 #include <functional>
 
 #include <tudat/astro/reference_frames/referenceFrameTransformations.h>

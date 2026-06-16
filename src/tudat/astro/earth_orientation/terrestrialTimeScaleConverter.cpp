@@ -10,7 +10,6 @@
  */
 
 #include "tudat/astro/earth_orientation/terrestrialTimeScaleConverter.h"
-#include "tudat/interface/sofa/sofaTimeConversions.h"
 #include "tudat/math/interpolators/jumpDataLinearInterpolator.h"
 
 namespace tudat

@@ -13,7 +13,7 @@
 
 #include "tudat/astro/electromagnetism/radiationPressureAcceleration.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/accelerationPartial.h"
-#include "tudat/astro/orbit_determination/acceleration_partials/radiationPressureAccelerationPartial.h"
+#include "tudat/astro/orbit_determination/estimatable_parameters/radiationPressureCoefficient.h"
 
 namespace tudat
 {

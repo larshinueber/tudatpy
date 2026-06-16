@@ -1,3 +1,7 @@
+#include <Eigen/Geometry>
+#include "tudat/astro/mission_segments/escapeAndCapture.h"
+#include "tudat/astro/mission_segments/gravityAssist.h"
+
 #include "tudat/astro/mission_segments/transferNode.h"
 
 namespace tudat

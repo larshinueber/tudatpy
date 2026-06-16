@@ -19,7 +19,7 @@
 #include "tudat/astro/basic_astro/dateTime.h"
 #include "tudat/astro/earth_orientation/shortPeriodEarthOrientationCorrectionCalculator.h"
 #include "tudat/astro/earth_orientation/eopReader.h"
-#include "tudat/basics/utilities.h"
+#include "tudat/interface/sofa/sofaTimeConversions.h"
 
 namespace tudat
 {

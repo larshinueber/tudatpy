@@ -21,8 +21,6 @@
 #include "tudat/astro/aerodynamics/aerodynamicUtilities.h"
 #include "tudat/astro/aerodynamics/equilibriumWallTemperature.h"
 
-#include <memory>
-
 namespace tudat
 {
 namespace aerodynamics

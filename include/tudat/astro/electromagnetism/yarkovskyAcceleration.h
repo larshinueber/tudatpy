@@ -18,7 +18,6 @@
 
 #include <functional>
 #include "tudat/astro/basic_astro/accelerationModel.h"
-#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/basics/basicTypedefs.h"
 
 namespace tudat

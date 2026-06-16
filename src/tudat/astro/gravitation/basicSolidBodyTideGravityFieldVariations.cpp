@@ -9,6 +9,7 @@
  */
 
 #include "tudat/astro/gravitation/basicSolidBodyTideGravityFieldVariations.h"
+#include "tudat/math/basic/coordinateConversions.h"
 #include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/math/basic/legendrePolynomials.h"
 

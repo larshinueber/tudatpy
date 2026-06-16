@@ -11,8 +11,8 @@
 #include "tudat/astro/electromagnetism/reflectionLaw.h"
 
 #include <Eigen/Core>
+#include <iostream>
 
-#include "tudat/math/basic/linearAlgebra.h"
 #include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat

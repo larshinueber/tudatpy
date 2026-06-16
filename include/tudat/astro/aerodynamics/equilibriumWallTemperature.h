@@ -13,9 +13,8 @@
 
 #include <functional>
 
-#include "tudat/math/basic/basicFunction.h"
-#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/electromagnetism/basicElectroMagnetism.h"
+#include "tudat/math/basic/function.h"
 
 namespace tudat
 {

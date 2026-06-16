@@ -12,11 +12,8 @@
 #define TUDAT_OBSERVATIONBIAS_H
 
 #include <vector>
-#include <iostream>
 
 #include <memory>
-
-#include <functional>
 
 #include <Eigen/Core>
 
@@ -26,7 +23,6 @@
 #include "tudat/astro/earth_orientation/terrestrialTimeScaleConverter.h"
 #include "tudat/astro/ground_stations/groundStationState.h"
 #include "tudat/astro/observation_models/linkTypeDefs.h"
-#include "tudat/astro/observation_models/observableTypes.h"
 #include "tudat/astro/system_models/timingSystem.h"
 #include "tudat/math/interpolators/lookupScheme.h"
 

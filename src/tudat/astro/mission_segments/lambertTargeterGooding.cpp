@@ -12,6 +12,7 @@
 #include <Eigen/Geometry>
 
 #include "tudat/astro/mission_segments/lambertRoutines.h"
+#include "tudat/math/root_finders/newtonRaphson.h"
 #include "tudat/astro/mission_segments/lambertTargeterGooding.h"
 
 //! Tudat library namespace.

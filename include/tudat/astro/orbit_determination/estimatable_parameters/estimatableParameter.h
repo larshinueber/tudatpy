@@ -11,14 +11,12 @@
 #ifndef TUDAT_ESTIMATABLEPARAMETERS_H
 #define TUDAT_ESTIMATABLEPARAMETERS_H
 
-#include <iostream>
 #include <vector>
 #include <string>
 #include <vector>
 #include <map>
 
 #include <functional>
-#include <type_traits>
 #include <memory>
 #include <stdexcept>
 #include <Eigen/Geometry>
@@ -26,7 +24,7 @@
 #include "tudat/astro/basic_astro/accelerationModelTypes.h"
 #include "tudat/astro/basic_astro/accelerationModel.h"
 #include "tudat/astro/propagators/environmentUpdateTypes.h"
-#include "tudat/astro/propagators/singleStateTypeDerivative.h"
+#include "tudat/basics/basicTypedefs.h"
 
 namespace tudat
 {

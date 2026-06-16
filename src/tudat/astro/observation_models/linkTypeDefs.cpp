@@ -8,8 +8,6 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include <iostream>
-
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 
 namespace tudat

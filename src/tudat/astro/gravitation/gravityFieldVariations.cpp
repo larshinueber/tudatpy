@@ -11,7 +11,6 @@
 #include "tudat/basics/utilities.h"
 #include "tudat/astro/gravitation/gravityFieldVariations.h"
 #include "tudat/astro/gravitation/basicSolidBodyTideGravityFieldVariations.h"
-#include "tudat/math/interpolators/linearInterpolator.h"
 
 namespace tudat
 {

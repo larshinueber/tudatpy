@@ -10,7 +10,6 @@
  */
 
 #include "tudat/astro/relativity/solarSystemMetric.h"
-#include "tudat/simulation/environment_setup/body.h"
 
 namespace tudat
 {

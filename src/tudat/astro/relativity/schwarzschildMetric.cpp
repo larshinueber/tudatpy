@@ -9,8 +9,9 @@
  *
  */
 
-#include "tudat/simulation/environment_setup/body.h"
 #include "tudat/astro/relativity/schwarzschildMetric.h"
+#include "tudat/astro/basic_astro/physicalConstants.h"
+#include "tudat/astro/relativity/relativisticPotentials.h"
 namespace tudat
 {
 

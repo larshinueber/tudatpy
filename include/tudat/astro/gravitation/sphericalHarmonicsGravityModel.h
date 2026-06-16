@@ -14,7 +14,6 @@
 #ifndef TUDAT_SPHERICAL_HARMONICS_GRAVITY_MODEL_H
 #define TUDAT_SPHERICAL_HARMONICS_GRAVITY_MODEL_H
 
-#include <iostream>
 #include <functional>
 #include <memory>
 

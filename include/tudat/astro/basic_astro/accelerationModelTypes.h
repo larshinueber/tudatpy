@@ -18,8 +18,6 @@
 
 #include <Eigen/Core>
 
-#include "tudat/basics/basicTypedefs.h"
-
 namespace tudat
 {
 

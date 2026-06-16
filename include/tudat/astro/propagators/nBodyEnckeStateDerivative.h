@@ -15,7 +15,6 @@
 #include "tudat/astro/basic_astro/keplerPropagator.h"
 
 #include "tudat/math/root_finders/rootFinder.h"
-#include "tudat/astro/gravitation/centralGravityModel.h"
 
 #include "tudat/astro/basic_astro/accelerationModelTypes.h"
 #include "tudat/astro/propagators/nBodyStateDerivative.h"

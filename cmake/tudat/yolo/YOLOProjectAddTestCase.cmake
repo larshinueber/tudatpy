@@ -72,7 +72,7 @@ function("TUDAT_ADD_TEST_CASE" arg1)
         # one instead.
         target_include_directories("${target_name}" PUBLIC
                 $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>  # Configured test headers
-                $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/tests/include>  # Test specific headers
+                $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/tests/test_tudat/include>  # Test specific headers
                 $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>        # Project headers
                 $<INSTALL_INTERFACE:include>
                 )                           # Installed headers

@@ -11,11 +11,7 @@
 #ifndef TUDAT_TIMETYPE_H
 #define TUDAT_TIMETYPE_H
 
-#include <sstream>
-#include <iomanip>
-
 #include <cmath>
-#include <algorithm>
 
 #include <Eigen/Core>
 

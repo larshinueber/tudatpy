@@ -11,7 +11,6 @@
 #include <cmath>
 
 #include "tudat/astro/basic_astro/timeConversions.h"
-#include "tudat/math/basic/coordinateConversions.h"
 #include "tudat/interface/sofa/sofaTimeConversions.h"
 
 namespace tudat

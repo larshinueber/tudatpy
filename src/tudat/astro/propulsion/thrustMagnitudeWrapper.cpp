@@ -9,6 +9,8 @@
  */
 
 #include "tudat/astro/propulsion/thrustMagnitudeWrapper.h"
+#include "tudat/astro/basic_astro/modifiedEquinoctialElementConversions.h"
+#include "tudat/astro/basic_astro/stateVectorIndices.h"
 
 namespace tudat
 {

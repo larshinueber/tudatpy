@@ -10,7 +10,6 @@
 #ifndef TUDAT_ENTRYGUIDANCE_H
 #define TUDAT_ENTRYGUIDANCE_H
 
-#include "tudat/astro/reference_frames/aerodynamicAngleCalculator.h"
 #include "tudat/basics/deprecationWarnings.h"
 
 namespace tudat

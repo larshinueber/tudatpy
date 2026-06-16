@@ -28,8 +28,6 @@
 #include "tudat/astro/mission_segments/transferLeg.h"
 #include "tudat/astro/mission_segments/transferNode.h"
 
-#include "tudat/astro/reference_frames/referenceFrameTransformations.h"
-
 namespace tudat
 {
 

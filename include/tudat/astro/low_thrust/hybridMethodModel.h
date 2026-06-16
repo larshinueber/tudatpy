@@ -12,7 +12,6 @@
 #ifndef TUDAT_HYBRID_METHOD_MODEL_H
 #define TUDAT_HYBRID_METHOD_MODEL_H
 
-#include <cmath>
 #include <vector>
 #include <Eigen/Dense>
 

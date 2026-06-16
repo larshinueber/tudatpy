@@ -1,11 +1,9 @@
-#include "tudat/astro/aerodynamics/comaModel.h"
-#include "tudat/astro/basic_astro/physicalConstants.h"
-#include "tudat/basics/utilityMacros.h"
 #include <stdexcept>
 #include <cmath>
 #include <utility>
 
-#include "tudat/simulation/estimation_setup/observationSimulationSettings.h"
+#include "tudat/astro/aerodynamics/comaModel.h"
+#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/math/interpolators/multiLinearInterpolator.h"
 
 namespace tudat

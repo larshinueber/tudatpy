@@ -26,7 +26,6 @@
 #define TUDAT_TABULATEDMEDIACORRECTION_H
 
 #include <array>
-#include <cmath>
 #include <vector>
 
 #include "tudat/math/interpolators/lookupScheme.h"

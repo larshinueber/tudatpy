@@ -11,9 +11,8 @@
 #ifndef TUDAT_CUSTOMGRAVITYFIELDVARIATIONS_H
 #define TUDAT_CUSTOMGRAVITYFIELDVARIATIONS_H
 
-#include "tudat/math/interpolators/oneDimensionalInterpolator.h"
+#include <functional>
 #include "tudat/astro/gravitation/gravityFieldVariations.h"
-#include "tudat/math/interpolators/createInterpolator.h"
 
 namespace tudat
 {
@@ -25,7 +24,7 @@ namespace gravitation
 class CustomGravityFieldVariations : public GravityFieldVariations
 {
 public:
-    CustomGravityFieldVariations( std::function< double, std::pair< Eigen::MatrixXd >( const double ) > customCorrectionFunction,
+    CustomGravityFieldVariations( std::function< std::pair< Eigen::MatrixXd, Eigen::MatrixXd >( const double ) > customCorrectionFunction,
                                   const int minimumDegree,
                                   const int minimumOrder ):
         GravityFieldVariations( minimumDegree, minimumOrder, -1, -1 ), customCorrectionFunction_( customCorrectionFunction )
@@ -47,7 +46,7 @@ public:
     }
 
 private:
-    std::function< double, std::pair< Eigen::MatrixXd, Eigen::MatrixXd >( const double ) > customCorrectionFunction_;
+    std::function< std::pair< Eigen::MatrixXd, Eigen::MatrixXd >( const double ) > customCorrectionFunction_;
 };
 
 }  // namespace gravitation

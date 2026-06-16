@@ -10,7 +10,6 @@
 
 #include <vector>
 #include <map>
-#include <tuple>
 
 #include "tudat/astro/ephemerides/fullPlanetaryRotationModel.h"
 

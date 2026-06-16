@@ -8,8 +8,6 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include <map>
-#include <iostream>
 #include <algorithm>
 #include <memory>
 

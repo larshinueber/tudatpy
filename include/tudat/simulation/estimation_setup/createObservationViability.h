@@ -12,6 +12,7 @@
 #define TUDAT_CREATEOBSERVATIONVIABILITY_H
 
 #include "tudat/astro/observation_models/observationSimulator.h"
+#include "tudat/astro/observation_models/observationViabilityCalculator.h"
 #include "tudat/simulation/environment_setup/body.h"
 #include "tudat/simulation/estimation_setup/createObservationModelSettings.h"
 
