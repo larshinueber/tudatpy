@@ -16,20 +16,11 @@
 #include <memory>
 #include <vector>
 
-#include "tudat/astro/observation_models/angularPositionObservationModel.h"
 #include "tudat/astro/observation_models/corrections/lightTimeCorrection.h"
 #include "tudat/astro/observation_models/observableTypes.h"
 #include "tudat/astro/observation_models/observationModel.h"
-#include "tudat/astro/observation_models/oneWayDopplerObservationModel.h"
-#include "tudat/astro/observation_models/oneWayRangeObservationModel.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/initialTranslationalState.h"
-#include "tudat/astro/orbit_determination/observation_partials/angularPositionPartial.h"
 #include "tudat/astro/orbit_determination/observation_partials/directObservationPartial.h"
-#include "tudat/astro/orbit_determination/observation_partials/oneWayDopplerPartial.h"
-#include "tudat/astro/orbit_determination/observation_partials/oneWayRangePartial.h"
-#include "tudat/math/interpolators/interpolator.h"
 #include "tudat/simulation/estimation_setup/createCartesianStatePartials.h"
-#include "tudat/simulation/estimation_setup/createClockPartials.h"
 #include "tudat/simulation/estimation_setup/createLightTimeCorrectionPartials.h"
 #include "tudat/simulation/estimation_setup/createObservationBiasPartial.h"
 #include "tudat/simulation/estimation_setup/createObservationModelFactory.h"

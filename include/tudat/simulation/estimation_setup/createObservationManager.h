@@ -20,7 +20,6 @@
 #include "tudat/astro/orbit_determination/estimatable_parameters/observationBiasParameter.h"
 #include "tudat/simulation/estimation_setup/createObservationModelFactory.h"
 #include "tudat/simulation/estimation_setup/createObservationPartials.h"
-#include "tudat/astro/observation_models/oneWayRangeObservationModel.h"
 #include "tudat/simulation/propagation_setup/dependentVariablesInterface.h"
 
 namespace tudat

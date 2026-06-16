@@ -18,6 +18,8 @@
 #include <utility>
 #include <vector>
 
+#include "tudat/astro/ephemerides/ephemeris.h"
+#include "tudat/astro/ephemerides/rotationalEphemeris.h"
 #include "tudat/astro/ground_stations/bodyDeformationModel.h"
 #include "tudat/astro/ground_stations/iers2010SolidTidalBodyDeformation.h"
 #include "tudat/astro/gravitation/gravityFieldVariations.h"

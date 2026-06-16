@@ -15,7 +15,10 @@
 
 #include "tudat/astro/orbit_determination/podInputOutputTypes.h"
 #include "tudat/math/basic/leastSquaresEstimation.h"
-#include "tudat/simulation/estimation_setup/orbitDeterminationManager.h"
+
+// Note: orbitDeterminationManager.h is NOT included here to avoid circular dependency.
+// This file is only included at the end of orbitDeterminationManager.h and relies on
+// the OrbitDeterminationManager class being fully defined at that point.
 
 namespace tudat
 {

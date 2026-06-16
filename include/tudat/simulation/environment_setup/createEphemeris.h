@@ -16,7 +16,6 @@
 
 #include <memory>
 
-#include "tudat/io/matrixTextFileReader.h"
 #include "tudat/astro/basic_astro/orbitalElementConversions.h"
 #include "tudat/astro/ephemerides/ephemeris.h"
 #include "tudat/astro/ephemerides/tabulatedEphemeris.h"

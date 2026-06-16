@@ -11,7 +11,6 @@
 #ifndef TUDAT_CREATELIGHTTIMECALCULATOR_H
 #define TUDAT_CREATELIGHTTIMECALCULATOR_H
 
-#include "tudat/astro/ephemerides/compositeEphemeris.h"
 #include "tudat/astro/observation_models/lightTimeSolution.h"
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/simulation/estimation_setup/createLightTimeCorrection.h"

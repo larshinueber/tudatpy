@@ -11,7 +11,9 @@
 #ifndef TUDAT_MULTIARCVARIATIONALEQUATIONSSOLVER_H
 #define TUDAT_MULTIARCVARIATIONALEQUATIONSSOLVER_H
 
+#include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
 #include "tudat/simulation/estimation_setup/variationalEquationsSolverBase.h"
+#include "tudat/simulation/estimation_setup/createStateDerivativePartials.h"
 #include "tudat/simulation/propagation_setup/multiArcDynamicsSimulator.h"
 
 namespace tudat

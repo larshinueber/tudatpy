@@ -12,16 +12,13 @@
  *          Radiometer Experiment".Journal of Geophysical Research: Planets 117, no.E12 (2012).
  */
 
-#include "tudat/simulation/environment_setup/createRadiationSourceModel.h"
-
 #include <memory>
 #include <set>
 #include <string>
 
-#include "tudat/interface/spice/spiceInterface.h"
-#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/simulation/environment_setup/createOccultationModel.h"
 #include "tudat/simulation/environment_setup/createSurfacePropertyDistribution.h"
+#include "tudat/simulation/environment_setup/createRadiationSourceModel.h"
 #include "tudat/simulation/environment_setup/body.h"
 #include "tudat/astro/electromagnetism/occultationModel.h"
 

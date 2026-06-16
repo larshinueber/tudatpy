@@ -11,19 +11,16 @@
 #ifndef TUDAT_CREATEGRAVITYFIELD_H
 #define TUDAT_CREATEGRAVITYFIELD_H
 
-#include <map>
 #include <vector>
 #include <string>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <memory>
 
+#include "tudat/astro/basic_astro/polyhedronFuntions.h"
 #include "tudat/simulation/environment_setup/createGravityFieldVariations.h"
 #include "tudat/astro/gravitation/gravityFieldModel.h"
 #include "tudat/astro/gravitation/sphericalHarmonicsGravityField.h"
-#include "tudat/astro/gravitation/gravityFieldVariations.h"
-#include "tudat/astro/gravitation/polyhedronGravityField.h"
-#include "tudat/astro/gravitation/ringGravityField.h"
 
 namespace tudat
 {

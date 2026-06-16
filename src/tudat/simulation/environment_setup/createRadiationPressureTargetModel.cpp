@@ -8,14 +8,13 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include "tudat/simulation/environment_setup/createRadiationPressureTargetModel.h"
-
 #include <map>
 #include <memory>
 #include <vector>
 
 #include "tudat/astro/electromagnetism/radiationPressureTargetModel.h"
 #include "tudat/astro/system_models/vehicleSystems.h"
+#include "tudat/simulation/environment_setup/createRadiationPressureTargetModel.h"
 #include "tudat/simulation/environment_setup/body.h"
 
 namespace tudat

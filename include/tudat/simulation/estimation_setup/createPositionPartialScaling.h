@@ -14,10 +14,9 @@
 #include <iostream>
 #include <memory>
 #include <stdexcept>
-#include <vector>
 #include <map>
 
-#include "tudat/astro/orbit_determination/observation_partials/directObservationPartial.h"
+#include "tudat/astro/observation_models/angularPositionObservationModel.h"
 #include "tudat/astro/orbit_determination/observation_partials/angularPositionPartial.h"
 #include "tudat/astro/orbit_determination/observation_partials/pixelCoordinatesPartial.h"
 #include "tudat/astro/orbit_determination/observation_partials/azimuthElevationPartial.h"
@@ -28,9 +27,11 @@
 #include "tudat/astro/orbit_determination/observation_partials/differencedObservationPartial.h"
 #include "tudat/astro/observation_models/oneWayDopplerMeasuredFrequencyObservationModel.h"
 #include "tudat/astro/basic_astro/timeConversions.h"
+#include "tudat/astro/orbit_determination/observation_partials/positionPartials.h"
 #include "tudat/simulation/environment_setup/body.h"
 
 #include "tudat/simulation/environment_setup/body.h"
+#include "tudat/simulation/environment_setup/createGroundStations.h"
 
 namespace tudat
 {

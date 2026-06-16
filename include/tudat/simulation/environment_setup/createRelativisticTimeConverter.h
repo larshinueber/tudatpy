@@ -17,14 +17,9 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
-#include <iostream>
 
 #include "tudat/simulation/environment_setup/body.h"
 #include "tudat/simulation/propagation_setup/propagationSettings.h"
-#include "tudat/astro/propagators/relativisticTimeStateDerivative.h"
-#include "tudat/simulation/propagation_setup/setNumericallyIntegratedStates.h"
-#include "tudat/simulation/estimation_setup/createObservationManager.h"
-#include "tudat/astro/relativity/relativisticTimeConversion.h"
 
 namespace tudat
 {

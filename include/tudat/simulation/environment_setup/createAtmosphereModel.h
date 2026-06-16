@@ -13,11 +13,7 @@
 
 #include <string>
 #include <map>
-#include <unordered_map>
-#include <iostream>
-#include <limits>
 #include <algorithm>
-#include <sstream>
 
 #include <memory>
 #include <boost/date_time/posix_time/time_period.hpp>

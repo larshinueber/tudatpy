@@ -11,9 +11,6 @@
 #ifndef TUDAT_CREATEBODIESFACTORY_H
 #define TUDAT_CREATEBODIESFACTORY_H
 
-#include "tudat/astro/ephemerides/ephemeris.h"
-#include "tudat/astro/basic_astro/accelerationModel.h"
-
 #include "tudat/simulation/environment_setup/body.h"
 #include "tudat/simulation/environment_setup/createBodiesSettings.h"
 #include "tudat/simulation/environment_setup/createAerodynamicCoefficientInterface.h"

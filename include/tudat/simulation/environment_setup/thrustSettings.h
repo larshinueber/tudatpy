@@ -22,11 +22,8 @@
 
 #include <functional>
 
-#include "tudat/astro/propulsion/thrustGuidance.h"
 #include "tudat/astro/propulsion/thrustMagnitudeWrapper.h"
-#include "tudat/astro/propagators/environmentUpdateTypes.h"
 #include "tudat/math/interpolators/interpolator.h"
-#include "tudat/astro/low_thrust/lowThrustLeg.h"
 #include "tudat/simulation/environment_setup/body.h"
 #include "tudat/simulation/environment_setup/createFlightConditions.h"
 #include "tudat/basics/deprecationWarnings.h"

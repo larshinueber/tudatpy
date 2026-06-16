@@ -13,7 +13,6 @@
 
 #include "tudat/astro/orbit_determination/stateDerivativePartial.h"
 #include "tudat/astro/orbit_determination/massDerivativePartial.h"
-#include "tudat/simulation/propagation_setup/propagationSettings.h"
 #include "tudat/astro/propagators/singleStateTypeDerivative.h"
 #include "tudat/astro/propagators/nBodyStateDerivative.h"
 #include "tudat/astro/propagators/rotationalMotionStateDerivative.h"

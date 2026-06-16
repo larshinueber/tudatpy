@@ -12,14 +12,11 @@
 #define TUDAT_SINGLE_OBSERVATION_SET_H
 
 #include <Eigen/Core>
-#include <functional>
 #include <memory>
 #include <vector>
 
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/astro/observation_models/observableTypes.h"
-#include "tudat/basics/basicTypedefs.h"
-#include "tudat/basics/timeType.h"
 #include "tudat/basics/tudatTypeTraits.h"
 #include "tudat/basics/utilities.h"
 #include "tudat/simulation/estimation_setup/observationOutput.h"

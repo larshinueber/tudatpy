@@ -14,14 +14,8 @@
 #include <vector>
 
 #include <memory>
-#include <functional>
 
 #include <Eigen/Core>
-
-#include "tudat/basics/basicTypedefs.h"
-#include "tudat/basics/timeType.h"
-#include "tudat/basics/tudatTypeTraits.h"
-#include "tudat/basics/utilities.h"
 
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/astro/observation_models/observableTypes.h"

@@ -9,11 +9,11 @@
 #include <Eigen/Core>
 
 #include "tudat/astro/observation_models/linkTypeDefs.h"
-#include "tudat/astro/observation_models/observationModel.h"
+#include "tudat/astro/observation_models/observationBias.h"
 #include "tudat/astro/observation_models/observableTypes.h"
 #include "tudat/astro/orbit_determination/observation_partials/clockParameterPartials.h"
 #include "tudat/astro/orbit_determination/observation_partials/observationPartial.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters//polynomialClockCorrections.h"
+#include "tudat/astro/orbit_determination/estimatable_parameters/polynomialClockCorrections.h"
 
 namespace tudat
 {

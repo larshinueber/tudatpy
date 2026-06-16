@@ -11,8 +11,6 @@
 #ifndef TUDAT_DETERMINEPARAMETERPOSTFITINFLUENCE_H
 #define TUDAT_DETERMINEPARAMETERPOSTFITINFLUENCE_H
 
-#include <algorithm>
-
 #include "tudat/simulation/estimation_setup/simulateObservations.h"
 #include "tudat/simulation/estimation_setup/orbitDeterminationManager.h"
 #include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"

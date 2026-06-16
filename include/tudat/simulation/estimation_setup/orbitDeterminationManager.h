@@ -330,9 +330,9 @@ extern template class OrbitDeterminationManager< double, double >;
 
 }  // namespace tudat
 
-#include "tudat/simulation/estimation_setup/orbitDeterminationManagerConstructionImplementation.h"
-#include "tudat/simulation/estimation_setup/orbitDeterminationManagerUtilitiesImplementation.h"
-#include "tudat/simulation/estimation_setup/orbitDeterminationManagerCovarianceImplementation.h"
-#include "tudat/simulation/estimation_setup/orbitDeterminationManagerEstimationImplementation.h"
+#include "tudat/simulation/estimation_setup/orbitDeterminationManagerConstructionImplementation.h"  // IWYU pragma: keep
+#include "tudat/simulation/estimation_setup/orbitDeterminationManagerUtilitiesImplementation.h"     // IWYU pragma: keep
+#include "tudat/simulation/estimation_setup/orbitDeterminationManagerCovarianceImplementation.h"    // IWYU pragma: keep
+#include "tudat/simulation/estimation_setup/orbitDeterminationManagerEstimationImplementation.h"    // IWYU pragma: keep
 
 #endif  // TUDAT_ORBITDETERMINATIONMANAGER_H

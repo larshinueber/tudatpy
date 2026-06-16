@@ -16,10 +16,8 @@
 #include <functional>
 #include <memory>
 #include <string>
-#include <vector>
 
 #include "tudat/astro/aerodynamics/aerodynamicGuidance.h"
-#include "tudat/math/interpolators/multiLinearInterpolator.h"
 #include "tudat/astro/aerodynamics/flightConditions.h"
 #include "tudat/simulation/environment_setup/createAerodynamicCoefficientInterface.h"
 

@@ -11,8 +11,8 @@
 #include "tudat/astro/ephemerides/simpleRotationalEphemeris.h"
 #include "tudat/astro/ephemerides/iauRotationModel.h"
 #include "tudat/astro/ground_stations/groundStation.h"
+#include "tudat/astro/ground_stations/groundStationState.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/iauRotationModelParameters.h"
-#include "tudat/astro/system_models/vehicleSystems.h"
 #include "tudat/simulation/estimation_setup/createCartesianStatePartials.h"
 
 namespace tudat

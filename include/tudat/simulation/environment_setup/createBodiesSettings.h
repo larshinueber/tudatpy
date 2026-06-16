@@ -17,9 +17,7 @@
 #include <string>
 #include <vector>
 
-#include "tudat/astro/ephemerides/ephemeris.h"
 #include "tudat/astro/relativity/metric.h"
-#include "tudat/basics/basicTypedefs.h"
 #include "tudat/simulation/environment_setup/createAerodynamicCoefficientInterface.h"
 #include "tudat/simulation/environment_setup/createAtmosphereModel.h"
 #include "tudat/simulation/environment_setup/createBodyDeformationModel.h"

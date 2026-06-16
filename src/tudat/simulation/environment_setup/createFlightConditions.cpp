@@ -8,12 +8,9 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include <map>
 #include <string>
 #include <iostream>
 
-#include "tudat/astro/aerodynamics/aerodynamicCoefficientInterface.h"
-#include "tudat/astro/aerodynamics/customAerodynamicCoefficientInterface.h"
 #include "tudat/astro/ephemerides/aeordynamicAngleRotationalEphemeris.h"
 #include "tudat/astro/system_models/vehicleSystems.h"
 #include "tudat/simulation/environment_setup/body.h"

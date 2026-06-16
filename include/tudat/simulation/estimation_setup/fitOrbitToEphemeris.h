@@ -12,20 +12,11 @@
 #define TUDAT_FITORBITTOEPHEMERIS_H
 
 #include <vector>
-#include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
-
 #include <memory>
-#include <functional>
 
 #include <Eigen/Core>
 
-#include "tudat/basics/basicTypedefs.h"
-#include "tudat/basics/timeType.h"
-#include "tudat/basics/tudatTypeTraits.h"
-#include "tudat/basics/utilities.h"
-
-#include "tudat/astro/observation_models/linkTypeDefs.h"
-#include "tudat/astro/observation_models/observableTypes.h"
+#include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
 #include "tudat/simulation/estimation_setup/orbitDeterminationManager.h"
 #include "tudat/simulation/estimation_setup/simulatePseudoObservations.h"
 

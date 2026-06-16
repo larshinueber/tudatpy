@@ -11,7 +11,6 @@
 #ifndef TUDAT_CREATEOBSERVATIONMODELSETTINGS_H
 #define TUDAT_CREATEOBSERVATIONMODELSETTINGS_H
 
-#include <functional>
 #include <map>
 #include <memory>
 #include <stdexcept>

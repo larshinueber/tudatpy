@@ -18,10 +18,12 @@
 
 #include <Eigen/Core>
 
+#include "tudat/astro/orbit_determination/estimatable_parameters/observationBiasParameter.h"
 #include "tudat/simulation/environment_setup/body.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/initialTranslationalState.h"
+#include "tudat/astro/observation_models/observationBias.h"
 #include "tudat/astro/orbit_determination/observation_partials/observationPartial.h"
 #include "tudat/astro/orbit_determination/observation_partials/observationBiasPartial.h"
+#include "tudat/simulation/estimation_setup/createClockPartials.h"
 
 namespace tudat
 {

@@ -19,7 +19,6 @@
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/astro/observation_models/observableTypes.h"
 #include "tudat/astro/orbit_determination/observation_partials/nWayRangePartial.h"
-#include "tudat/math/interpolators/interpolator.h"
 #include "tudat/simulation/estimation_setup/createDirectObservationPartials.h"
 #include "tudat/simulation/estimation_setup/createObservationBiasPartial.h"
 

@@ -11,6 +11,7 @@
 #include "tudat/simulation/estimation_setup/createAccelerationPartials.h"
 #include "tudat/astro/gravitation/basicSolidBodyTideGravityFieldVariations.h"
 #include "tudat/astro/gravitation/gravityFieldVariations.h"
+#include "tudat/astro/orbit_determination/acceleration_partials/einsteinInfeldHoffmannPartials.h"
 
 namespace tudat
 {

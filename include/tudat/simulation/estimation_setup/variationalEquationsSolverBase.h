@@ -11,18 +11,9 @@
 #ifndef TUDAT_VARIATIONALEQUATIONSSOLVER_BASE_H
 #define TUDAT_VARIATIONALEQUATIONSSOLVER_BASE_H
 
-#include "tudat/basics/utilities.h"
-
-#include "tudat/astro/basic_astro/accelerationModel.h"
-#include "tudat/math/interpolators/interpolator.h"
-#include "tudat/math/basic/linearAlgebra.h"
-
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
 #include "tudat/astro/propagators/stateTransitionMatrixInterface.h"
 #include "tudat/simulation/propagation_setup/dynamicsSimulatorBase.h"
-#include "tudat/astro/ephemerides/tabulatedEphemeris.h"
-#include "tudat/simulation/estimation_setup/createStateDerivativePartials.h"
-#include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
 
 namespace tudat
 {

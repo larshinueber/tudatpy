@@ -21,8 +21,7 @@
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameterSet.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/initialRotationalState.h"
-#include "tudat/astro/orbit_determination/observation_partials/rotationMatrixPartial.h"
-#include "tudat/astro/orbit_determination/observation_partials/positionPartials.h"
+#include "tudat/astro/orbit_determination/observation_partials/observationPartial.h"
 
 namespace tudat
 {

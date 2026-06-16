@@ -13,6 +13,7 @@
 #ifndef TUDAT_PROCESSTRACKINGTXTFILE_H
 #define TUDAT_PROCESSTRACKINGTXTFILE_H
 
+#include "tudat/astro/earth_orientation/terrestrialTimeScaleConverter.h"
 #include "tudat/basics/utilities.h"
 #include "tudat/io/readTrackingTxtFile.h"
 #include "tudat/astro/observation_models/linkTypeDefs.h"

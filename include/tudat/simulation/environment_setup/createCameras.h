@@ -14,9 +14,7 @@
 #include <functional>
 
 #include "tudat/simulation/environment_setup/body.h"
-#include "tudat/astro/ephemerides/customEphemeris.h"
 #include "tudat/astro/system_models/camera.h"
-#include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat

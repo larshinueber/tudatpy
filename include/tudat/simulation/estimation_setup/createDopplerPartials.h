@@ -20,14 +20,9 @@
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/astro/observation_models/observableTypes.h"
 #include "tudat/astro/observation_models/twoWayDopplerObservationModel.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/initialTranslationalState.h"
 #include "tudat/astro/orbit_determination/observation_partials/oneWayDopplerPartial.h"
 #include "tudat/astro/orbit_determination/observation_partials/twoWayDopplerPartial.h"
-#include "tudat/math/interpolators/interpolator.h"
-#include "tudat/simulation/estimation_setup/createCartesianStatePartials.h"
 #include "tudat/simulation/estimation_setup/createDirectObservationPartials.h"
-#include "tudat/simulation/estimation_setup/createLightTimeCalculator.h"
-#include "tudat/simulation/estimation_setup/createLightTimeCorrectionPartials.h"
 #include "tudat/simulation/estimation_setup/createObservationBiasPartial.h"
 
 namespace tudat

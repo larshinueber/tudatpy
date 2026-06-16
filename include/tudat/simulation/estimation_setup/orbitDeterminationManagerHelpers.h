@@ -14,7 +14,6 @@
 #include <cmath>
 #include <iostream>
 
-#include "tudat/basics/timeType.h"
 #include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/astro/observation_models/observationManager.h"
 #include "tudat/astro/orbit_determination/podInputOutputTypes.h"

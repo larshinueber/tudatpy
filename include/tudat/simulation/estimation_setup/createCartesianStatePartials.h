@@ -11,7 +11,6 @@
 #ifndef TUDAT_CREATEPOSITIONPARTIALS_H
 #define TUDAT_CREATEPOSITIONPARTIALS_H
 
-#include <vector>
 #include <map>
 
 #include <memory>
@@ -21,7 +20,6 @@
 #include "tudat/simulation/environment_setup/body.h"
 #include "tudat/astro/observation_models/linkTypeDefs.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameterSet.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/initialTranslationalState.h"
 #include "tudat/astro/orbit_determination/observation_partials/rotationMatrixPartial.h"
 #include "tudat/astro/orbit_determination/observation_partials/positionPartials.h"
 

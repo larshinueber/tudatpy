@@ -26,7 +26,6 @@
 #include "tudat/astro/orbit_determination/acceleration_partials/aerodynamicAccelerationPartial.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/mutualSphericalHarmonicGravityPartial.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/empiricalAccelerationPartial.h"
-#include "tudat/astro/orbit_determination/acceleration_partials/einsteinInfeldHoffmannPartials.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/directTidalDissipationAccelerationPartial.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/panelledRadiationPressureAccelerationPartial.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/thrustAccelerationPartial.h"

@@ -11,9 +11,6 @@
 #ifndef TUDAT_CREATEESTIMATABLEPARAMETERSINTERFACE_H
 #define TUDAT_CREATEESTIMATABLEPARAMETERSINTERFACE_H
 
-#include <memory>
-#include <vector>
-
 namespace tudat
 {
 

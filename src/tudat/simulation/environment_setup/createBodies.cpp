@@ -8,11 +8,8 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include <iostream>
-#include <cmath>
 #include <memory>
 
-#include "tudat/math/basic/coordinateConversions.h"
 #include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/ephemerides/approximatePlanetPositions.h"
 #include "tudat/math/basic/mathematicalConstants.h"
@@ -24,7 +21,6 @@
 #include "tudat/astro/basic_astro/sphericalBodyShapeModel.h"
 #include "tudat/astro/electromagnetism/radiationSourceModel.h"
 #include "tudat/astro/ephemerides/simpleRotationalEphemeris.h"
-#include "tudat/interface/spice/spiceRotationalEphemeris.h"
 
 namespace tudat
 {

@@ -18,7 +18,6 @@
 #include "tudat/astro/orbit_determination/rotational_dynamics_partials/secondDegreeGravitationalTorquePartial.h"
 #include "tudat/astro/orbit_determination/rotational_dynamics_partials/sphericalHarmonicGravitationalTorquePartial.h"
 #include "tudat/astro/orbit_determination/rotational_dynamics_partials/inertialTorquePartial.h"
-#include "tudat/astro/orbit_determination/observation_partials/rotationMatrixPartial.h"
 #include "tudat/astro/basic_astro/torqueModelTypes.h"
 
 namespace tudat
