@@ -10,7 +10,7 @@
 #if TUDATPY_ENABLE_DETAILED_PYBIND11_ERRORS
 #define PYBIND11_DETAILED_ERROR_MESSAGES
 #endif
-#include "tudat/interface/spice.h"
+#include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/io/basicInputOutput.h"
 
 #include <Eigen/Core>

@@ -13,12 +13,7 @@
 
 #include <functional>
 #include <memory>
-#include "tudat/astro/gravitation/centralGravityModel.h"
-#include "tudat/astro/gravitation/sphericalHarmonicsGravityModel.h"
-#include "tudat/astro/gravitation/thirdBodyPerturbation.h"
-#include "tudat/astro/aerodynamics/aerodynamicAcceleration.h"
 #include "tudat/astro/basic_astro/accelerationModelTypes.h"
-#include "tudat/astro/reference_frames/referenceFrameTransformations.h"
 #include "tudat/basics/deprecationWarnings.h"
 #include "tudat/simulation/environment_setup/createRadiationPressureTargetModel.h"
 

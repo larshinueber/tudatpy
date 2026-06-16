@@ -14,6 +14,8 @@
 #include <stdexcept>
 #include <type_traits>
 
+#include "tudat/astro/ground_stations/groundStation.h"
+#include "tudat/astro/ground_stations/groundStationState.h"
 #include "tudat/basics/utilities.h"
 #include "tudat/basics/timeType.h"
 #include "tudat/simulation/environment_setup/body.h"
@@ -24,7 +26,6 @@
 #include "tudat/astro/ephemerides/timeEphemerisDirectFromMetric.h"
 #include "tudat/astro/ephemerides/timeEphemerisWithFirstOrderDirectConversion.h"
 #include "tudat/astro/ephemerides/tabulatedRotationalEphemeris.h"
-#include "tudat/astro/ground_stations/groundStation.h"
 #include "tudat/simulation/propagation_setup/propagationSettings.h"
 #include "tudat/math/interpolators/lagrangeInterpolator.h"
 

@@ -13,21 +13,13 @@
 
 #include <vector>
 #include <string>
-#include <chrono>
 
 #include "tudat/basics/tudatTypeTraits.h"
-#include "tudat/basics/utilities.h"
-#include "tudat/astro/propagators/nBodyStateDerivative.h"
 #include "tudat/astro/ephemerides/frameManager.h"
 #include "tudat/simulation/propagation_setup/propagationSettings.h"
-#include "tudat/simulation/propagation_setup/setNumericallyIntegratedStates.h"
 #include "tudat/astro/propagators/integrateEquations.h"
-#include "tudat/simulation/propagation_setup/createStateDerivativeModel.h"
 #include "tudat/simulation/propagation_setup/propagationResults.h"
-#include "tudat/simulation/propagation_setup/createEnvironmentUpdater.h"
-#include "tudat/simulation/propagation_setup/propagationTermination.h"
 #include "tudat/astro/propagators/dynamicsStateDerivativeModel.h"
-#include "tudat/math/interpolators/lagrangeInterpolator.h"
 #include "tudat/simulation/propagation_setup/dependentVariablesInterface.h"
 
 namespace tudat

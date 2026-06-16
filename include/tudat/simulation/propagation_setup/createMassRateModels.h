@@ -17,7 +17,6 @@
 #include "tudat/astro/basic_astro/accelerationModelTypes.h"
 #include "tudat/astro/basic_astro/accelerationModel.h"
 #include "tudat/astro/basic_astro/massRateModel.h"
-#include "tudat/astro/propulsion/massRateFromThrust.h"
 
 namespace tudat
 {

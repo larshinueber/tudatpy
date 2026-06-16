@@ -14,6 +14,7 @@
 #include <functional>
 
 #include "tudat/astro/basic_astro/modifiedEquinoctialElementConversions.h"
+#include "tudat/astro/gravitation/thirdBodyPerturbation.h"
 #include "tudat/basics/utilities.h"
 #include "tudat/astro/basic_astro/astrodynamicsFunctions.h"
 #include "tudat/astro/aerodynamics/aerodynamicUtilities.h"
@@ -25,7 +26,6 @@
 #include "tudat/simulation/environment_setup/body.h"
 #include "tudat/simulation/environment_setup/createGroundStations.h"
 #include "tudat/simulation/propagation_setup/propagationOutputSettings.h"
-#include "tudat/simulation/propagation_setup/propagationSettings.h"
 #include "tudat/simulation/environment_setup/createFlightConditions.h"
 #include "tudat/math/basic/rotationRepresentations.h"
 #include "tudat/astro/aerodynamics/nrlmsise00Atmosphere.h"

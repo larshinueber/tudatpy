@@ -8,6 +8,8 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
+#include <string>
+
 namespace tudat
 {
 namespace utils

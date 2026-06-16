@@ -20,7 +20,6 @@
 #include <pybind11/stl.h>
 
 #include "scalarTypes.h"
-#include "tudat/simulation/estimation_setup/variationalEquationsSolver.h"
 #include "tudat/simulation/estimation_setup/createNumericalSimulator.h"
 
 namespace py = pybind11;

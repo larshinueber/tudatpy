@@ -22,7 +22,6 @@
 #include <string>
 #include <vector>
 
-#include "tudat/io/missileDatcomData.h"
 #include "tudat/io/readCrdFile.h"
 #include "tudat/io/readHistoryFromFile.h"
 #include "tudat/io/readOdfFile.h"

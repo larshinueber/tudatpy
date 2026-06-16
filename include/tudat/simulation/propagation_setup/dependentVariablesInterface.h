@@ -11,7 +11,6 @@
 #ifndef TUDAT_DEPENDENTVARIABLESINTERFACE_H
 #define TUDAT_DEPENDENTVARIABLESINTERFACE_H
 
-#include <iostream>
 #include <vector>
 
 #include <memory>

@@ -13,7 +13,9 @@
 #include "expose_observables_simulation.h"
 #include <pybind11/functional.h>
 #include "scalarTypes.h"
-#include "tudat/simulation/estimation_setup/simulateObservations.h"
+
+#include "tudat/astro/observation_models/observationSimulator.h"
+#include "tudat/astro/observation_models/observationViabilityCalculator.h"
 
 namespace tom = tudat::observation_models;
 

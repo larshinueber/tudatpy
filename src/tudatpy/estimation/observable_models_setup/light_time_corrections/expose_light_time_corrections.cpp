@@ -18,7 +18,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "scalarTypes.h"
 #include "tudat/astro/basic_astro/ionosphereModel.h"
 #include "tudat/astro/observation_models/lightTimeSolution.h"
 #include "tudat/simulation/environment_setup/body.h"

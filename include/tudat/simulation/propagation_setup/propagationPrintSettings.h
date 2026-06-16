@@ -11,11 +11,6 @@
 #ifndef TUDAT_PROPAGATIONPRINTSETTINGS_H
 #define TUDAT_PROPAGATIONPRINTSETTINGS_H
 
-#include <vector>
-#include <string>
-#include <map>
-#include <iostream>
-
 #include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat

@@ -33,14 +33,7 @@
 #include "torque/expose_torque.h"
 
 namespace py = pybind11;
-namespace tba = tudat::basic_astrodynamics;
 namespace tss = tudat::simulation_setup;
-namespace tp = tudat::propagators;
-namespace tinterp = tudat::interpolators;
-namespace te = tudat::ephemerides;
-namespace tni = tudat::numerical_integrators;
-namespace trf = tudat::reference_frames;
-namespace tmrf = tudat::root_finders;
 
 namespace tudatpy
 {

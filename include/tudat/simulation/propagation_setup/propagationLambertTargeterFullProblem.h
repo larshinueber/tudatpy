@@ -13,13 +13,8 @@
 
 #include <string>
 
-#include "tudat/astro/basic_astro/orbitalElementConversions.h"
-#include "tudat/astro/propagators/singleStateTypeDerivative.h"
 #include "tudat/simulation/propagation_setup/propagationSettings.h"
 #include "tudat/math/integrators/createNumericalIntegrator.h"
-#include "tudat/astro/mission_segments/lambertTargeter.h"
-#include "tudat/astro/mission_segments/lambertTargeterIzzo.h"
-#include "tudat/astro/mission_segments/lambertRoutines.h"
 
 namespace tudat
 {

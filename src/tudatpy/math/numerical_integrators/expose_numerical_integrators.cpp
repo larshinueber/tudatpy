@@ -14,9 +14,6 @@
 
 #include <pybind11/pybind11.h>
 
-#include "tudat/math/integrators/rungeKuttaVariableStepSizeIntegrator.h"
-
-namespace tni = tudat::numerical_integrators;
 namespace py = pybind11;
 
 // typedef std::function<

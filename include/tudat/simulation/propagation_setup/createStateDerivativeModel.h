@@ -15,6 +15,7 @@
 #include <stdexcept>
 #include <string>
 
+#include "tudat/astro/aerodynamics/flightConditions.h"
 #include "tudat/astro/basic_astro/orbitalElementConversions.h"
 #include "tudat/astro/ephemerides/aeordynamicAngleRotationalEphemeris.h"
 #include "tudat/astro/propagators/singleStateTypeDerivative.h"
@@ -33,7 +34,6 @@
 #include "tudat/astro/propagators/rotationalMotionExponentialMapStateDerivative.h"
 #include "tudat/astro/propagators/bodyMassStateDerivative.h"
 #include "tudat/astro/propagators/customStateDerivative.h"
-#include "tudat/astro/propagators/stateDerivativeCircularRestrictedThreeBodyProblem.h"
 #include "tudat/simulation/environment_setup/body.h"
 #include "tudat/math/integrators/createNumericalIntegrator.h"
 #include "tudat/astro/propagators/relativisticTimeStateDerivative.h"

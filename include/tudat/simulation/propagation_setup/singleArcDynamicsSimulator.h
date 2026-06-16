@@ -12,6 +12,9 @@
 #define TUDAT_SINGLEARCDYNAMICSSIMULATOR_H
 
 #include "tudat/simulation/propagation_setup/dynamicsSimulatorBase.h"
+#include "tudat/simulation/propagation_setup/setNumericallyIntegratedStates.h"
+#include "tudat/simulation/propagation_setup/createEnvironmentUpdater.h"
+#include "tudat/simulation/propagation_setup/createStateDerivativeModel.h"
 
 namespace tudat
 {
