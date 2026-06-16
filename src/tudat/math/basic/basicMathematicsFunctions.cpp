@@ -9,7 +9,6 @@
  *
  */
 
-#include <cmath>
 #include <ctime>
 
 #include "tudat/math/basic/basicMathematicsFunctions.h"

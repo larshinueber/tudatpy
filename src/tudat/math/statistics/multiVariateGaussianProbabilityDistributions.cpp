@@ -10,7 +10,6 @@
  */
 
 #include <cmath>
-#include <numeric>
 
 #include <Eigen/LU>
 

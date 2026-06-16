@@ -12,8 +12,6 @@
  *
  */
 
-#include <cmath>
-
 #include <Eigen/Geometry>
 
 #include "tudat/math/basic/rotationAboutArbitraryAxis.h"

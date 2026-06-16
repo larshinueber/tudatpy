@@ -38,7 +38,6 @@
 #include "tudat/math/interpolators/lookupScheme.h"
 #include "tudat/math/interpolators/interpolator.h"
 
-#include "tudat/math/basic/nearestNeighbourSearch.h"
 #include "tudat/math/interpolators/multiDimensionalInterpolator.h"
 
 namespace tudat

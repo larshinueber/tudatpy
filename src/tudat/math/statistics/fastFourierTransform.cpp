@@ -1,4 +1,3 @@
-#include <iostream>
 
 #include "tudat/math/statistics/fastFourierTransform.h"
 

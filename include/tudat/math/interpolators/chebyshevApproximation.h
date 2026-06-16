@@ -15,7 +15,6 @@
 #include <stdexcept>
 #include <vector>
 #include <map>
-#include <iostream>
 
 #include "tudat/math/interpolators/oneDimensionalInterpolator.h"
 

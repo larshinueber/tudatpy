@@ -23,7 +23,6 @@
 #include "tudat/math/basic/mathematicalConstants.h"
 
 #include "tudat/math/interpolators/oneDimensionalInterpolator.h"
-#include "tudat/math/interpolators/linearInterpolator.h"
 #include "tudat/math/interpolators/cubicSplineInterpolator.h"
 #include "tudat/math/interpolators/lookupScheme.h"
 

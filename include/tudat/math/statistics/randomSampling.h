@@ -11,8 +11,6 @@
 #ifndef TUDAT_RANDOM_SAMPLING_H
 #define TUDAT_RANDOM_SAMPLING_H
 
-#include <map>
-
 #include <Eigen/Core>
 
 #include <memory>

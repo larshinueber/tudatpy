@@ -22,7 +22,6 @@
 
 #include <Eigen/Core>
 
-#include "tudat/math/integrators/reinitializableNumericalIntegrator.h"
 #include "tudat/math/integrators/rungeKuttaCoefficients.h"
 #include "tudat/math/integrators/rungeKuttaFixedStepSizeIntegrator.h"
 

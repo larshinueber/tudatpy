@@ -13,7 +13,6 @@
 #define TUDAT_FILTER_H
 
 #include <map>
-#include <limits>
 #include <iostream>
 
 #include <Eigen/Core>
@@ -24,12 +23,8 @@
 #include <memory>
 #include <functional>
 
-#include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/math/integrators/createNumericalIntegrator.h"
 #include "tudat/math/statistics/randomVariableGenerator.h"
-
-#include "tudat/basics/identityElements.h"
-#include "tudat/basics/utilities.h"
 
 namespace tudat
 {

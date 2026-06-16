@@ -19,8 +19,6 @@
 
 #include <Eigen/Core>
 
-#include <iostream>
-
 namespace tudat
 {
 namespace numerical_integrators

@@ -21,10 +21,8 @@
 
 #include <Eigen/Core>
 
-#include <limits>
 #include <vector>
 
-#include "tudat/basics/utilityMacros.h"
 #include "tudat/math/integrators/reinitializableNumericalIntegrator.h"
 #include "tudat/math/integrators/rungeKuttaCoefficients.h"
 #include "tudat/math/integrators/stepSizeController.h"

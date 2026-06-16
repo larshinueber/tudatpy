@@ -20,10 +20,7 @@
 
 #include <Eigen/Core>
 
-#include "tudat/basics/basicTypedefs.h"
-#include "tudat/basics/timeType.h"
 #include "tudat/basics/utilityMacros.h"
-#include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat
 {

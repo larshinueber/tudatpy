@@ -14,10 +14,6 @@
 
 #include <vector>
 
-#include "tudat/basics/timeType.h"
-#include "tudat/basics/basicTypedefs.h"
-#include "tudat/basics/identityElements.h"
-
 namespace tudat
 {
 

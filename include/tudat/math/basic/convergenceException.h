@@ -12,8 +12,6 @@
 #ifndef TUDAT_CONVERGENCE_EXEPTION_H
 #define TUDAT_CONVERGENCE_EXEPTION_H
 
-#include <stdexcept>
-
 #include <boost/exception/exception.hpp>
 
 namespace tudat

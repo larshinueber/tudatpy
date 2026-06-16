@@ -9,9 +9,7 @@
  */
 
 #include "tudat/math/statistics/kernelDensityDistribution.h"
-#include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/math/statistics/basicStatistics.h"
-#include "tudat/io/matrixTextFileReader.h"
 namespace tudat
 {
 

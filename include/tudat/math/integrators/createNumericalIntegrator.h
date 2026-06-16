@@ -13,8 +13,6 @@
 
 #include <memory>
 
-#include "tudat/basics/tudatTypeTraits.h"
-#include "tudat/basics/timeType.h"
 #include "tudat/math/integrators/bulirschStoerVariableStepsizeIntegrator.h"
 #include "tudat/math/integrators/numericalIntegrator.h"
 #include "tudat/math/integrators/rungeKutta4Integrator.h"

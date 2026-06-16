@@ -15,8 +15,6 @@
 #include <functional>
 #include <memory>
 
-#include "tudat/math/basic/mathematicalConstants.h"
-
 #include "tudat/math/basic/function.h"
 #include "tudat/math/root_finders/terminationConditions.h"
 

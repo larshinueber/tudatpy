@@ -3,7 +3,6 @@
 
 #include <complex>
 #include <vector>
-#include <map>
 
 #include <fftw3.h>
 

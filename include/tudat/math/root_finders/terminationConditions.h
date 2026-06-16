@@ -13,7 +13,6 @@
 #define TUDAT_TERMINATION_CONDITIONS_H
 
 #include <cmath>
-#include <stdexcept>
 #include <string>
 #include <iostream>
 

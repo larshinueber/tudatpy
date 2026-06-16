@@ -13,7 +13,6 @@
 #define TUDAT_LOOK_UP_SCHEME_H
 
 #include <vector>
-#include <iostream>
 #include <memory>
 
 #include "tudat/math/basic/nearestNeighbourSearch.h"

@@ -2,8 +2,6 @@
 #include "tudat/math/statistics/fastFourierTransform.h"
 #include "tudat/math/statistics/powerLawNoiseGeneration.h"
 
-#include <valarray>
-
 namespace tudat
 {
 

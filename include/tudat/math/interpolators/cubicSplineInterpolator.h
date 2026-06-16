@@ -16,13 +16,11 @@
 #ifndef TUDAT_CUBIC_SPLINE_INTERPOLATOR_H
 #define TUDAT_CUBIC_SPLINE_INTERPOLATOR_H
 
-#include <cmath>
 #include <Eigen/Core>
 
 #include <memory>
 
 #include "tudat/math/interpolators/oneDimensionalInterpolator.h"
-#include "tudat/math/basic/nearestNeighbourSearch.h"
 #include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat

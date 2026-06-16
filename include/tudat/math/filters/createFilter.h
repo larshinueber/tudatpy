@@ -12,16 +12,11 @@
 #ifndef TUDAT_CREATE_FILTER_H
 #define TUDAT_CREATE_FILTER_H
 
-#include <map>
-#include <limits>
-#include <iostream>
-
 #include <Eigen/Core>
 
 #include "tudat/math/integrators/createNumericalIntegrator.h"
 
 #include "tudat/math/filters/extendedKalmanFilter.h"
-#include "tudat/math/filters/linearKalmanFilter.h"
 #include "tudat/math/filters/unscentedKalmanFilter.h"
 
 namespace tudat

@@ -20,10 +20,6 @@
 #ifndef TUDAT_BISECTION_H
 #define TUDAT_BISECTION_H
 
-#include <iostream>
-
-#include <memory>
-
 #include "tudat/basics/utilityMacros.h"
 #include "tudat/math/root_finders/rootFinder.h"
 #include "tudat/math/root_finders/terminationConditions.h"

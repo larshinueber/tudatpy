@@ -11,7 +11,6 @@
 #ifndef TUDAT_GAUSSIAN_QUADRATURE_H
 #define TUDAT_GAUSSIAN_QUADRATURE_H
 
-#include <vector>
 #include <map>
 
 #include <functional>
@@ -20,7 +19,6 @@
 #include <Eigen/Core>
 
 #include "tudat/basics/utilities.h"
-#include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/math/quadrature/numericalQuadrature.h"
 #include "tudat/io/basicInputOutput.h"
 #include "tudat/io/mapTextFileReader.h"

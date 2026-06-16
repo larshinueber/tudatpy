@@ -8,6 +8,7 @@
  *    http://tudat.tudelft.nl/LICENSE.
  *
  */
+#include "tudat/math/basic/mathematicalConstants.h"
 #ifdef NDEBUG
 #ifdef TUDAT_BUILD_GNU
 #pragma GCC diagnostic push

@@ -16,7 +16,6 @@
 #include <Eigen/LU>
 
 #include "tudat/math/basic/linearAlgebra.h"
-#include "tudat/basics/utilities.h"
 
 namespace tudat
 {

@@ -1,4 +1,3 @@
-#include <iostream>
 
 #include "tudat/basics/utilities.h"
 #include "tudat/math/basic/rotationRepresentations.h"

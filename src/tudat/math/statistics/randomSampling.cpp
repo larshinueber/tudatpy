@@ -8,8 +8,6 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include <cmath>
-
 #include <boost/random.hpp>
 
 #if USE_GSL

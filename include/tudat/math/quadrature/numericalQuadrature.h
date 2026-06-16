@@ -11,8 +11,6 @@
 #ifndef TUDAT_NUMERICAL_QUADRATURE_H
 #define TUDAT_NUMERICAL_QUADRATURE_H
 
-#include <vector>
-
 #include <Eigen/Core>
 
 namespace tudat

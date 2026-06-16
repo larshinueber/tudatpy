@@ -16,8 +16,6 @@
 #define TUDAT_MATHEMATICAL_CONSTANTS_H
 
 #include <complex>
-#include <cmath>
-#include <limits>
 
 namespace tudat
 {

@@ -17,8 +17,7 @@
 
 #include <boost/random.hpp>
 #include <boost/random/mersenne_twister.hpp>
-
-#include "tudat/math/statistics/boostProbabilityDistributions.h"
+#include "tudat/math/statistics/continuousProbabilityDistributions.h"
 
 namespace tudat
 {

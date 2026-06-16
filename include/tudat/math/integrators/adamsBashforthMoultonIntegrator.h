@@ -23,13 +23,11 @@
 
 #include <deque>
 #include <algorithm>
-#include <limits>
 
 #include <memory>
 
 #include <Eigen/Core>
 
-#include "tudat/math/integrators/numericalIntegrator.h"
 #include "tudat/math/integrators/reinitializableNumericalIntegrator.h"
 #include "tudat/math/integrators/rungeKuttaCoefficients.h"
 #include "tudat/math/integrators/rungeKuttaVariableStepSizeIntegrator.h"

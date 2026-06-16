@@ -11,8 +11,6 @@
 #ifndef TUDAT_KERNELDENSITYDISTRIBUTION_H
 #define TUDAT_KERNELDENSITYDISTRIBUTION_H
 
-#include <map>
-
 #include <memory>
 
 #include "tudat/math/statistics/continuousProbabilityDistributions.h"

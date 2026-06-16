@@ -35,7 +35,6 @@
 #include <Eigen/Core>
 
 #include <functional>
-#include <memory>
 #include <vector>
 
 #include "tudat/math/basic/mathematicalConstants.h"

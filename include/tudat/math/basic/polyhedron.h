@@ -16,8 +16,6 @@
 #ifndef TUDAT_POLYHEDRON_H
 #define TUDAT_POLYHEDRON_H
 
-#include <memory>
-#include <cmath>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <vector>

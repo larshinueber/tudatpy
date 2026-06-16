@@ -16,7 +16,6 @@
 
 #include "tudat/math/interpolators/interpolator.h"
 #include "tudat/math/interpolators/oneDimensionalInterpolator.h"
-#include "tudat/math/basic/nearestNeighbourSearch.h"
 
 namespace tudat
 {

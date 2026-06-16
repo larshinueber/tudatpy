@@ -11,12 +11,10 @@
 #ifndef TUDAT_BOOSTPROBABILITYDISTRIBUTIONS_H
 #define TUDAT_BOOSTPROBABILITYDISTRIBUTIONS_H
 
-#include <cmath>
 #include <memory>
 
 #include <boost/math/distributions.hpp>
 
-#include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/math/statistics/continuousProbabilityDistributions.h"
 
 namespace tudat

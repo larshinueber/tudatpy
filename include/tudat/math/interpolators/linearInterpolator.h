@@ -19,7 +19,6 @@
 #define TUDAT_LINEAR_INTERPOLATOR_H
 
 #include <memory>
-#include <cmath>
 
 #include <Eigen/Core>
 
@@ -27,7 +26,6 @@
 #include <vector>
 
 #include "tudat/math/interpolators/oneDimensionalInterpolator.h"
-#include "tudat/math/basic/nearestNeighbourSearch.h"
 
 namespace tudat
 {

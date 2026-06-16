@@ -12,11 +12,8 @@
 #ifndef TUDAT_NEWTON_RAPHSON_H
 #define TUDAT_NEWTON_RAPHSON_H
 
-#include <memory>
-
 #include "tudat/math/root_finders/rootFinder.h"
 #include "tudat/math/root_finders/terminationConditions.h"
-#include "tudat/math/basic/convergenceException.h"
 
 namespace tudat
 {

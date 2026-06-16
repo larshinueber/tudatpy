@@ -17,17 +17,12 @@
 #define TUDAT_STEPSIZE_CONTROLLER_H
 
 #include <functional>
-#include <memory>
 
 #include <Eigen/Core>
 
-#include <limits>
 #include <vector>
 
-#include "tudat/basics/utilityMacros.h"
 #include "tudat/basics/tudatExceptions.h"
-#include "tudat/math/integrators/reinitializableNumericalIntegrator.h"
-#include "tudat/math/integrators/rungeKuttaCoefficients.h"
 
 namespace tudat
 {

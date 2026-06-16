@@ -17,6 +17,7 @@
 #ifndef TUDAT_TABULATED_ATMOSPHERE_H
 #define TUDAT_TABULATED_ATMOSPHERE_H
 
+#include <map>
 #include <string>
 
 #include <memory>
@@ -26,6 +27,7 @@
 #include "tudat/astro/aerodynamics/aerodynamicUtilities.h"
 #include "tudat/astro/aerodynamics/atmosphereModel.h"
 #include "tudat/astro/basic_astro/physicalConstants.h"
+#include "tudat/basics/identityElements.h"
 #include "tudat/math/interpolators/interpolator.h"
 
 namespace tudat
