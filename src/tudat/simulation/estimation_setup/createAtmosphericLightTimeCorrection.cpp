@@ -134,12 +134,12 @@ AtmosphericCorrectionPerStationAndSpacecraftType extractAtmosphericCorrection(
                     if( troposphericCorrection.count( stationSourceKey ) &&
                         troposphericCorrection.at( stationSourceKey ).count( observableType ) )
                     {
-                        troposphericCorrection.at( stationSourceKey ).at( observableType )->mergeFrom( *incomingManager );
+                        troposphericCorrection.at( stationSourceKey ).at( observableType )->addOther( *incomingManager );
                     }
                     else
                     {
                         auto newManager = std::make_shared< observation_models::TabulatedMediaReferenceCorrectionManager >( );
-                        newManager->mergeFrom( *incomingManager );
+                        newManager->addOther( *incomingManager );
                         troposphericCorrection[ stationSourceKey ][ observableType ] = newManager;
                     }
                 }
