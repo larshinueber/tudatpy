@@ -266,7 +266,12 @@ public:
         correctionVector_.push_back( correctionCalculator );
     }
 
-    void mergeFrom( const TabulatedMediaReferenceCorrectionManager& other )
+    /*!
+     * Adds the correction calculation objects from another manager to this manager.
+     *
+     * @param other Manager from which to add the correction calculation objects.
+     */
+    void addOther( const TabulatedMediaReferenceCorrectionManager& other )
     {
         for( auto const& correctionCalculator : other.correctionVector_ )
         {
@@ -276,8 +281,8 @@ public:
 
     /*!
      * Function to compute the atmospheric correction as a function of time.
-     * For the specified time, the function selects the appropriate correction calculation object and the uses it
-     * to compute the time.
+     * For the specified time, the function finds the appropriate correction calculation objects and
+     * sums their contributions.
      *
      * @param time Time at which to compute the correction.
      * @return Atmospheric correction value.
