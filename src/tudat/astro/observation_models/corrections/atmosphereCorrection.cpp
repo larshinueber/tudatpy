@@ -131,6 +131,7 @@ double TabulatedMediaReferenceCorrectionManager::computeMediaCorrection( double 
     double correction = 0.0;
     for( unsigned int i = 0; i < correctionVector_.size( ); ++i )
     {
+        // for seasonal corrections, start and end times might be NaN, in which case the correction is always valid
         bool startOk = std::isnan( startTimes_.at( i ) ) || time >= startTimes_.at( i );
         bool endOk = std::isnan( endTimes_.at( i ) ) || time <= endTimes_.at( i );
         if( startOk && endOk )
