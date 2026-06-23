@@ -15,7 +15,6 @@
 
 #include <Eigen/Core>
 
-#include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/math/integrators/createNumericalIntegrator.h"
 #include "tudat/astro/basic_astro/stateVectorIndices.h"
 #include "tudat/simulation/propagation_setup/createStateDerivativeModel.h"

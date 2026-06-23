@@ -16,12 +16,9 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/math/basic/linearAlgebra.h"
-#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/basic_astro/orbitalElementConversions.h"
 
 #include "tudat/interface/spice/spiceInterface.h"
-#include "tudat/math/integrators/rungeKuttaCoefficients.h"
 #include "tudat/astro/basic_astro/accelerationModel.h"
 #include "tudat/astro/basic_astro/keplerPropagator.h"
 #include "tudat/simulation/propagation_setup/multiArcDynamicsSimulator.h"

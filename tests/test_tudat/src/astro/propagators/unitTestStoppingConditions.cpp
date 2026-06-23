@@ -21,11 +21,8 @@
 #include "tudat/astro/basic_astro/unitConversions.h"
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/simulation/environment_setup/body.h"
-#include "tudat/simulation/estimation_setup/createNumericalSimulator.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
-#include "tudat/io/basicInputOutput.h"
-#include <limits>
 #include <string>
 
 #include <Eigen/Core>

@@ -20,17 +20,12 @@
 #include <iostream>
 #include <tuple>
 
-#include "tudat/basics/testMacros.h"
-
 #include "tudat/interface/spice/spiceInterface.h"
 
 #include "tudat/astro/relativity/metric.h"
-#include "tudat/simulation/environment_setup/createBodies.h"
 #include "tudat/simulation/environment_setup/createGroundStations.h"
 #include "tudat/simulation/environment_setup/createMetric.h"
-#include "tudat/simulation/environment_setup/createRelativisticTimeConverter.h"
 
-#include "tudat/simulation/propagation_setup/dynamicsSimulator.h"
 #include "tudat/simulation/propagation_setup/propagationPrintSettings.h"
 
 namespace tudat

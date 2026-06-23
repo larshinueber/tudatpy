@@ -19,7 +19,6 @@
 #include "tudat/basics/testMacros.h"
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/astro/basic_astro/unitConversions.h"
-#include "tudat/astro/basic_astro/orbitalElementConversions.h"
 #include "tudat/math/integrators/createNumericalIntegrator.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"

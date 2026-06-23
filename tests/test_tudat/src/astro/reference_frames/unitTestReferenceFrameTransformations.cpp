@@ -19,8 +19,6 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <iostream>
-
 #include <boost/test/unit_test.hpp>
 
 #include <Eigen/Core>
@@ -29,7 +27,6 @@
 #include "tudat/astro/basic_astro/unitConversions.h"
 #include "tudat/astro/basic_astro/orbitalElementConversions.h"
 
-#include "tudat/math/basic/basicMathematicsFunctions.h"
 #include "tudat/astro/reference_frames/referenceFrameTransformations.h"
 
 namespace tudat

@@ -9,13 +9,13 @@
  *
  */
 
+#include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
 #include <algorithm>
 #include <cmath>
 #include <limits>
-#include <stdexcept>
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
@@ -27,10 +27,7 @@
 #include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/astro/relativity/solarSystemMetric.h"
-#include "tudat/astro/ephemerides/constantEphemeris.h"
 #include "tudat/astro/gravitation/sphericalHarmonicsGravityField.h"
-#include "tudat/math/basic/legendrePolynomials.h"
-#include "tudat/simulation/environment_setup/createBodies.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/environment_setup/createMetric.h"
 

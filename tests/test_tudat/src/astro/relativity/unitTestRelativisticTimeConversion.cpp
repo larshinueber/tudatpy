@@ -8,6 +8,7 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
+#include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
@@ -16,12 +17,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/basics/testMacros.h"
-
-#include "tudat/math/basic/linearAlgebra.h"
 #include "tudat/astro/basic_astro/physicalConstants.h"
-#include "tudat/astro/basic_astro/orbitalElementConversions.h"
-#include "tudat/math/basic/coordinateConversions.h"
 
 #include "tudat/io/basicInputOutput.h"
 #include "tudat/interface/spice/spiceInterface.h"
@@ -30,17 +26,11 @@
 #include "tudat/astro/basic_astro/timeConversions.h"
 #include "tudat/interface/sofa/earthOrientation.h"
 #include "tudat/astro/ephemerides/keplerEphemeris.h"
-#include "tudat/astro/ephemerides/tleEphemeris.h"
 
-#include "tudat/astro/relativity/relativisticTimeConversion.h"
-#include "tudat/astro/relativity/metric.h"
-#include "tudat/interface/sofa/sofaTimeConversions.h"
 #include "tudat/io/readInpopEphemerisFile.h"
 #include "tudat/math/integrators/createNumericalIntegrator.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
-#include "tudat/simulation/environment_setup/createBodies.h"
 #include "tudat/simulation/environment_setup/createGroundStations.h"
-#include "tudat/interface/spice/spiceEphemeris.h"
 
 #include "tudat/simulation/environment_setup/createRelativisticTimeConverter.h"
 #include "tudat/simulation/environment_setup/createMetric.h"

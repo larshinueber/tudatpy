@@ -15,24 +15,14 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/math/basic/linearAlgebra.h"
-#include "tudat/astro/basic_astro/physicalConstants.h"
-#include "tudat/astro/basic_astro/orbitalElementConversions.h"
-
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/math/integrators/rungeKuttaCoefficients.h"
-#include "tudat/math/interpolators/lagrangeInterpolator.h"
 #include "tudat/astro/basic_astro/accelerationModel.h"
-#include "tudat/astro/basic_astro/keplerPropagator.h"
-#include "tudat/io/basicInputOutput.h"
 
-#include "tudat/astro/basic_astro/orbitalElementConversions.h"
 #include "tudat/simulation/environment_setup/body.h"
-#include "tudat/astro/propagators/nBodyCowellStateDerivative.h"
 #include "tudat/simulation/propagation_setup/singleArcDynamicsSimulator.h"
 #include "tudat/math/integrators/createNumericalIntegrator.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
-#include "tudat/simulation/estimation_setup/createNumericalSimulator.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 
 namespace tudat

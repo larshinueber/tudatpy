@@ -14,22 +14,12 @@
 
 #include <Eigen/Core>
 
-#include "tudat/basics/testMacros.h"
-#include "tudat/astro/basic_astro/unitConversions.h"
-
 #include "tudat/astro/reference_frames/aerodynamicAngleCalculator.h"
-#include "tudat/interface/spice/spiceEphemeris.h"
-#include "tudat/interface/spice/spiceRotationalEphemeris.h"
-#include "tudat/io/basicInputOutput.h"
-#include "tudat/simulation/environment_setup/body.h"
-#include "tudat/simulation/propagation_setup/createAccelerationModels.h"
-#include "tudat/simulation/environment_setup/defaultBodies.h"
 namespace tudat
 {
 namespace unit_tests
 {
 
-using namespace unit_conversions;
 using namespace reference_frames;
 
 class ManualAerodynamicAngleInterface : public BodyFixedAerodynamicAngleInterface

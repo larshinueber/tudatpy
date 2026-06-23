@@ -5,12 +5,9 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/math/basic/linearAlgebra.h"
-#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/basic_astro/orbitalElementConversions.h"
 
 #include "tudat/interface/spice/spiceInterface.h"
-#include "tudat/math/integrators/rungeKuttaCoefficients.h"
 #include "tudat/math/integrators/createNumericalIntegrator.h"
 #include "tudat/astro/basic_astro/accelerationModel.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"

@@ -13,7 +13,6 @@
 
 #include <limits>
 #include <string>
-#include <thread>
 
 #include <boost/test/unit_test.hpp>
 

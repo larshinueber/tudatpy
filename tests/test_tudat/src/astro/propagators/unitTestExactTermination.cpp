@@ -11,25 +11,20 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <limits>
 #include <string>
-#include <thread>
 
 #include <boost/test/unit_test.hpp>
 
 #include "tudat/astro/basic_astro/unitConversions.h"
-#include "tudat/math/basic/linearAlgebra.h"
 #include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/basic_astro/orbitalElementConversions.h"
 
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/math/integrators/rungeKuttaCoefficients.h"
 #include "tudat/astro/basic_astro/accelerationModel.h"
-#include "tudat/io/basicInputOutput.h"
 #include "tudat/simulation/propagation_setup/singleArcDynamicsSimulator.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
-#include "tudat/simulation/estimation_setup/createNumericalSimulator.h"
 #include "tudat/math/integrators/createNumericalIntegrator.h"
 
 namespace tudat

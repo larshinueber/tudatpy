@@ -13,7 +13,6 @@
 
 #include <limits>
 #include <string>
-#include <thread>
 
 #include <boost/test/unit_test.hpp>
 
@@ -23,21 +22,17 @@
 
 #include "tudat/math/basic/linearAlgebra.h"
 #include "tudat/astro/basic_astro/physicalConstants.h"
-#include "tudat/astro/basic_astro/orbitalElementConversions.h"
 #include "tudat/astro/ephemerides/tabulatedEphemeris.h"
 
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/math/integrators/rungeKuttaCoefficients.h"
 #include "tudat/astro/basic_astro/accelerationModel.h"
-#include "tudat/io/basicInputOutput.h"
 
 #include "tudat/astro/basic_astro/sphericalStateConversions.h"
 #include "tudat/astro/basic_astro/torqueModelTypes.h"
-#include "tudat/interface/spice/spiceRotationalEphemeris.h"
 #include "tudat/astro/ephemerides/constantEphemeris.h"
 #include "tudat/astro/ephemerides/keplerEphemeris.h"
 #include "tudat/simulation/environment_setup/body.h"
-#include "tudat/astro/gravitation/centralGravityModel.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/environment_setup/createGravityField.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"

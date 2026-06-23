@@ -12,20 +12,16 @@
 #define BOOST_TEST_MAIN
 
 #include <string>
-#include <thread>
 #include "tudat/simulation/propagation_setup/singleArcDynamicsSimulator.h"
 
 #include <boost/test/unit_test.hpp>
 
 #include "tudat/basics/testMacros.h"
-#include "tudat/math/basic/linearAlgebra.h"
 #include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/astro/basic_astro/unitConversions.h"
 
 #include "tudat/interface/spice/spiceInterface.h"
-#include "tudat/math/integrators/rungeKuttaCoefficients.h"
 #include "tudat/astro/basic_astro/accelerationModel.h"
-#include "tudat/io/basicInputOutput.h"
 #include "tudat/astro/ephemerides/keplerEphemeris.h"
 
 #include "tudat/simulation/environment_setup/body.h"
@@ -35,7 +31,6 @@
 #include "tudat/simulation/environment_setup/createGravityField.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #include "tudat/simulation/environment_setup/createSystemModel.h"
-#include "tudat/simulation/estimation_setup/createNumericalSimulator.h"
 #include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
 
 namespace tudat

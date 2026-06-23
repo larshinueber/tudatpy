@@ -12,13 +12,11 @@
 #define BOOST_TEST_MAIN
 
 #include <string>
-#include <thread>
 
 #include <limits>
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/basics/testMacros.h"
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/astro/basic_astro/unitConversions.h"
 #include "tudat/astro/basic_astro/orbitalElementConversions.h"
@@ -29,7 +27,6 @@
 #include "tudat/simulation/propagation_setup/createAccelerationModels.h"
 #include "tudat/simulation/propagation_setup/propagationSettings.h"
 #include "tudat/simulation/propagation_setup/singleArcDynamicsSimulator.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/directTidalTimeLag.h"
 
 namespace tudat
 {
