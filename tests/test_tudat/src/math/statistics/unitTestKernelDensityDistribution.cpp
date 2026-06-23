@@ -19,9 +19,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/random.hpp>
 
-#include "tudat/basics/testMacros.h"
 #include "tudat/math/basic/mathematicalConstants.h"
-#include "tudat/io/basicInputOutput.h"
 #include "tudat/math/statistics/kernelDensityDistribution.h"
 
 namespace tudat

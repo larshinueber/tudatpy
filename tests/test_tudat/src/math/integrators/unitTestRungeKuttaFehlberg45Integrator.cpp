@@ -32,7 +32,6 @@
 #include "tudat/math/integrators/reinitializableNumericalIntegrator.h"
 #include "tudat/support/numericalIntegratorTests.h"
 #include "tudat/math/integrators/numericalIntegratorTestFunctions.h"
-#include "tudat/math/integrators/burdenAndFairesNumericalIntegratorTest.h"
 
 #include "tudat/io/matrixTextFileReader.h"
 #include "tudat/io/basicInputOutput.h"

@@ -14,7 +14,6 @@
 
 #include <cmath>
 #include <iostream>
-#include <limits>
 
 #include <boost/test/unit_test.hpp>
 

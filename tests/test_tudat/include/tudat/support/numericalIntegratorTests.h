@@ -20,7 +20,9 @@
 #define TUDAT_NUMERICAL_INTEGRATOR_TESTS_H
 
 #include <Eigen/Core>
+#include <boost/test/unit_test.hpp>
 
+#include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/math/integrators/numericalIntegrator.h"
 #include "tudat/math/integrators/reinitializableNumericalIntegrator.h"
 

@@ -21,8 +21,6 @@
 #ifndef TUDAT_TEST_FUNCTION_H
 #define TUDAT_TEST_FUNCTION_H
 
-#include "tudat/math/basic/basicFunction.h"
-
 namespace tudat
 {
 namespace unit_tests

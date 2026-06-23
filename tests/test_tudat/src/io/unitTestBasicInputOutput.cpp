@@ -17,10 +17,8 @@
 #define BOOST_TEST_MAIN
 #include <iostream>
 #include <algorithm>
-#include <cmath>
 #include <fstream>
 #include <iostream>
-#include <map>
 #include <sstream>
 #include <string>
 #include <vector>

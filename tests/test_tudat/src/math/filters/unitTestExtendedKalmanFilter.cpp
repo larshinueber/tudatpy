@@ -14,13 +14,10 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/basics/utilities.h"
-#include "tudat/basics/testMacros.h"
 #include "tudat/basics/basicTypedefs.h"
 #include "tudat/io/basicInputOutput.h"
 #include "tudat/io/matrixTextFileReader.h"
 
-#include "tudat/math/statistics/basicStatistics.h"
 #include "tudat/math/filters/extendedKalmanFilter.h"
 #include "tudat/math/integrators/createNumericalIntegrator.h"
 

@@ -17,7 +17,6 @@
 #include "tudat/astro/basic_astro/physicalConstants.h"
 
 #include "tudat/interface/sofa/earthOrientation.h"
-#include "tudat/interface/sofa/sofaTimeConversions.h"
 #include "tudat/basics/timeType.h"
 
 namespace tudat

@@ -11,8 +11,6 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <algorithm>
-#include <cmath>
 #include <map>
 #include <string>
 #include <vector>
@@ -22,7 +20,6 @@
 #include <Eigen/Core>
 
 #include "tudat/basics/testMacros.h"
-#include "tudat/io/streamFilters.h"
 
 #include "tudat/io/basicInputOutput.h"
 #include "tudat/io/aerodynamicCoefficientReader.h"

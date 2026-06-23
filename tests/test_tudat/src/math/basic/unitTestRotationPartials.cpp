@@ -12,18 +12,12 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <limits>
-#include <string>
-#include <iostream>
-
 #include <boost/test/unit_test.hpp>
 
 #include <Eigen/Core>
 
-#include "tudat/astro/reference_frames/referenceFrameTransformations.h"
 #include "tudat/math/basic/linearAlgebra.h"
 #include "tudat/basics/testMacros.h"
-#include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/math/basic/rotationRepresentations.h"
 
 namespace tudat

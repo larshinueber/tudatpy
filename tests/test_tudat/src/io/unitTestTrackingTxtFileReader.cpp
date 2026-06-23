@@ -17,9 +17,8 @@
 
 #include <iostream>
 #include <utility>
-#include "tudat/basics/testMacros.h"
 #include "tudat/io/basicInputOutput.h"
-#include "tudat/simulation/estimation_setup/observationCollection.h"
+#include <boost/test/unit_test.hpp>
 
 #include "tudat/io/readTrackingTxtFile.h"
 #include "tudat/simulation/estimation_setup/processTrackingTxtFile.h"

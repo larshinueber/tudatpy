@@ -12,7 +12,6 @@
 #ifndef EXECUTEEARTHORBITERPARAMETERESTIMATIONTESTCASE_H
 #define EXECUTEEARTHORBITERPARAMETERESTIMATIONTESTCASE_H
 
-#include "tudat/simulation/estimation_setup/orbitDeterminationTestCaseUtilities.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"

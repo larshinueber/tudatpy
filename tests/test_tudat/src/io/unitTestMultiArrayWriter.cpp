@@ -11,8 +11,6 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <algorithm>
-#include <cmath>
 #include <map>
 #include <string>
 #include <vector>
@@ -26,15 +24,12 @@
 
 #include <Eigen/Core>
 
-#include "tudat/basics/testMacros.h"
-#include "tudat/io/streamFilters.h"
 #include "tudat/basics/utilities.h"
 
 #include "tudat/io/basicInputOutput.h"
 #include "tudat/io/multiDimensionalArrayWriter.h"
 #include "tudat/io/multiDimensionalArrayReader.h"
 #include "tudat/io/matrixTextFileReader.h"
-#include "tudat/io/mapTextFileReader.h"
 
 namespace tudat
 {

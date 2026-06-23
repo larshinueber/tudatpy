@@ -16,14 +16,12 @@
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include <iostream>
-#include <limits>
 #include "tudat/simulation/propagation_setup/singleArcDynamicsSimulator.h"
 
 #include <boost/test/unit_test.hpp>
 
 #include <Eigen/Core>
 
-#include "tudat/basics/utilityMacros.h"
 #include "tudat/math/integrators/createNumericalIntegrator.h"
 
 using namespace tudat;

@@ -23,12 +23,10 @@
 #include "tudat/simulation/estimation_setup/singleArcVariationalEquationsSolver.h"
 
 #include <boost/test/unit_test.hpp>
-#include "tudat/simulation/estimation_setup/variationalEquationsSolver.h"
 #include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
 
 #include <Eigen/Core>
 
-#include "tudat/io/basicInputOutput.h"
 #include "tudat/math/integrators/createNumericalIntegrator.h"
 
 namespace tudat

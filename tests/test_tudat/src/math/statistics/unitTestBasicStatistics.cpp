@@ -14,7 +14,6 @@
 
 #include <map>
 #include <limits>
-#include <iostream>
 
 #include <Eigen/Core>
 
@@ -22,7 +21,6 @@
 #include <boost/test/unit_test.hpp>
 
 #include "tudat/math/statistics/basicStatistics.h"
-#include "tudat/basics/utilities.h"
 
 namespace tudat
 {

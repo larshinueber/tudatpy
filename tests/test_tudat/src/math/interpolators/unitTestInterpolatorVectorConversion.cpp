@@ -18,13 +18,9 @@
 
 #include <vector>
 
-#include "tudat/math/basic/numericalDerivative.h"
 #include "tudat/basics/testMacros.h"
-#include "tudat/basics/utilities.h"
-#include "tudat/io/matrixTextFileReader.h"
 
 #include "tudat/math/interpolators/createInterpolator.h"
-#include "tudat/io/basicInputOutput.h"
 
 #include "tudat/interface/spice/spiceInterface.h"
 

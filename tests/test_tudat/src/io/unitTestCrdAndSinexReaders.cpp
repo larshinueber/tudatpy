@@ -17,8 +17,8 @@
 #include <iterator>
 
 #include <boost/filesystem.hpp>
+#include <boost/test/unit_test.hpp>
 
-#include "tudat/basics/testMacros.h"
 #include "tudat/io/readCrdFile.h"
 #include "tudat/io/readSinexFile.h"
 

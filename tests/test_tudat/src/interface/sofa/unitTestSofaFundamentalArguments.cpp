@@ -8,16 +8,15 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include "tudat/interface/sofa/sofaTimeConversions.h"
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <limits>
 #include <Eigen/LU>
 
 #include <boost/test/unit_test.hpp>
 
 #include "tudat/astro/basic_astro/timeConversions.h"
+#include "tudat/interface/sofa/sofaTimeConversions.h"
 #include "tudat/interface/sofa/fundamentalArguments.h"
 #include "tudat/interface/sofa/earthOrientation.h"
 

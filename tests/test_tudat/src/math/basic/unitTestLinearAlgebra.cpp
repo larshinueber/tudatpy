@@ -12,7 +12,6 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <iostream>
 #include <cmath>
 
 #include <boost/test/tools/floating_point_comparison.hpp>

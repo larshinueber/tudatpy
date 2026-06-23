@@ -15,8 +15,6 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <cmath>
-#include <limits>
 #include <stdexcept>
 #include <iostream>
 
@@ -25,7 +23,6 @@
 
 #include <Eigen/Core>
 
-#include "tudat/basics/testMacros.h"
 #include "tudat/io/basicInputOutput.h"
 #include "tudat/io/mapTextFileReader.h"
 

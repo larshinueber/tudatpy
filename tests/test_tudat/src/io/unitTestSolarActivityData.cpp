@@ -16,7 +16,6 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <istream>
 #include <string>
 #include <vector>
 #include <map>

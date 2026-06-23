@@ -21,8 +21,6 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <iostream>
-
 #include "tudat/io/parsedDataVectorUtilities.h"
 
 namespace tudat

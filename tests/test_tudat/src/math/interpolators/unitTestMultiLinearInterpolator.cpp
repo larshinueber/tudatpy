@@ -19,7 +19,6 @@
 #include <vector>
 #include <cmath>
 
-#include "tudat/basics/testMacros.h"
 #include "tudat/io/matrixTextFileReader.h"
 
 #include "tudat/math/interpolators/linearInterpolator.h"

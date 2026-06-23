@@ -15,12 +15,10 @@
 #include <boost/test/unit_test.hpp>
 
 #include "tudat/basics/basicTypedefs.h"
-#include "tudat/basics/testMacros.h"
 #include "tudat/io/basicInputOutput.h"
 #include "tudat/io/matrixTextFileReader.h"
 
 #include "tudat/math/filters/linearKalmanFilter.h"
-#include "tudat/math/integrators/createNumericalIntegrator.h"
 
 namespace tudat
 {

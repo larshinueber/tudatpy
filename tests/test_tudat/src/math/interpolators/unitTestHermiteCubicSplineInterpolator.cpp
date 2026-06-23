@@ -15,11 +15,7 @@
 
 #include <vector>
 
-#include "tudat/basics/testMacros.h"
-#include "tudat/io/matrixTextFileReader.h"
-
 #include "tudat/math/interpolators/hermiteCubicSplineInterpolator.h"
-#include "tudat/io/basicInputOutput.h"
 
 namespace tudat
 {

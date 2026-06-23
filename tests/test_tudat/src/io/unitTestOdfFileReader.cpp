@@ -12,14 +12,15 @@
 #define BOOST_TEST_MAIN
 
 #include <vector>
+
+#include <boost/test/unit_test.hpp>
+
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 
-#include "tudat/basics/testMacros.h"
 #include "tudat/io/readOdfFile.h"
 #include "tudat/simulation/estimation_setup/processOdfFile.h"
 
-#include "tudat/interface/sofa/sofaTimeConversions.h"
 #include "tudat/astro/earth_orientation/terrestrialTimeScaleConverter.h"
 
 namespace tudat
