@@ -17,18 +17,16 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <limits>
-
 #include <boost/test/tools/floating_point_comparison.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include <Eigen/Core>
 
 #include <tudat/astro/basic_astro/physicalConstants.h>
+#include "tudat/astro/basic_astro/orbitalElementConversions.h"
 #include <tudat/basics/testMacros.h>
 
 #include "tudat/astro/ephemerides/constantEphemeris.h"
-#include "tudat/astro/mission_segments/transferNode.h"
 #include "tudat/astro/mission_segments/transferLeg.h"
 
 namespace tudat

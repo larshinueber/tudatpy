@@ -11,16 +11,13 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <limits>
 #include <boost/test/unit_test.hpp>
 
 #include "tudat/interface/spice/spiceInterface.h"
-#include "tudat/simulation/estimation_setup/createCartesianStatePartials.h"
 #include "tudat/astro/orbit_determination/observation_partials/rotationMatrixPartial.h"
 #include "tudat/astro/ephemerides/fullPlanetaryRotationModel.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/environment_setup/createRotationModel.h"
-#include "tudat/io/basicInputOutput.h"
 
 namespace tudat
 {

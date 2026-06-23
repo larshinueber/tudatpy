@@ -14,6 +14,7 @@
 #include <memory>
 
 #include <Eigen/Core>
+#include <Eigen/LU>
 
 namespace tudat
 {

@@ -14,22 +14,11 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <limits>
-#include "fstream"
-#include "iostream"
-
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/basics/testMacros.h"
-#include "tudat/astro/aerodynamics/customAerodynamicCoefficientInterface.h"
-#include "tudat/astro/aerodynamics/aerodynamicAcceleration.h"
 #include "tudat/astro/reference_frames/aerodynamicAngleCalculator.h"
 #include "tudat/simulation/propagation_setup/singleArcDynamicsSimulator.h"
-#include "tudat/interface/spice/spiceEphemeris.h"
-#include "tudat/interface/spice/spiceRotationalEphemeris.h"
-#include "tudat/io/basicInputOutput.h"
 #include "tudat/simulation/environment_setup/body.h"
-#include "tudat/simulation/estimation_setup/createNumericalSimulator.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
 

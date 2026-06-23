@@ -17,8 +17,6 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <limits>
-
 #include <boost/test/tools/floating_point_comparison.hpp>
 #include <boost/test/unit_test.hpp>
 
@@ -26,7 +24,6 @@
 
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/astro/basic_astro/physicalConstants.h"
-#include "tudat/math/basic/sphericalHarmonics.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #include "tudat/simulation/environment_setup/createGravityField.h"

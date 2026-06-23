@@ -15,8 +15,6 @@
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 
-#include "tudat/basics/testMacros.h"
-
 #include "tudat/astro/basic_astro/unitConversions.h"
 #include "tudat/astro/ground_stations/pointingAnglesCalculator.h"
 #include "tudat/astro/ground_stations/groundStationState.h"

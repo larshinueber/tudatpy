@@ -13,23 +13,18 @@
 #define BOOST_TEST_MAIN
 
 #include <string>
-#include <thread>
 
 #include <limits>
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/basics/testMacros.h"
 #include "tudat/astro/basic_astro/physicalConstants.h"
-#include "tudat/astro/basic_astro/timeConversions.h"
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/math/integrators/createNumericalIntegrator.h"
-#include "tudat/math/interpolators/createInterpolator.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #include "tudat/simulation/environment_setup/createSystemModel.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
-#include "tudat/simulation/estimation_setup/createNumericalSimulator.h"
 #include "tudat/simulation/estimation_setup/estimatableParameterSettings.h"
 #include "tudat/simulation/propagation_setup/accelerationSettings.h"
 #include "tudat/simulation/propagation_setup/propagationSettings.h"
@@ -38,7 +33,6 @@
 #include "tudat/simulation/estimation_setup/simulateObservations.h"
 #include "tudat/simulation/estimation_setup/orbitDeterminationManager.h"
 #include "tudat/simulation/environment_setup/createGroundStations.h"
-#include "tudat/simulation/estimation_setup/podProcessing.h"
 #include "tudat/simulation/estimation_setup/compareEstimationAndCovarianceResultsTestCase.h"
 
 namespace tudat

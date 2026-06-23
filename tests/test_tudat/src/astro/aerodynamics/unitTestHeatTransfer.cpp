@@ -16,7 +16,6 @@
 #include <boost/test/unit_test.hpp>
 
 #include "tudat/astro/aerodynamics/equilibriumWallTemperature.h"
-#include "tudat/astro/aerodynamics/aerodynamics.h"
 
 namespace tudat
 {

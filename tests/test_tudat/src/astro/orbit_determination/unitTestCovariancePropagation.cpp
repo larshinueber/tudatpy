@@ -23,7 +23,6 @@
 #include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
 #include "tudat/simulation/estimation_setup/orbitDeterminationManager.h"
 #include "tudat/simulation/estimation_setup/simulateObservations.h"
-#include "tudat/simulation/estimation_setup/podProcessing.h"
 #include "tudat/astro/propagators/propagateCovariance.h"
 
 using namespace tudat;

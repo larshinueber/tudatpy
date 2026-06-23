@@ -14,13 +14,9 @@
 #include <limits>
 #include <string>
 #include "tudat/basics/testMacros.h"
-#include "tudat/astro/basic_astro/orbitalElementConversions.h"
-#include "tudat/astro/basic_astro/unitConversions.h"
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/astro/aerodynamics/exponentialAtmosphere.h"
-#include "tudat/astro/gravitation/centralGravityModel.h"
 #include "tudat/astro/gravitation/sphericalHarmonicsGravityField.h"
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/io/basicInputOutput.h"
@@ -33,24 +29,15 @@
 #include "tudat/astro/orbit_determination/acceleration_partials/numericalAccelerationPartial.h"
 
 #include "tudat/astro/gravitation/mutualSphericalHarmonicGravityModel.h"
-#include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
 #include "tudat/astro/basic_astro/physicalConstants.h"
-#include "tudat/astro/basic_astro/timeConversions.h"
 #include "tudat/interface/spice/spiceInterface.h"
-#include "tudat/math/integrators/createNumericalIntegrator.h"
-#include "tudat/math/interpolators/createInterpolator.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #include "tudat/simulation/environment_setup/createSystemModel.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/environment_setup/createGravityField.h"
-#include "tudat/simulation/environment_setup/createEphemeris.h"
-#include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
 #include "tudat/simulation/estimation_setup/createAccelerationPartials.h"
-#include "tudat/simulation/estimation_setup/createNumericalSimulator.h"
 #include "tudat/simulation/estimation_setup/estimatableParameterSettings.h"
 #include "tudat/simulation/propagation_setup/accelerationSettings.h"
-#include "tudat/simulation/propagation_setup/propagationSettings.h"
-#include "tudat/simulation/propagation_setup/propagationTerminationSettings.h"
 
 using namespace tudat::ephemerides;
 using namespace tudat::simulation_setup;

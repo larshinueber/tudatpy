@@ -11,7 +11,6 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <limits>
 #include <map>
 
 #include <boost/test/tools/floating_point_comparison.hpp>
@@ -19,14 +18,7 @@
 
 #include <Eigen/Core>
 
-#include "tudat/astro/basic_astro/orbitalElementConversions.h"
-#include "tudat/basics/testMacros.h"
-#include "tudat/math/basic/basicMathematicsFunctions.h"
 #include "tudat/math/basic/mathematicalConstants.h"
-#include "tudat/astro/basic_astro/keplerPropagatorTestData.h"
-#include "tudat/astro/basic_astro/keplerPropagator.h"
-#include "tudat/astro/ephemerides/keplerEphemeris.h"
-#include "tudat/io/basicInputOutput.h"
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/simulation/environment_setup/createEphemeris.h"
 

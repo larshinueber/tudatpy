@@ -12,15 +12,10 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <limits>
 #include <boost/test/unit_test.hpp>
-
-#include "tudat/basics/testMacros.h"
-#include "tudat/math/basic/mathematicalConstants.h"
 
 #include "tudat/astro/earth_orientation/earthOrientationCalculator.h"
 #include "tudat/interface/sofa/earthOrientation.h"
-#include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/astro/earth_orientation/sofaEarthOrientationCookbookExamples.h"
 
 namespace tudat

@@ -27,6 +27,7 @@
 #include <Eigen/Core>
 
 #include <tudat/astro/basic_astro/physicalConstants.h>
+#include "tudat/astro/basic_astro/orbitalElementConversions.h"
 #include <tudat/basics/testMacros.h>
 
 #include "tudat/astro/ephemerides/constantEphemeris.h"

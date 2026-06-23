@@ -15,8 +15,7 @@
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/propagation_setup/singleArcDynamicsSimulator.h"
 
-#include "tudat/astro/aerodynamics/tests/applicationOutput.h"
-#include "tudat/io/basicInputOutput.h"
+#include "tudat/astro/aerodynamics/applicationOutput.h"
 
 namespace tudat
 {

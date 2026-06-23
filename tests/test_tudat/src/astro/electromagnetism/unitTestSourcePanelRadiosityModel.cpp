@@ -17,8 +17,6 @@
 
 #include <Eigen/Core>
 
-#include "tudat/basics/testMacros.h"
-#include "tudat/astro/basic_astro/physicalConstants.h"
 #include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/astro/electromagnetism/sourcePanelRadiosityModel.h"
 #include "tudat/astro/electromagnetism/surfacePropertyDistribution.h"

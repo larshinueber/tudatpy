@@ -19,8 +19,6 @@
 
 #include <Eigen/Core>
 
-#include "tudat/basics/testMacros.h"
-
 #include "tudat/astro/ephemerides/synchronousRotationalEphemeris.h"
 
 namespace tudat

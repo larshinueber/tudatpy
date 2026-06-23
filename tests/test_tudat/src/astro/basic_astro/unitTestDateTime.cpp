@@ -13,11 +13,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/basics/testMacros.h"
 #include "tudat/basics/timeType.h"
 #include "tudat/astro/basic_astro/dateTime.h"
-
-#include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat
 {

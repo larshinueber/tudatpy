@@ -14,10 +14,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include "tudat/interface/spice/spiceInterface.h"
-#include "tudat/io/basicInputOutput.h"
 
-#include "tudat/interface/spice/spiceRotationalEphemeris.h"
-#include "tudat/astro/ephemerides/fullPlanetaryRotationModel.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/environment_setup/createRotationModel.h"
 

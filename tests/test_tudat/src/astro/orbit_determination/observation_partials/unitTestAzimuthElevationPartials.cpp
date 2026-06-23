@@ -12,7 +12,6 @@
 #define BOOST_TEST_MAIN
 
 #include <cmath>
-#include <limits>
 #include <string>
 #include <vector>
 
@@ -20,11 +19,8 @@
 #include <Eigen/Geometry>
 
 #include "tudat/basics/testMacros.h"
-#include "tudat/interface/spice/spiceInterface.h"
-#include "tudat/astro/observation_models/azimuthElevationObservationModel.h"
 #include "tudat/astro/orbit_determination/observation_partials/azimuthElevationPartial.h"
 #include "tudat/simulation/estimation_setup/createObservationModelFactory.h"
-#include "tudat/simulation/estimation_setup/createObservationPartials.h"
 #include "tudat/support/observationPartialTestFunctions.h"
 
 namespace tudat

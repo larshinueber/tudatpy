@@ -21,8 +21,6 @@
 
 #include <Eigen/Core>
 
-#include "tudat/basics/testMacros.h"
-
 #include "tudat/astro/mission_segments/lambertTargeter.h"
 
 namespace tudat

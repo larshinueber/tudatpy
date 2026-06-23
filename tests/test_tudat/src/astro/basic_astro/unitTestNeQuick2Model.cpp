@@ -19,10 +19,7 @@
 #include "tudat/io/basicInputOutput.h"
 #include "tudat/astro/basic_astro/neQuick2Model.h"
 
-#include <fstream>
-#include <sstream>
 #include <cmath>
-#include <iostream>
 
 namespace tudat
 {

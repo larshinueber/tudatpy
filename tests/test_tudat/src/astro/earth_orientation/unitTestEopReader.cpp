@@ -15,13 +15,9 @@
 #include <limits>
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/basics/testMacros.h"
-
-#include "tudat/math/interpolators/cubicSplineInterpolator.h"
 #include "tudat/io/basicInputOutput.h"
 
 #include "tudat/astro/earth_orientation/earthOrientationCalculator.h"
-#include "tudat/math/interpolators/jumpDataLinearInterpolator.h"
 
 namespace tudat
 {

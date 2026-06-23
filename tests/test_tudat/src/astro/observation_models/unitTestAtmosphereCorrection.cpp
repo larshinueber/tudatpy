@@ -14,12 +14,8 @@
 #include <boost/test/unit_test.hpp>
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
-#include "tudat/basics/testMacros.h"
-
-#include <numeric>
 
 #include "tudat/astro/basic_astro/physicalConstants.h"
-#include "tudat/astro/observation_models.h"
 #include "tudat/io/readTabulatedWeatherData.h"
 #include "tudat/io/readTabulatedMediaCorrections.h"
 #include "tudat/astro/ground_stations/meteorologicalConditions.h"

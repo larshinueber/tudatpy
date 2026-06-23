@@ -16,7 +16,6 @@
 #include "tudat/basics/testMacros.h"
 
 #include "tudat/interface/spice/spiceInterface.h"
-#include "tudat/io/basicInputOutput.h"
 
 #include "tudat/astro/ephemerides/frameManager.h"
 #include "tudat/astro/ephemerides/constantEphemeris.h"

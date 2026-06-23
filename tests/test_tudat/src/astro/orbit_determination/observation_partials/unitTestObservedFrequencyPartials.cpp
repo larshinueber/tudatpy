@@ -11,7 +11,6 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <limits>
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include <string>
@@ -19,18 +18,10 @@
 #include <boost/test/unit_test.hpp>
 
 #include "tudat/basics/testMacros.h"
-#include "tudat/astro/propagators/propagateCovariance.h"
 #include "tudat/simulation/environment_setup/createGroundStations.h"
 #include "tudat/simulation/estimation_setup/createObservationModelFactory.h"
-#include "tudat/simulation/estimation_setup/podProcessing.h"
-#include "tudat/simulation/estimation_setup/simulateObservations.h"
 #include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
-#include "tudat/io/readOdfFile.h"
 
-#include "tudat/io/readOdfFile.h"
-#include "tudat/io/readTabulatedMediaCorrections.h"
-#include "tudat/io/readTabulatedWeatherData.h"
-#include "tudat/simulation/estimation_setup/processOdfFile.h"
 #include "tudat/simulation/estimation_setup/processTrackingTxtFile.h"
 
 #include <boost/date_time/gregorian/gregorian.hpp>

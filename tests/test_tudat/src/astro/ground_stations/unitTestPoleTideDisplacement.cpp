@@ -2,11 +2,9 @@
 #define BOOST_TEST_MAIN
 
 #include <boost/test/unit_test.hpp>
-#include <iostream>
 
-#include "tudat/io/basicInputOutput.h"
+#include "tudat/astro/basic_astro/unitConversions.h"
 #include "tudat/astro/ground_stations/poleTideDeformation.h"
-#include "tudat/astro/basic_astro/dateTime.h"
 #include "tudat/astro/earth_orientation/earthOrientationCalculator.h"
 
 namespace tudat

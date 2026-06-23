@@ -21,8 +21,6 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/math/basic/coordinateConversions.h"
-
 #include "tudat/astro/basic_astro/stateVectorIndices.h"
 #include "tudat/astro/ephemerides/keplerStateExtractor.h"
 #include "tudat/io/parsedDataVectorUtilities.h"

@@ -19,10 +19,10 @@
  *
  */
 
+#include "tudat/astro/basic_astro/stateVectorIndices.h"
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <cmath>
 #include <limits>
 
 #include <boost/test/tools/floating_point_comparison.hpp>
@@ -30,7 +30,6 @@
 
 #include <Eigen/Core>
 
-#include "tudat/astro/basic_astro/orbitalElementConversions.h"
 #include "tudat/math/basic/mathematicalConstants.h"
 
 #include "tudat/astro/gravitation/unitConversionsCircularRestrictedThreeBodyProblem.h"

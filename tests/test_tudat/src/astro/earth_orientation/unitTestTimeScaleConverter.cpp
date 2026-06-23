@@ -13,7 +13,6 @@
 #define BOOST_TEST_MAIN
 
 #include <limits>
-#include "tudat/basics/testMacros.h"
 #include "tudat/basics/utilityMacros.h"
 
 #include <boost/test/unit_test.hpp>

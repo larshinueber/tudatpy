@@ -26,7 +26,6 @@
 
 #include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/astro/aerodynamics/hypersonicLocalInclinationAnalysis.h"
-#include "tudat/astro/aerodynamics/customAerodynamicCoefficientInterface.h"
 #include "tudat/basics/basicTypedefs.h"
 #include "tudat/math/geometric/capsule.h"
 #include "tudat/math/geometric/sphereSegment.h"

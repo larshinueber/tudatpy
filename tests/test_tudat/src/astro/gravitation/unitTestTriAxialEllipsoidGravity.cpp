@@ -14,7 +14,6 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/basics/testMacros.h"
 #include "tudat/astro/gravitation/triAxialEllipsoidGravity.h"
 
 namespace tudat

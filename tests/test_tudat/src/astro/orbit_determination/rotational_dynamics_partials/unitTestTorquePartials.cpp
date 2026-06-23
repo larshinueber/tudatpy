@@ -14,22 +14,15 @@
 #include <limits>
 #include <string>
 #include "tudat/basics/testMacros.h"
-#include "tudat/astro/basic_astro/orbitalElementConversions.h"
-#include "tudat/astro/basic_astro/unitConversions.h"
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/astro/basic_astro/sphericalStateConversions.h"
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/astro/ephemerides/keplerEphemeris.h"
-#include "tudat/astro/relativity/metric.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/numericalAccelerationPartial.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/gravitationalParameter.h"
 #include "tudat/simulation/estimation_setup/createTorquePartials.h"
-#include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #include "tudat/simulation/propagation_setup/createTorqueModel.h"
 #include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
-#include "tudat/simulation/environment_setup/defaultBodies.h"
 
 namespace tudat
 {

@@ -18,16 +18,10 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/basics/testMacros.h"
-
 #include "tudat/io/readOdfFile.h"
-#include "tudat/io/readTabulatedMediaCorrections.h"
-#include "tudat/io/readTabulatedWeatherData.h"
 #include "tudat/simulation/estimation_setup/processOdfFile.h"
 #include "tudat/simulation/estimation_setup/simulateObservations.h"
 #include <boost/date_time/gregorian/gregorian.hpp>
-
-#include "tudat/astro/ground_stations/transmittingFrequencies.h"
 
 namespace tudat
 {

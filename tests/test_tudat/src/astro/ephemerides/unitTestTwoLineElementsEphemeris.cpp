@@ -16,8 +16,6 @@
 #include <boost/test/tools/floating_point_comparison.hpp>
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/basics/testMacros.h"
-
 #include "tudat/astro/ephemerides/tleEphemeris.h"
 #include "tudat/astro/basic_astro/dateTime.h"
 #include "tudat/astro/earth_orientation/terrestrialTimeScaleConverter.h"

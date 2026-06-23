@@ -20,7 +20,6 @@
 
 #include "tudat/basics/testMacros.h"
 #include "tudat/astro/basic_astro/unitConversions.h"
-#include "tudat/astro/observation_models/azimuthElevationObservationModel.h"
 #include "tudat/simulation/environment_setup/createBodyShapeModel.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #include "tudat/simulation/environment_setup/createGroundStations.h"

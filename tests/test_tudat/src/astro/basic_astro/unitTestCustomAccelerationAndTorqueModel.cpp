@@ -25,8 +25,6 @@
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/propagation_setup/singleArcDynamicsSimulator.h"
 
-#include "tudat/basics/testMacros.h"
-
 namespace tudat
 {
 namespace unit_tests

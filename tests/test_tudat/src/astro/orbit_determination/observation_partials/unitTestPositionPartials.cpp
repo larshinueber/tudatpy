@@ -11,7 +11,6 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <limits>
 #include <string>
 #include <vector>
 
@@ -19,7 +18,6 @@
 
 #include "tudat/basics/testMacros.h"
 
-#include "tudat/io/basicInputOutput.h"
 #include "tudat/interface/spice/spiceInterface.h"
 
 #include "tudat/astro/basic_astro/sphericalBodyShapeModel.h"
@@ -29,10 +27,7 @@
 #include "tudat/simulation/estimation_setup/createCartesianStatePartials.h"
 #include "tudat/support/numericalObservationPartial.h"
 #include "tudat/simulation/environment_setup/createGroundStations.h"
-#include "tudat/simulation/environment_setup/createBodiesFactory.h"
-#include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/environment_setup/createRotationModel.h"
-#include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
 
 namespace tudat
 {

@@ -31,7 +31,6 @@
 
 #include "tudat/astro/basic_astro/convertMeanToEccentricAnomalies.h"
 #include "tudat/astro/basic_astro/orbitalElementConversions.h"
-#include "tudat/astro/basic_astro/unitConversions.h"
 #include "tudat/math/basic/mathematicalConstants.h"
 #include "tudat/io/basicInputOutput.h"
 

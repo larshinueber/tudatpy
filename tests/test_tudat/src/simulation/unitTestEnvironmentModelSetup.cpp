@@ -18,6 +18,8 @@
 #include <Eigen/Core>
 
 #include "tudat/astro/aerodynamics/exponentialAtmosphere.h"
+#include "tudat/astro/gravitation/polyhedronGravityField.h"
+#include "tudat/simulation/environment_setup/defaultGroundStationSettings.h"
 
 #if TUDAT_BUILD_WITH_NRLMSISE
 #include "tudat/astro/aerodynamics/nrlmsise00Atmosphere.h"
@@ -35,19 +37,14 @@
 #include "tudat/astro/ephemerides/simpleRotationalEphemeris.h"
 #include "tudat/astro/ephemerides/itrsToGcrsRotationModel.h"
 #include "tudat/astro/ephemerides/aeordynamicAngleRotationalEphemeris.h"
-#include "tudat/astro/gravitation/centralGravityModel.h"
 #include "tudat/astro/gravitation/timeDependentSphericalHarmonicsGravityField.h"
 #include "tudat/astro/gravitation/basicSolidBodyTideGravityFieldVariations.h"
 #include "tudat/basics/testMacros.h"
 #include "tudat/astro/ephemerides/synchronousRotationalEphemeris.h"
 
-#include "tudat/interface/spice/spiceEphemeris.h"
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/astro/gravitation/triAxialEllipsoidGravity.h"
 #include "tudat/io/basicInputOutput.h"
-#include "tudat/io/matrixTextFileReader.h"
-#include "tudat/io/solarActivityData.h"
-#include "tudat/io/parseSolarActivityData.h"
 #include "tudat/math/basic/coordinateConversions.h"
 #include "tudat/math/interpolators/lagrangeInterpolator.h"
 #include "tudat/simulation/environment_setup/createAtmosphereModel.h"

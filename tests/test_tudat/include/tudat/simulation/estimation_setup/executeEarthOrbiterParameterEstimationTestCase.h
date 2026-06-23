@@ -148,14 +148,25 @@ Eigen::VectorXd executeEarthOrbiterParameterEstimation(
             convertKeplerianToCartesianElements( asterixInitialStateInKeplerianElements, earthGravitationalParameter );
 
     // Create propagator settings
-    std::shared_ptr< TranslationalStatePropagatorSettings< StateScalarType, TimeType > > propagatorSettings =
-            std::make_shared< TranslationalStatePropagatorSettings< StateScalarType, TimeType > >(
-                    centralBodies, accelerationModelMap, bodiesToIntegrate, systemInitialState, TimeType( finalEphemerisTime ), cowell );
+    std::shared_ptr< propagators::TranslationalStatePropagatorSettings< StateScalarType, TimeType > > propagatorSettings =
+            std::make_shared< propagators::TranslationalStatePropagatorSettings< StateScalarType, TimeType > >(
+                    centralBodies,
+                    accelerationModelMap,
+                    bodiesToIntegrate,
+                    systemInitialState,
+                    TimeType( finalEphemerisTime ),
+                    propagators::cowell );
 
     // Create integrator settings
-    std::shared_ptr< IntegratorSettings< TimeType > > integratorSettings =
-            std::make_shared< RungeKuttaVariableStepSizeSettings< TimeType > >(
-                    TimeType( initialEphemerisTime ), 40.0, CoefficientSets::rungeKuttaFehlberg78, 40.0, 40.0, 1.0, 1.0 );
+    std::shared_ptr< numerical_integrators::IntegratorSettings< TimeType > > integratorSettings =
+            std::make_shared< numerical_integrators::RungeKuttaVariableStepSizeSettings< TimeType > >(
+                    TimeType( initialEphemerisTime ),
+                    40.0,
+                    numerical_integrators::CoefficientSets::rungeKuttaFehlberg78,
+                    40.0,
+                    40.0,
+                    1.0,
+                    1.0 );
 
     // Define parameters.
     std::vector< LinkEnds > stationReceiverLinkEnds;
@@ -187,27 +198,32 @@ Eigen::VectorXd executeEarthOrbiterParameterEstimation(
 
     std::cout << "Link ends " << getLinkEndsString( linkEndsPerObservable[ one_way_doppler ].at( 0 ) ) << std::endl;
 
-    std::vector< std::shared_ptr< EstimatableParameterSettings > > parameterNames;
-    parameterNames.push_back( std::make_shared< InitialTranslationalStateEstimatableParameterSettings< StateScalarType > >(
-            "Vehicle", systemInitialState, "Earth" ) );
+    std::vector< std::shared_ptr< estimatable_parameters::EstimatableParameterSettings > > parameterNames;
+    parameterNames.push_back(
+            std::make_shared< estimatable_parameters::InitialTranslationalStateEstimatableParameterSettings< StateScalarType > >(
+                    "Vehicle", systemInitialState, "Earth" ) );
 
     if( useFullParameterSet )
     {
-        parameterNames.push_back( std::make_shared< EstimatableParameterSettings >( "Vehicle", radiation_pressure_coefficient ) );
-        parameterNames.push_back( std::make_shared< EstimatableParameterSettings >( "Vehicle", constant_drag_coefficient ) );
-        parameterNames.push_back( std::make_shared< ConstantObservationBiasEstimatableParameterSettings >(
+        parameterNames.push_back( std::make_shared< estimatable_parameters::EstimatableParameterSettings >(
+                "Vehicle", estimatable_parameters::radiation_pressure_coefficient ) );
+        parameterNames.push_back( std::make_shared< estimatable_parameters::EstimatableParameterSettings >(
+                "Vehicle", estimatable_parameters::constant_drag_coefficient ) );
+        parameterNames.push_back( std::make_shared< estimatable_parameters::ConstantObservationBiasEstimatableParameterSettings >(
                 linkEndsPerObservable.at( one_way_range ).at( 0 ), one_way_range, true ) );
-        parameterNames.push_back( std::make_shared< ConstantObservationBiasEstimatableParameterSettings >(
+        parameterNames.push_back( std::make_shared< estimatable_parameters::ConstantObservationBiasEstimatableParameterSettings >(
                 linkEndsPerObservable.at( one_way_range ).at( 0 ), one_way_range, false ) );
-        parameterNames.push_back( std::make_shared< ConstantObservationBiasEstimatableParameterSettings >(
+        parameterNames.push_back( std::make_shared< estimatable_parameters::ConstantObservationBiasEstimatableParameterSettings >(
                 linkEndsPerObservable.at( one_way_range ).at( 1 ), one_way_range, false ) );
 
-        parameterNames.push_back( std::make_shared< SphericalHarmonicEstimatableParameterSettings >(
-                2, 0, 2, 2, "Earth", spherical_harmonics_cosine_coefficient_block ) );
-        parameterNames.push_back( std::make_shared< SphericalHarmonicEstimatableParameterSettings >(
-                2, 1, 2, 2, "Earth", spherical_harmonics_sine_coefficient_block ) );
-        parameterNames.push_back( std::make_shared< EstimatableParameterSettings >( "Earth", rotation_pole_position ) );
-        parameterNames.push_back( std::make_shared< EstimatableParameterSettings >( "Earth", ground_station_position, "Station1" ) );
+        parameterNames.push_back( std::make_shared< estimatable_parameters::SphericalHarmonicEstimatableParameterSettings >(
+                2, 0, 2, 2, "Earth", estimatable_parameters::spherical_harmonics_cosine_coefficient_block ) );
+        parameterNames.push_back( std::make_shared< estimatable_parameters::SphericalHarmonicEstimatableParameterSettings >(
+                2, 1, 2, 2, "Earth", estimatable_parameters::spherical_harmonics_sine_coefficient_block ) );
+        parameterNames.push_back( std::make_shared< estimatable_parameters::EstimatableParameterSettings >(
+                "Earth", estimatable_parameters::rotation_pole_position ) );
+        parameterNames.push_back( std::make_shared< estimatable_parameters::EstimatableParameterSettings >(
+                "Earth", estimatable_parameters::ground_station_position, "Station1" ) );
     }
 
     // Create parameters

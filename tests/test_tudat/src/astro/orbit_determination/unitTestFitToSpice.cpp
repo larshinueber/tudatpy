@@ -15,14 +15,9 @@
 #include <string>
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
-#include <thread>
-
-#include <limits>
 
 #include <boost/test/unit_test.hpp>
-#include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
 #include "tudat/simulation/estimation_setup/fitOrbitToEphemeris.h"
-#include "tudat/simulation/estimation_setup/orbitDeterminationManager.h"
 
 namespace tudat
 {

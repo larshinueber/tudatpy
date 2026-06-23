@@ -26,7 +26,6 @@
 
 #include "tudat/interface/spice/spiceEphemeris.h"
 #include "tudat/interface/spice/spiceInterface.h"
-#include "tudat/io/basicInputOutput.h"
 
 namespace tudat
 {

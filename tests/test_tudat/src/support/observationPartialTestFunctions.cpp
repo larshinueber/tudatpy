@@ -9,10 +9,15 @@
  */
 
 #include <algorithm>
+#include "tudat/astro/basic_astro/oblateSpheroidBodyShapeModel.h"
+#include "tudat/astro/basic_astro/sphericalBodyShapeModel.h"
+#include "tudat/astro/orbit_determination/estimatable_parameters/constantRotationRate.h"
+#include "tudat/astro/orbit_determination/estimatable_parameters/constantRotationalOrientation.h"
 #include "tudat/simulation/environment_setup/createRotationModel.h"
 
 #include "tudat/astro/ephemerides/constantRotationalEphemeris.h"
 #include "tudat/support/observationPartialTestFunctions.h"
+#include "tudat/simulation/environment_setup/defaultGroundStationSettings.h"
 #include "tudat/simulation/propagation_setup/dynamicsSimulatorBase.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/initialTranslationalState.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/ppnParameters.h"

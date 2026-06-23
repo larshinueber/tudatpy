@@ -18,12 +18,9 @@
 #include <boost/test/unit_test.hpp>
 
 #include "tudat/astro/basic_astro/timeConversions.h"
-#include "tudat/astro/observation_models/lightTimeSolution.h"
 #include "tudat/simulation/estimation_setup/createObservationModelFactory.h"
 #include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
-#include "tudat/simulation/estimation_setup/createLightTimeCorrectionPartials.h"
 #include "tudat/simulation/estimation_setup/createDirectObservationPartials.h"
-#include "tudat/astro/orbit_determination/observation_partials/firstOrderRelativisticPartial.h"
 #include "tudat/support/observationPartialTestFunctions.h"
 
 namespace tudat

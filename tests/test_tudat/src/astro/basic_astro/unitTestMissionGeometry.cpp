@@ -25,9 +25,9 @@
 #include <Eigen/Core>
 
 #include "tudat/math/basic/mathematicalConstants.h"
-#include "tudat/astro/basic_astro/orbitalElementConversions.h"
 
 #include "tudat/astro/basic_astro/missionGeometry.h"
+#include "tudat/astro/basic_astro/stateVectorIndices.h"
 
 namespace tudat
 {

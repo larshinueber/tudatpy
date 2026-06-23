@@ -20,11 +20,7 @@
 #include <Eigen/Core>
 
 #include "tudat/math/basic/mathematicalConstants.h"
-#include "tudat/astro/aerodynamics/hypersonicLocalInclinationAnalysis.h"
-#include "tudat/astro/aerodynamics/customAerodynamicCoefficientInterface.h"
 #include "tudat/basics/basicTypedefs.h"
-#include "tudat/math/geometric/capsule.h"
-#include "tudat/math/geometric/sphereSegment.h"
 #include "tudat/interface/spice/spiceInterface.h"
 #include "tudat/astro/basic_astro/unitConversions.h"
 #include "tudat/astro/basic_astro/orbitalElementConversions.h"

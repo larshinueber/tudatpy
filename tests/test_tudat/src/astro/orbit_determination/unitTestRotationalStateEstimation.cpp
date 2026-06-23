@@ -11,7 +11,6 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <limits>
 #include "tudat/simulation/environment_setup/createRotationModel.h"
 #include "tudat/simulation/environment_setup/createGravityField.h"
 #include "tudat/simulation/environment_setup/createEphemeris.h"
@@ -19,16 +18,12 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/basics/testMacros.h"
 #include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
 
 #include "tudat/astro/ephemerides/keplerEphemeris.h"
 #include "tudat/astro/basic_astro/sphericalBodyShapeModel.h"
-#include "tudat/astro/propagators/propagateCovariance.h"
 #include "tudat/simulation/environment_setup/createGroundStations.h"
-#include "tudat/simulation/estimation_setup/createObservationModelFactory.h"
 #include "tudat/simulation/estimation_setup/orbitDeterminationManager.h"
-#include "tudat/simulation/estimation_setup/podProcessing.h"
 #include "tudat/simulation/estimation_setup/simulateObservations.h"
 
 namespace tudat

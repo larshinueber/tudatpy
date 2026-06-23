@@ -1,10 +1,8 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include "tudat/astro/aerodynamics/exponentialAtmosphere.h"
 #include "tudat/astro/ephemerides/constantEphemeris.h"
 #include "tudat/astro/ephemerides/constantRotationalEphemeris.h"
-#include "tudat/simulation/environment_setup/createAtmosphereModel.h"
 #include "tudat/simulation/propagation_setup/createEnvironmentUpdater.h"
 #include "tudat/simulation/propagation_setup/propagationOutputSettings.h"
 #include "tudat/astro/aerodynamics/comaModel.h"

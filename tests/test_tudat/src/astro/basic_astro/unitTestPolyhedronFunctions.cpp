@@ -12,15 +12,12 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <limits>
-
 #include <boost/test/tools/floating_point_comparison.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include "tudat/basics/testMacros.h"
 
 #include "tudat/astro/basic_astro/polyhedronFuntions.h"
-#include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat
 {

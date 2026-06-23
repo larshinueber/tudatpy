@@ -39,8 +39,6 @@
 #include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
 
 #include "tudat/io/readHistoryFromFile.h"
-#include "tudat/simulation/estimation_setup/simulateObservations.h"
-#include "tudat/simulation/environment_setup/createGroundStations.h"
 
 namespace tudat
 {

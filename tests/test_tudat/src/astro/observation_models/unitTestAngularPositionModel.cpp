@@ -18,10 +18,7 @@
 
 #include "tudat/basics/testMacros.h"
 
-#include "tudat/io/basicInputOutput.h"
-
 #include "tudat/simulation/environment_setup/body.h"
-#include "tudat/astro/observation_models/angularPositionObservationModel.h"
 #include "tudat/simulation/estimation_setup/createObservationModelFactory.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"

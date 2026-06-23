@@ -17,11 +17,9 @@
 
 #include <Eigen/Core>
 
-#include "tudat/astro/basic_astro/orbitalElementConversions.h"
 #include "tudat/astro/basic_astro/unitConversions.h"
 #include "tudat/basics/testMacros.h"
 #include "tudat/math/basic/mathematicalConstants.h"
-#include "tudat/math/basic/basicMathematicsFunctions.h"
 
 #include "tudat/astro/basic_astro/unifiedStateModelModifiedRodriguesParameterElementConversions.h"
 #include "tudat/basics/basicTypedefs.h"

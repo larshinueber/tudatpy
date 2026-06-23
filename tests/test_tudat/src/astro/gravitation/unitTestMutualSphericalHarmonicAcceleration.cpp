@@ -11,19 +11,13 @@
 #define BOOST_TEST_MAIN
 
 #include <string>
-#include <thread>
 
 #include <boost/test/unit_test.hpp>
 #include <boost/random/uniform_01.hpp>
 
-#include "tudat/astro/basic_astro/orbitalElementConversions.h"
-#include "tudat/astro/basic_astro/physicalConstants.h"
-#include "tudat/basics/testMacros.h"
-
 #include "tudat/astro/gravitation/thirdBodyPerturbation.h"
 #include "tudat/astro/gravitation/mutualSphericalHarmonicGravityModel.h"
 #include "tudat/interface/spice/spiceInterface.h"
-#include "tudat/io/basicInputOutput.h"
 #include "tudat/simulation/propagation_setup/createAccelerationModels.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #include "tudat/simulation/environment_setup/createGravityField.h"

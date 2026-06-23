@@ -7,7 +7,6 @@
 #include "tudat/io/basicInputOutput.h"
 #include "tudat/astro/ground_stations/oceanTideEarthDeformation.h"
 #include "tudat/astro/basic_astro/dateTime.h"
-#include "tudat/astro/earth_orientation/terrestrialTimeScaleConverter.h"
 
 namespace tudat
 {
@@ -15,7 +14,6 @@ namespace unit_tests
 {
 
 using namespace basic_astrodynamics;
-using namespace earth_orientation;
 
 BOOST_AUTO_TEST_SUITE( test_ocean_tide_site_displacement )
 

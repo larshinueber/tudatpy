@@ -28,18 +28,15 @@
 #include <tudat/astro/basic_astro/physicalConstants.h>
 #include <tudat/basics/testMacros.h>
 #include <tudat/math/basic/mathematicalConstants.h>
-#include "tudat/astro/basic_astro/unitConversions.h"
 #include <tudat/astro/basic_astro/orbitalElementConversions.h>
 
 #include <tudat/io/basicInputOutput.h>
 
 #include "tudat/astro/ephemerides/approximatePlanetPositions.h"
-#include "tudat/astro/ephemerides/constantEphemeris.h"
-#include "tudat/astro/gravitation/gravityFieldModel.h"
 #include "tudat/astro/mission_segments/createTransferTrajectory.h"
+#include "tudat/astro/mission_segments/gravityAssist.h"
 #include "tudat/simulation/environment_setup/body.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
-#include "tudat/simulation/environment_setup/defaultBodies.h"
 
 #include "tudat/math/root_finders/createRootFinder.h"
 

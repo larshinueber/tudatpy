@@ -17,7 +17,10 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/simulation/estimation.h"
+#include "tudat/simulation/estimation_setup/createObservationModelFactory.h"
+#include "tudat/simulation/environment_setup/createGroundStations.h"
+#include "tudat/simulation/estimation_setup/observationInterfacesForwardDeclarations.h"
+#include "tudat/simulation/estimation_setup/simulateObservations.h"
 
 namespace tudat
 {

@@ -18,7 +18,6 @@
 #define BOOST_TEST_MAIN
 
 #include <memory>
-#include <tuple>
 
 #include <boost/test/unit_test.hpp>
 #include <Eigen/Core>

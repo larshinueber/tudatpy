@@ -14,13 +14,13 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/basics/testMacros.h"
 #include "tudat/math/basic/mathematicalConstants.h"
 
 #include "tudat/io/basicInputOutput.h"
 
 #include "tudat/astro/earth_orientation/shortPeriodEarthOrientationCorrectionCalculator.h"
 #include "tudat/astro/basic_astro/timeConversions.h"
+#include "tudat/astro/basic_astro/unitConversions.h"
 #include "tudat/interface/sofa/sofaTimeConversions.h"
 
 namespace tudat

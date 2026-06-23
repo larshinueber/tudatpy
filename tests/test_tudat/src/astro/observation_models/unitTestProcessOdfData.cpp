@@ -11,10 +11,8 @@
 #define BOOST_TEST_MAIN
 
 #include <boost/test/unit_test.hpp>
-#include <limits>
 #include <string>
 
-#include "tudat/basics/testMacros.h"
 #include "tudat/io/readOdfFile.h"
 #include "tudat/simulation/estimation_setup/processOdfFile.h"
 

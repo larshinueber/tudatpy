@@ -8,6 +8,7 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
+#include "tudat/interface/sofa/sofaTimeConversions.h"
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 

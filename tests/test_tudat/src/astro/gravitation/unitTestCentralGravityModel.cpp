@@ -16,7 +16,6 @@
 
 #include "tudat/astro/gravitation/centralGravityModel.h"
 #include "tudat/basics/testMacros.h"
-#include "tudat/astro/gravitation/gravityFieldModel.h"
 
 #include <cmath>
 #include <limits>

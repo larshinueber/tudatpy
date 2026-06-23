@@ -15,10 +15,7 @@
 
 #include <Eigen/Core>
 
-#include "tudat/basics/testMacros.h"
-#include "tudat/astro/basic_astro/unitConversions.h"
 #include "tudat/astro/basic_astro/sphericalStateConversions.h"
-#include "tudat/astro/reference_frames/referenceFrameTransformations.h"
 
 namespace tudat
 {
@@ -26,7 +23,6 @@ namespace unit_tests
 {
 
 using namespace orbital_element_conversions;
-using namespace unit_conversions;
 using namespace reference_frames;
 
 BOOST_AUTO_TEST_SUITE( test_spherical_state_conversions )

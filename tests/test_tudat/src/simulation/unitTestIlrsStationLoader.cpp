@@ -18,9 +18,9 @@
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/basics/testMacros.h"
+#include "tudat/simulation/environment_setup/defaultGroundStationSettings.h"
+#include "tudat/simulation/environment_setup/createGroundStations.h"
 #include "tudat/io/readSinexFile.h"
-#include "tudat/simulation/environment_setup/defaultBodies.h"
 
 namespace tudat
 {

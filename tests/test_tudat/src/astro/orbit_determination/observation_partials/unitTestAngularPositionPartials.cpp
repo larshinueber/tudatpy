@@ -11,24 +11,12 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <limits>
 #include <string>
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/basics/testMacros.h"
-
-#include "tudat/io/basicInputOutput.h"
-#include "tudat/interface/spice/spiceInterface.h"
-
 #include "tudat/simulation/estimation_setup/createObservationModelFactory.h"
-#include "tudat/astro/observation_models/oneWayRangeObservationModel.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/constantRotationRate.h"
-#include "tudat/simulation/estimation_setup/createObservationPartials.h"
-#include "tudat/support/numericalObservationPartial.h"
-#include "tudat/simulation/environment_setup/createGroundStations.h"
-#include "tudat/simulation/environment_setup/defaultBodies.h"
 
 #include "tudat/support/observationPartialTestFunctions.h"
 

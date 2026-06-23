@@ -16,20 +16,8 @@
 
 #include "tudat/basics/testMacros.h"
 
-#include "tudat/io/basicInputOutput.h"
-#include "tudat/interface/spice/spiceInterface.h"
-
-#include "tudat/astro/basic_astro/oblateSpheroidBodyShapeModel.h"
-#include "tudat/astro/basic_astro/sphericalBodyShapeModel.h"
-#include "tudat/astro/ephemerides/constantEphemeris.h"
-#include "tudat/astro/observation_models/lightTimeSolution.h"
-#include "tudat/astro/observation_models/oneWayRangeObservationModel.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/constantRotationRate.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/constantRotationalOrientation.h"
 #include "tudat/simulation/estimation_setup/createObservationPartials.h"
 #include "tudat/support/numericalObservationPartial.h"
-#include "tudat/simulation/environment_setup/createGroundStations.h"
-#include "tudat/simulation/environment_setup/defaultBodies.h"
 
 namespace tudat
 {

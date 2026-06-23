@@ -38,7 +38,6 @@
 
 #include "tudat/astro/basic_astro/keplerPropagatorTestData.h"
 #include "tudat/astro/basic_astro/keplerPropagator.h"
-#include "tudat/io/basicInputOutput.h"
 
 namespace tudat
 {

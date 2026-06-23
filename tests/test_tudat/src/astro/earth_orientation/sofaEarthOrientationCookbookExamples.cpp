@@ -9,10 +9,11 @@
  *
  */
 
+#include <sofa/sofa.h>
+#include <Eigen/Core>
 #include <iostream>
 
 #include "tudat/basics/utilityMacros.h"
-#include "tudat/interface/sofa/earthOrientation.h"
 
 namespace tudat
 {

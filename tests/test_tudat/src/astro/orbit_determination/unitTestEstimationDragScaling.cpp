@@ -24,8 +24,6 @@
 #include "tudat/simulation/estimation_setup/orbitDeterminationManager.h"
 #include "tudat/simulation/estimation_setup/observationSimulationSettings.h"
 #include "tudat/simulation/estimation_setup/simulatePseudoObservations.h"
-#include "tudat/simulation/propagation_setup/setNumericallyIntegratedStates.h"
-#include "tudat/simulation/estimation_setup/simulateObservations.h"
 
 namespace tudat
 {

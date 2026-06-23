@@ -11,37 +11,22 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 
-#include <limits>
 #include <string>
 #include "tudat/basics/testMacros.h"
-#include "tudat/astro/basic_astro/orbitalElementConversions.h"
-#include "tudat/astro/basic_astro/unitConversions.h"
 
 #include <boost/test/unit_test.hpp>
 
-#include "tudat/astro/aerodynamics/exponentialAtmosphere.h"
-#include "tudat/astro/basic_astro/sphericalStateConversions.h"
-#include "tudat/astro/gravitation/centralGravityModel.h"
 #include "tudat/interface/spice/spiceInterface.h"
-#include "tudat/io/basicInputOutput.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/constantDragCoefficient.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/empiricalAccelerationCoefficients.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/gravitationalParameter.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/initialTranslationalState.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/radiationPressureCoefficient.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/ppnParameters.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/directTidalTimeLag.h"
-#include "tudat/astro/orbit_determination/estimatable_parameters/constantThrust.h"
 #include "tudat/astro/relativity/einsteinInfeldHoffmannEquations.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/einsteinInfeldHoffmannPartials.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/numericalAccelerationPartial.h"
-#include "tudat/astro/relativity/relativisticAccelerationCorrection.h"
 #include "tudat/simulation/estimation_setup/createAccelerationPartials.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
 #include "tudat/simulation/propagation_setup/createAccelerationModels.h"
 #include "tudat/simulation/estimation_setup/createEstimatableParametersFactory.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
-#include "tudat/simulation/environment_setup/thrustSettings.h"
 #include "tudat/simulation/environment_setup/createSystemModel.h"
 
 namespace tudat
