@@ -325,6 +325,9 @@ protected:
 #if TUDAT_BUILD_EXPLICIT_INSTANTIATIONS
 extern template class OrbitDeterminationManager< double, double >;
 #endif
+#if TUDAT_BUILD_EXPLICIT_INSTANTIATIONS_DOUBLE_TIME
+extern template class OrbitDeterminationManager< double, Time >;
+#endif
 
 }  // namespace simulation_setup
 

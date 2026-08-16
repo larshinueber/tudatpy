@@ -826,6 +826,9 @@ private:
 #if TUDAT_BUILD_EXPLICIT_INSTANTIATIONS
 extern template class SingleArcDynamicsSimulator< double, double >;
 #endif
+#if TUDAT_BUILD_EXPLICIT_INSTANTIATIONS_DOUBLE_TIME
+extern template class SingleArcDynamicsSimulator< double, Time >;
+#endif
 
 }  // namespace propagators
 

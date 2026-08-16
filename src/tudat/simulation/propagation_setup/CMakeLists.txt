@@ -66,6 +66,15 @@ if (TUDAT_BUILD_EXPLICIT_INSTANTIATIONS)
             )
 endif ()
 
+if (TUDAT_BUILD_EXPLICIT_INSTANTIATIONS_DOUBLE_TIME)
+    list(APPEND propagation_SOURCES
+            dynamicsSimulatorDoubleTimeInstantiation.cpp
+            singleArcDynamicsSimulatorDoubleTimeInstantiation.cpp
+            multiArcDynamicsSimulatorDoubleTimeInstantiation.cpp
+            hybridArcDynamicsSimulatorDoubleTimeInstantiation.cpp
+            )
+endif ()
+
 # Add library.
 TUDAT_ADD_LIBRARY("propagation_setup"
         "${propagation_SOURCES}"

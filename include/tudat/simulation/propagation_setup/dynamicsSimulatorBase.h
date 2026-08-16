@@ -652,6 +652,9 @@ struct PostProcessingFunctionProvider< StateScalarType, TimeType, Eigen::Dynamic
 #if TUDAT_BUILD_EXPLICIT_INSTANTIATIONS
 extern template class DynamicsSimulator< double, double >;
 #endif
+#if TUDAT_BUILD_EXPLICIT_INSTANTIATIONS_DOUBLE_TIME
+extern template class DynamicsSimulator< double, Time >;
+#endif
 
 }  // namespace propagators
 

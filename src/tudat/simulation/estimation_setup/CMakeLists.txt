@@ -103,6 +103,19 @@ if (TUDAT_BUILD_EXPLICIT_INSTANTIATIONS)
             )
 endif ()
 
+if (TUDAT_BUILD_EXPLICIT_INSTANTIATIONS_DOUBLE_TIME)
+    list(APPEND estimation_SOURCES
+            variationalEquationsSolverDoubleTimeInstantiation.cpp
+            singleArcVariationalEquationsSolverDoubleTimeInstantiation.cpp
+            multiArcVariationalEquationsSolverDoubleTimeInstantiation.cpp
+            hybridArcVariationalEquationsSolverDoubleTimeInstantiation.cpp
+            orbitDeterminationManagerDoubleTimeInstantiation.cpp
+            createObservationManagerDoubleTimeInstantiation.cpp
+            createVariationalEquationsSolverDoubleTimeInstantiation.cpp
+            createDynamicsSimulatorDoubleTimeInstantiation.cpp
+            )
+endif ()
+
 # Add library.
 TUDAT_ADD_LIBRARY("estimation_setup"
         "${estimation_SOURCES}"

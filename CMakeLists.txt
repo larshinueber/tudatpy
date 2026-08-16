@@ -109,6 +109,11 @@ option(
     ON
 )
 option(
+    TUDAT_BUILD_EXPLICIT_INSTANTIATIONS_DOUBLE_TIME
+    "Enable explicit template instantiations for the <double,Time> combination used by tudatpy, to reduce compilation time of the Python bindings. Independent of TUDAT_BUILD_EXPLICIT_INSTANTIATIONS."
+    ON
+)
+option(
     TUDAT_BUILD_WITH_PCH
     "Enable precompiled headers for supported targets."
     ON
@@ -266,6 +271,11 @@ if (NOT TUDAT_BUILD_EXPLICIT_INSTANTIATIONS)
     add_definitions(-DTUDAT_BUILD_EXPLICIT_INSTANTIATIONS=0)
 else ()
     add_definitions(-DTUDAT_BUILD_EXPLICIT_INSTANTIATIONS=1)
+endif ()
+if (NOT TUDAT_BUILD_EXPLICIT_INSTANTIATIONS_DOUBLE_TIME)
+    add_definitions(-DTUDAT_BUILD_EXPLICIT_INSTANTIATIONS_DOUBLE_TIME=0)
+else ()
+    add_definitions(-DTUDAT_BUILD_EXPLICIT_INSTANTIATIONS_DOUBLE_TIME=1)
 endif ()
 
 # +============================================================================

@@ -211,6 +211,19 @@ createVariationalEquationsSolver< double, double >(
         const bool integrateEquationsOnCreation );
 #endif
 
+#if TUDAT_BUILD_EXPLICIT_INSTANTIATIONS_DOUBLE_TIME
+extern template std::shared_ptr< propagators::VariationalEquationsSolver< double, Time > > createVariationalEquationsSolver< double, Time >(
+        const simulation_setup::SystemOfBodies& bodies,
+        const std::shared_ptr< propagators::PropagatorSettings< double > > propagatorSettings,
+        const std::shared_ptr< estimatable_parameters::EstimatableParameterSet< double > > parametersToEstimate,
+        const bool integrateEquationsOnCreation );
+
+extern template std::shared_ptr< propagators::DynamicsSimulator< double, Time > > createDynamicsSimulator< double, Time >(
+        const simulation_setup::SystemOfBodies& bodies,
+        const std::shared_ptr< propagators::PropagatorSettings< double > > propagatorSettings,
+        const bool areEquationsOfMotionToBeIntegrated );
+#endif
+
 }  // namespace simulation_setup
 
 }  // namespace tudat

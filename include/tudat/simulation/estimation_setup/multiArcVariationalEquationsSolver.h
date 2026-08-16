@@ -625,6 +625,9 @@ private:
 #if TUDAT_BUILD_EXPLICIT_INSTANTIATIONS
 extern template class MultiArcVariationalEquationsSolver< double, double >;
 #endif
+#if TUDAT_BUILD_EXPLICIT_INSTANTIATIONS_DOUBLE_TIME
+extern template class MultiArcVariationalEquationsSolver< double, Time >;
+#endif
 
 }  // namespace propagators
 

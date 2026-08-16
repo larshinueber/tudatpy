@@ -860,6 +860,9 @@ std::shared_ptr< HybridArcPropagatorSettings< StateScalarType, TimeType > > vali
 #if TUDAT_BUILD_EXPLICIT_INSTANTIATIONS
 extern template class MultiArcDynamicsSimulator< double, double >;
 #endif
+#if TUDAT_BUILD_EXPLICIT_INSTANTIATIONS_DOUBLE_TIME
+extern template class MultiArcDynamicsSimulator< double, Time >;
+#endif
 
 }  // namespace propagators
 
