@@ -59,4 +59,5 @@ set(acceleration_partials_HEADERS
 TUDAT_ADD_LIBRARY("acceleration_partials"
         "${acceleration_partials_SOURCES}"
         "${acceleration_partials_HEADERS}"
+        WITH_PCH
         )

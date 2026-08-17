@@ -7,7 +7,7 @@ function(TUDAT_ADD_LIBRARY arg1 arg2 arg3)
     # Design function parser.
     cmake_parse_arguments(
             PARSED_ARGS
-            ""
+            "WITH_PCH;WITH_ENVIRONMENT_PCH"
             ""
             "PUBLIC_LINKS;PRIVATE_LINKS;INTERFACE_LINKS;PRIVATE_INCLUDES"
             ${ARGN})
@@ -40,6 +40,20 @@ function(TUDAT_ADD_LIBRARY arg1 arg2 arg3)
             PRIVATE   ${PARSED_ARGS_PRIVATE_LINKS}
             INTERFACE ${PARSED_ARGS_INTERFACE_LINKS}
             )
+
+    if (TUDAT_BUILD_WITH_PCH)
+        set(_tudat_pch_headers "")
+        if (PARSED_ARGS_WITH_PCH)
+            list(APPEND _tudat_pch_headers ${TUDAT_STD_EIGEN_PCH_HEADERS})
+        endif ()
+        if (PARSED_ARGS_WITH_ENVIRONMENT_PCH)
+            list(APPEND _tudat_pch_headers ${TUDAT_ENVIRONMENT_PCH_HEADERS})
+        endif ()
+        if (_tudat_pch_headers)
+            target_precompile_headers("${target_name}" PRIVATE ${_tudat_pch_headers})
+        endif ()
+        unset(_tudat_pch_headers)
+    endif ()
     #==========================================================================
     # BUILD-TREE.
     #==========================================================================

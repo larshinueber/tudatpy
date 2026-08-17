@@ -71,6 +71,7 @@ set(ephemerides_HEADERS
 TUDAT_ADD_LIBRARY("ephemerides"
         "${ephemerides_SOURCES}"
         "${ephemerides_HEADERS}"
+        WITH_PCH
 #        PUBLIC_LINKS
 #        tudat_spice_interface
 #        tudat_reference_frames

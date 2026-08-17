@@ -65,6 +65,7 @@ set(propagators_HEADERS
 TUDAT_ADD_LIBRARY("propagators"
         "${propagators_SOURCES}"
         "${propagators_HEADERS}"
+        WITH_PCH
 #        PRIVATE_LINKS "${Boost_LIBRARIES}"
 #        PRIVATE_INCLUDES "${EIGEN3_INCLUDE_DIRS}" "${Boost_INCLUDE_DIRS}"
         )

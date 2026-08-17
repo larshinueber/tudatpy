@@ -75,6 +75,7 @@ endif()
 TUDAT_ADD_LIBRARY("aerodynamics"
             "${aerodynamics_SOURCES}"
             "${aerodynamics_HEADERS}"
+            WITH_PCH
             PRIVATE_LINKS
             "${NRLMSISE00_LIBRARIES}"
             PUBLIC_LINKS

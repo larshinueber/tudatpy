@@ -50,4 +50,5 @@ set(observation_partials_HEADERS
 TUDAT_ADD_LIBRARY("observation_partials"
         "${observation_partials_SOURCES}"
         "${observation_partials_HEADERS}"
+        WITH_PCH
         )

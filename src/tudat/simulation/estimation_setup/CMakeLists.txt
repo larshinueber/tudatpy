@@ -120,6 +120,8 @@ endif ()
 TUDAT_ADD_LIBRARY("estimation_setup"
         "${estimation_SOURCES}"
         "${estimation_HEADERS}"
+        WITH_PCH
+        WITH_ENVIRONMENT_PCH
 #        PRIVATE_LINKS "${Boost_LIBRARIES}"
 #        PRIVATE_INCLUDES "${EIGEN3_INCLUDE_DIRS}" "${Boost_INCLUDE_DIRS}"
         )
