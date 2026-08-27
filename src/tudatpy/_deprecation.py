@@ -1,7 +1,7 @@
 import functools
 import warnings
 from types import ModuleType
-from typing import Callable
+from typing import Callable, Optional
 
 
 def deprecation_warning(old_name: str, new_name: str) -> None:
@@ -53,12 +53,15 @@ def object_deprecation(old_name: str, new_name: str) -> Callable:
 
 
 def register_deprecated_object(
-    destination_module: ModuleType, old_name: str, superseding_object
+    destination_module: ModuleType,
+    old_name: str,
+    superseding_object,
+    new_name: Optional[str] = None,
 ) -> None:
     """
     Register an object (function or class) under a deprecated name.
 
-    This function makes an object (function or class) available under a different, deprecated name with the same functionality. This is useful e.g. when fixing a typo, where only the corrected function name remains implemented, while they deprecated function should stay available for backwards compatibility purposes.
+    This function makes an object (function or class) available under a different, deprecated name with the same functionality. This is useful e.g. when fixing a typo, where only the corrected function name remains implemented, while they deprecated function should stay available for backwards compatibility purposes. It is also used when an object is moved to a different module, in which case `new_name` should be given explicitly (see below), since the object's own `__name__`/`__module__` do not necessarily reflect the public import path.
 
     Parameters
     ----------
@@ -68,6 +71,8 @@ def register_deprecated_object(
         Name under which the deprecated function should be registered.
     superseding_object
         Object that super-seeds the deprecated object. This can be a function or a class.
+    new_name : str, optional
+        Fully-qualified name of the superseding object to mention in the deprecation warning (e.g. ``"tudatpy.foo.bar.new_function"``). Should always be given explicitly when `superseding_object` was moved to a different module, since its bare `__name__` alone would be indistinguishable from `old_name` in the warning message. If not given, defaults to `destination_module`-qualified `old_name` combined with `superseding_object.__name__` (only informative when the object was renamed within the same module).
 
     Example
     -------
@@ -83,7 +88,14 @@ def register_deprecated_object(
     ```
     """
 
-    interface = object_deprecation(old_name, superseding_object.__name__)(superseding_object)
+    qualified_old_name = f"{destination_module.__name__}.{old_name}"
+    qualified_new_name = (
+        new_name
+        if new_name is not None
+        else f"{destination_module.__name__}.{superseding_object.__name__}"
+    )
+
+    interface = object_deprecation(qualified_old_name, qualified_new_name)(superseding_object)
     setattr(destination_module, old_name, interface)
 
 
