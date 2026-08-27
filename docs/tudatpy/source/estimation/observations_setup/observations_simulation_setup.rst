@@ -28,8 +28,6 @@ Functions
 
    change_simulation_settings_observable_types
 
-   create_observation_simulators
-
 .. autofunction:: tudatpy.estimation.observations_setup.observations_simulation_settings.tabulated_simulation_settings
 
 .. autofunction:: tudatpy.estimation.observations_setup.observations_simulation_settings.tabulated_simulation_settings_list
@@ -41,8 +39,6 @@ Functions
 .. autofunction:: tudatpy.estimation.observations_setup.observations_simulation_settings.observation_settings_from_collection
 
 .. autofunction:: tudatpy.estimation.observations_setup.observations_simulation_settings.change_simulation_settings_observable_types
-
-.. autofunction:: tudatpy.estimation.observations_setup.observations_simulation_settings.create_observation_simulators
 
 Classes
 -------

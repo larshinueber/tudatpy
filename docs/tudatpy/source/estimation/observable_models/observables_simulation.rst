@@ -3,6 +3,16 @@
 ``observables_simulation``
 ==========================
 
+Functions
+---------
+.. currentmodule:: tudatpy.estimation.observable_models.observables_simulation
+
+.. autosummary::
+
+   create_observation_simulators
+
+.. autofunction:: tudatpy.estimation.observable_models.observables_simulation.create_observation_simulators
+
 Classes
 -------
 .. currentmodule:: tudatpy.estimation.observable_models.observables_simulation

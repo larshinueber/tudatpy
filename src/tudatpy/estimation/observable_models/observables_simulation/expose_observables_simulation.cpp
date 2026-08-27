@@ -12,11 +12,13 @@
 #endif
 #include "expose_observables_simulation.h"
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 #include "scalarTypes.h"
 #include "tudat/astro/observation_models/observationManager.h"
-#include "tudat/simulation/estimation_setup/simulateObservations.h"
+#include "tudat/simulation/estimation_setup/createObservationModelFactory.h"
 
 namespace tom = tudat::observation_models;
+namespace tss = tudat::simulation_setup;
 
 namespace tudatpy
 {
@@ -113,6 +115,52 @@ void expose_observables_simulation( py::module& m )
                 std::shared_ptr< tom::ObservationSimulator< 6, STATE_SCALAR_TYPE, TIME_TYPE > >,
                 tom::ObservationSimulatorBase< STATE_SCALAR_TYPE, TIME_TYPE > >(
             m, "ObservationSimulator_6", R"doc(No documentation found.)doc" );
+
+    // #   Observation Model Settings --> Observation Simulator #
+    m.def( "create_observation_simulators",
+           py::overload_cast< const std::vector< std::shared_ptr< tom::ObservationModelSettings > >&, const tss::SystemOfBodies& >(
+                   &tom::createObservationSimulators< STATE_SCALAR_TYPE, TIME_TYPE > ),
+           py::arg( "observation_settings" ),
+           py::arg( "bodies" ),
+           R"doc(
+
+ Function for creating observation simulator objects.
+
+ Function for creating observation simulator objects from observation settings.
+ Note that each observation (i.e. combination of observable and link geometry) requires its own observation simulator object.
+
+
+ Parameters
+ ----------
+ observation_settings : List[ ObservationModelSettings ]
+     List of settings objects, each object defining the observation model settings for one combination of observable and link geometry that is to be simulated.
+
+ bodies : :class:`~tudatpy.dynamics.environment.SystemOfBodies`
+     Object consolidating all bodies and environment models, including ground station models, that constitute the physical environment.
+
+ Returns
+ -------
+ List[ :class:`~tudatpy.estimation.observable_models.observables_simulation.ObservationSimulator` ]
+     List of :class:`~tudatpy.estimation.observable_models.observables_simulation.ObservationSimulator` objects, each object hosting the functionality for simulating one combination of observable type and link geometry.
+
+ Examples
+ --------
+ .. code-block:: python
+
+     from tudatpy.estimation.observable_models import observables_simulation
+
+     # Create bodies
+     bodies = ...
+     # Define parameters settings
+     observation_settings = ...
+     # Create observation simulators
+     observation_simulators = observables_simulation.create_observation_simulators(observation_settings, bodies)
+
+ This code snippet closely follows what is done in: The following snippet closely follows what is done in: `Galilean Moons State Estimation Example <https://github.com/tudat-team/tudatpy-examples/blob/master/estimation/galilean_moons_state_estimation.ipynb>`_.
+
+
+
+     )doc" );
 }
 
 }  // namespace observables_simulation
