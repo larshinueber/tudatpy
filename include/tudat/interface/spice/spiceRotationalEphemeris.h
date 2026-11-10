@@ -62,7 +62,7 @@ public:
      *  \return Rotation from target (typically local) to original (typically global) frame at
      *  specified time.
      */
-    Eigen::Quaterniond getRotationToBaseFrame( const double secondsSinceEpoch );
+    Eigen::Quaterniond getRotationToBaseFrame( const double secondsSinceEpoch ) override;
 
     //! Function to calculate the rotation quaternion from original frame to target frame.
     /*!
@@ -73,7 +73,7 @@ public:
      *  \return Rotation from original (typically global) to target (typically local)
      *  frame at specified time.
      */
-    Eigen::Quaterniond getRotationToTargetFrame( const double secondsSinceEpoch )
+    Eigen::Quaterniond getRotationToTargetFrame( const double secondsSinceEpoch ) override
     {
         return getRotationToBaseFrame( secondsSinceEpoch ).inverse( );
     }
@@ -87,7 +87,7 @@ public:
      *  \return Derivative of rotation from target (typically local) to original (typically global)
      *          frame at specified time.
      */
-    Eigen::Matrix3d getDerivativeOfRotationToBaseFrame( const double secondsSinceEpoch );
+    Eigen::Matrix3d getDerivativeOfRotationToBaseFrame( const double secondsSinceEpoch ) override;
 
     //! Function to calculate the derivative of the rotation matrix from original frame to target
     //! frame.
@@ -98,7 +98,7 @@ public:
      *  \return Derivative of rotation from original (typically global) to target (typically local)
      *          frame at specified time.
      */
-    Eigen::Matrix3d getDerivativeOfRotationToTargetFrame( const double secondsSinceEpoch )
+    Eigen::Matrix3d getDerivativeOfRotationToTargetFrame( const double secondsSinceEpoch ) override
     {
         return getDerivativeOfRotationToBaseFrame( secondsSinceEpoch ).transpose( );
     }
@@ -117,7 +117,23 @@ public:
     void getFullRotationalQuantitiesToTargetFrame( Eigen::Quaterniond& currentRotationToLocalFrame,
                                                    Eigen::Matrix3d& currentRotationToLocalFrameDerivative,
                                                    Eigen::Vector3d& currentAngularVelocityVectorInGlobalFrame,
-                                                   const double secondsSinceEpoch );
+                                                   const double secondsSinceEpoch ) override;
+
+    //! Function to calculate the full rotational state at given time based on extended time type
+    /*!
+     * Function to calculate the full rotational state at given time (rotation matrix, derivative of
+     * rotation matrix and angular velocity vector).
+     * \param currentRotationToLocalFrame Current rotation to local frame (returned by reference)
+     * \param currentRotationToLocalFrameDerivative Current derivative of rotation matrix to local
+     * frame (returned by reference)
+     * \param currentAngularVelocityVectorInGlobalFrame Current angular velocity vector, expressed
+     * in global frame (returned by reference)
+     * \param timeSinceEpoch Seconds since epoch at which ephemeris is to be evaluated, using extended time type
+     */
+    void getFullRotationalQuantitiesToTargetFrameFromExtendedTime( Eigen::Quaterniond& currentRotationToLocalFrame,
+                                                                   Eigen::Matrix3d& currentRotationToLocalFrameDerivative,
+                                                                   Eigen::Vector3d& currentAngularVelocityVectorInGlobalFrame,
+                                                                   const Time timeSinceEpoch ) override;
 
 private:
     std::string spiceFrameName_;

@@ -357,6 +357,28 @@ BOOST_AUTO_TEST_CASE( test_ItrsToGcrsRotationDerivativeAgainstNumerical )
     }
 }
 
+//! Test overridden full rotational quantities function against the generic base class implementation.
+BOOST_AUTO_TEST_CASE( test_ItrsToGcrsFullRotationalQuantities )
+{
+    const auto& earthRotationModel =
+            std::make_shared< GcrsToItrsRotationModel >( earth_orientation::createStandardEarthOrientationCalculator( ) );
+
+    Time testTime = Time( 1.0E8 ) + 0.123;
+
+    Eigen::Quaterniond rotation, baseRotation;
+    Eigen::Matrix3d rotationDerivative, baseRotationDerivative;
+    Eigen::Vector3d angularVelocity, baseAngularVelocity;
+    earthRotationModel->getFullRotationalQuantitiesToTargetFrameFromExtendedTime( rotation, rotationDerivative, angularVelocity, testTime );
+    earthRotationModel->RotationalEphemeris::getFullRotationalQuantitiesToTargetFrameFromExtendedTime(
+            baseRotation, baseRotationDerivative, baseAngularVelocity, testTime );
+
+    Eigen::Matrix3d rotationMatrix = rotation.toRotationMatrix( );
+    Eigen::Matrix3d baseRotationMatrix = baseRotation.toRotationMatrix( );
+    TUDAT_CHECK_MATRIX_CLOSE_FRACTION( rotationMatrix, baseRotationMatrix, 1.0E-14 );
+    TUDAT_CHECK_MATRIX_CLOSE_FRACTION( rotationDerivative, baseRotationDerivative, 1.0E-14 );
+    TUDAT_CHECK_MATRIX_CLOSE_FRACTION( angularVelocity, baseAngularVelocity, 1.0E-14 );
+}
+
 BOOST_AUTO_TEST_SUITE_END( )
 
 }  // namespace unit_tests

@@ -53,6 +53,18 @@ void SpiceRotationalEphemeris::getFullRotationalQuantitiesToTargetFrame( Eigen::
             Eigen::Matrix3d( currentRotationToLocalFrame ), currentRotationToLocalFrameDerivative.transpose( ) );
 }
 
+//! Function to calculate the full rotational state at given time based on extended time type
+void SpiceRotationalEphemeris::getFullRotationalQuantitiesToTargetFrameFromExtendedTime(
+        Eigen::Quaterniond& currentRotationToLocalFrame,
+        Eigen::Matrix3d& currentRotationToLocalFrameDerivative,
+        Eigen::Vector3d& currentAngularVelocityVectorInGlobalFrame,
+        const Time timeSinceEpoch )
+{
+    getFullRotationalQuantitiesToTargetFrame( currentRotationToLocalFrame,
+                                              currentRotationToLocalFrameDerivative,
+                                              currentAngularVelocityVectorInGlobalFrame,
+                                              timeSinceEpoch.getSeconds< double >( ) );
+}
 }  // namespace ephemerides
 
 }  // namespace tudat
