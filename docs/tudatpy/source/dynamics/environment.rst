@@ -116,6 +116,8 @@ Classes
 
    PiecewiseLinearFrequencyInterpolator
 
+   MultiBandFrequencyInterpolator
+
    PointingAnglesCalculator
    
    GroundStation
@@ -198,6 +200,9 @@ Classes
    :members:
 
 .. autoclass:: tudatpy.dynamics.environment.PiecewiseLinearFrequencyInterpolator
+   :members:
+
+.. autoclass:: tudatpy.dynamics.environment.MultiBandFrequencyInterpolator
    :members:
 
 .. autoclass:: tudatpy.dynamics.environment.PointingAnglesCalculator

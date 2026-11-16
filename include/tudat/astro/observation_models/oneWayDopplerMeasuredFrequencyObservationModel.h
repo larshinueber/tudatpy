@@ -200,7 +200,7 @@ public:
 
         ObservationScalarType transmittedFrequency =
                 frequencyInterpolator_->template getTemplatedCurrentFrequency< ObservationScalarType, TimeType >(
-                        transmitterFrequencyTime );
+                        transmitterFrequencyTime, getTransmitterFrequencyBand( ancillarySettings ) );
 
         ObservationScalarType receivedFrequency =
                 ( transmittedFrequency * ( mathematical_constants::getFloatingInteger< ObservationScalarType >( 1 ) + oneWayDoppler ) );

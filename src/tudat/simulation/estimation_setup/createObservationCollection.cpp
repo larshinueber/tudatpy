@@ -474,163 +474,187 @@ void setRotationalStateSupplementaryDataInBodies(
     }
 }
 
+//! Function to create a piecewise linear frequency interpolator from frequency supplementary data entries (of a single
+//! transmitter and frequency band), using the given handling of gaps between ramps. Returns nullptr if the entries are of
+//! an unsupported kind.
+std::shared_ptr< ground_stations::PiecewiseLinearFrequencyInterpolator > createFrequencyInterpolatorFromSupplementaryData(
+        const std::vector< std::shared_ptr< data::FrequencySupplementaryData > >& frequencyDataEntries,
+        const std::string& bodyName,
+        const std::string& referencePointName,
+        const ground_stations::FrequencyGapHandling gapHandling )
+{
+    std::vector< data::RampedFrequencySupplementaryData::FrequencyRamp > frequencyRamps;
+    std::map< double, double > piecewiseConstantFrequencyHistory;
+
+    for( unsigned int i = 0; i < frequencyDataEntries.size( ); ++i )
+    {
+        if( i > 0 &&
+            frequencyDataEntries.at( i )->getFrequencySupplementaryDataKind( ) !=
+                    frequencyDataEntries.at( 0 )->getFrequencySupplementaryDataKind( ) )
+        {
+            throw std::runtime_error( "Error when setting frequency supplementary data in body " + bodyName + ", reference point " +
+                                      referencePointName +
+                                      ": all frequency supplementary data entries of the same frequency band must have the same type." );
+        }
+
+        if( frequencyDataEntries.at( i )->getFrequencySupplementaryDataKind( ) == "ramped_frequency" )
+        {
+            std::shared_ptr< data::RampedFrequencySupplementaryData > rampedFrequencySupplementaryData =
+                    std::dynamic_pointer_cast< data::RampedFrequencySupplementaryData >( frequencyDataEntries.at( i ) );
+            if( rampedFrequencySupplementaryData == nullptr )
+            {
+                throw std::runtime_error( "Error when setting frequency supplementary data in body " + bodyName + ", reference point " +
+                                          referencePointName +
+                                          ": frequency data type is ramped, but derived object type is inconsistent." );
+            }
+            const std::vector< data::RampedFrequencySupplementaryData::FrequencyRamp >& currentFrequencyRamps =
+                    rampedFrequencySupplementaryData->getFrequencyRamps( );
+            frequencyRamps.insert( frequencyRamps.end( ), currentFrequencyRamps.begin( ), currentFrequencyRamps.end( ) );
+        }
+        else if( frequencyDataEntries.at( i )->getFrequencySupplementaryDataKind( ) == "piecewise_constant_frequency" )
+        {
+            std::shared_ptr< data::PiecewiseConstantFrequencySupplementaryData > piecewiseConstantFrequencySupplementaryData =
+                    std::dynamic_pointer_cast< data::PiecewiseConstantFrequencySupplementaryData >( frequencyDataEntries.at( i ) );
+            if( piecewiseConstantFrequencySupplementaryData == nullptr )
+            {
+                throw std::runtime_error( "Error when setting frequency supplementary data in body " + bodyName + ", reference point " +
+                                          referencePointName +
+                                          ": frequency data type is piecewise constant, but derived object type is inconsistent." );
+            }
+            for( const auto& [ epoch, frequency ] : piecewiseConstantFrequencySupplementaryData->getFrequencyHistory( ) )
+            {
+                // Match ramp-table merging: later entries replace earlier values at the same epoch.
+                piecewiseConstantFrequencyHistory[ epoch ] = frequency;
+            }
+        }
+    }
+
+    if( frequencyDataEntries.at( 0 )->getFrequencySupplementaryDataKind( ) == "piecewise_constant_frequency" )
+    {
+        for( auto entry = piecewiseConstantFrequencyHistory.begin( ); entry != piecewiseConstantFrequencyHistory.end( ); ++entry )
+        {
+            const auto nextEntry = std::next( entry );
+            const Time startTime( entry->first );
+            // The final ramp needs a positive nominal duration. The existing
+            // interpolator extrapolates it beyond this end time at zero rate.
+            const Time endTime = nextEntry != piecewiseConstantFrequencyHistory.end( ) ? Time( nextEntry->first ) : startTime + 1.0;
+            frequencyRamps.emplace_back( startTime, endTime, entry->second, 0.0 );
+        }
+    }
+
+    if( frequencyDataEntries.at( 0 )->getFrequencySupplementaryDataKind( ) != "ramped_frequency" &&
+        frequencyDataEntries.at( 0 )->getFrequencySupplementaryDataKind( ) != "piecewise_constant_frequency" )
+    {
+        return nullptr;
+    }
+
+    if( frequencyRamps.empty( ) )
+    {
+        throw std::runtime_error( "Error when setting frequency supplementary data in body " + bodyName + ", reference point " +
+                                  referencePointName + ": no frequency entries were found." );
+    }
+
+    std::vector< Time > startTimes;
+    std::vector< Time > endTimes;
+    std::vector< double > rampRates;
+    std::vector< double > startFrequencies;
+
+    for( unsigned int i = 0; i < frequencyRamps.size( ); ++i )
+    {
+        startTimes.push_back( Time( frequencyRamps.at( i ).startTime_ ) );
+        endTimes.push_back( Time( frequencyRamps.at( i ).endTime_ ) );
+        rampRates.push_back( frequencyRamps.at( i ).frequencyRate_ );
+        startFrequencies.push_back( frequencyRamps.at( i ).startFrequency_ );
+    }
+
+    return std::make_shared< ground_stations::PiecewiseLinearFrequencyInterpolator >(
+            startTimes, endTimes, rampRates, startFrequencies, gapHandling );
+}
+
 void setFrequencySupplementaryDataInBodies(
         simulation_setup::SystemOfBodies& bodies,
         const std::map< std::pair< std::string, std::string >, std::vector< std::shared_ptr< data::FrequencySupplementaryData > > >&
                 frequencySupplementaryData )
 {
-    for( auto it = frequencySupplementaryData.begin( ); it != frequencySupplementaryData.end( ); ++it )
+    for( const auto& [ bodyReferencePoint, frequencyDataVector ] : frequencySupplementaryData )
     {
-        std::string bodyName = it->first.first;
-        std::string referencePointName = it->first.second;
+        std::string bodyName = bodyReferencePoint.first;
+        std::string referencePointName = bodyReferencePoint.second;
 
-        if( it->second.empty( ) )
+        if( frequencyDataVector.empty( ) )
         {
             continue;
         }
 
-        std::vector< data::RampedFrequencySupplementaryData::FrequencyRamp > frequencyRamps;
-        std::map< double, double > piecewiseConstantFrequencyHistory;
-
-        for( unsigned int i = 0; i < it->second.size( ); ++i )
+        // Group frequency data per frequency band (entries without band are band-independent)
+        std::map< std::string, std::vector< std::shared_ptr< data::FrequencySupplementaryData > > > frequencyDataPerBand;
+        for( const auto& frequencyDataEntry : frequencyDataVector )
         {
-            if( it->second.at( i ) == nullptr )
+            if( frequencyDataEntry == nullptr )
             {
                 throw std::runtime_error( "Error when setting frequency supplementary data in body " + bodyName + ", reference point " +
                                           referencePointName + ": frequency data entry is null." );
             }
-
-            if( i > 0 &&
-                it->second.at( i )->getFrequencySupplementaryDataKind( ) != it->second.at( 0 )->getFrequencySupplementaryDataKind( ) )
-            {
-                throw std::runtime_error( "Error when setting frequency supplementary data in body " + bodyName + ", reference point " +
-                                          referencePointName + ": all frequency supplementary data entries must have the same type." );
-            }
-
-            if( it->second.at( i )->getFrequencySupplementaryDataKind( ) == "ramped_frequency" )
-            {
-                std::shared_ptr< data::RampedFrequencySupplementaryData > rampedFrequencySupplementaryData =
-                        std::dynamic_pointer_cast< data::RampedFrequencySupplementaryData >( it->second.at( i ) );
-                if( rampedFrequencySupplementaryData == nullptr )
-                {
-                    throw std::runtime_error( "Error when setting frequency supplementary data in body " + bodyName + ", reference point " +
-                                              referencePointName +
-                                              ": frequency data type is ramped, but derived object type is inconsistent." );
-                }
-                const std::vector< data::RampedFrequencySupplementaryData::FrequencyRamp >& currentFrequencyRamps =
-                        rampedFrequencySupplementaryData->getFrequencyRamps( );
-                frequencyRamps.insert( frequencyRamps.end( ), currentFrequencyRamps.begin( ), currentFrequencyRamps.end( ) );
-            }
-            else if( it->second.at( i )->getFrequencySupplementaryDataKind( ) == "piecewise_constant_frequency" )
-            {
-                std::shared_ptr< data::PiecewiseConstantFrequencySupplementaryData > piecewiseConstantFrequencySupplementaryData =
-                        std::dynamic_pointer_cast< data::PiecewiseConstantFrequencySupplementaryData >( it->second.at( i ) );
-                if( piecewiseConstantFrequencySupplementaryData == nullptr )
-                {
-                    throw std::runtime_error( "Error when setting frequency supplementary data in body " + bodyName + ", reference point " +
-                                              referencePointName +
-                                              ": frequency data type is piecewise constant, but derived object type is inconsistent." );
-                }
-                for( const auto& entry : piecewiseConstantFrequencySupplementaryData->getFrequencyHistory( ) )
-                {
-                    // Match ramp-table merging: later entries replace earlier values at the same epoch.
-                    piecewiseConstantFrequencyHistory[ entry.first ] = entry.second;
-                }
-            }
+            frequencyDataPerBand[ frequencyDataEntry->getFrequencyBand( ) ].push_back( frequencyDataEntry );
         }
 
-        if( it->second.at( 0 )->getFrequencySupplementaryDataKind( ) == "piecewise_constant_frequency" )
+        for( auto const& [ frequencyBandName, frequencyDataEntries ] : frequencyDataPerBand )
         {
-            for( auto entry = piecewiseConstantFrequencyHistory.begin( ); entry != piecewiseConstantFrequencyHistory.end( ); ++entry )
+            std::optional< basic_astrodynamics::FrequencyBands > frequencyBand;
+            if( frequencyBandName != "" )
             {
-                const auto nextEntry = std::next( entry );
-                const Time startTime( entry->first );
-                // The final ramp needs a positive nominal duration. The existing
-                // interpolator extrapolates it beyond this end time at zero rate.
-                const Time endTime = nextEntry != piecewiseConstantFrequencyHistory.end( ) ? Time( nextEntry->first ) : startTime + 1.0;
-                frequencyRamps.emplace_back( startTime, endTime, entry->second, 0.0 );
-            }
-        }
-
-        if( it->second.at( 0 )->getFrequencySupplementaryDataKind( ) == "ramped_frequency" ||
-            it->second.at( 0 )->getFrequencySupplementaryDataKind( ) == "piecewise_constant_frequency" )
-        {
-            if( frequencyRamps.empty( ) )
-            {
-                throw std::runtime_error( "Error when setting frequency supplementary data in body " + bodyName + ", reference point " +
-                                          referencePointName + ": no frequency entries were found." );
+                try
+                {
+                    frequencyBand = basic_astrodynamics::getFrequencyBandFromString( frequencyBandName );
+                }
+                catch( const std::runtime_error& caughtException )
+                {
+                    throw std::runtime_error( "Error when setting frequency supplementary data in body " + bodyName + ", reference point " +
+                                              referencePointName + ": " + std::string( caughtException.what( ) ) );
+                }
             }
 
-            std::vector< Time > startTimes;
-            std::vector< Time > endTimes;
-            std::vector< double > rampRates;
-            std::vector< double > startFrequencies;
-
-            for( unsigned int i = 0; i < frequencyRamps.size( ); ++i )
-            {
-                startTimes.push_back( Time( frequencyRamps.at( i ).startTime_ ) );
-                endTimes.push_back( Time( frequencyRamps.at( i ).endTime_ ) );
-                rampRates.push_back( frequencyRamps.at( i ).frequencyRate_ );
-                startFrequencies.push_back( frequencyRamps.at( i ).startFrequency_ );
-            }
-
+            // Band-specific frequency tables have gaps wherever the transmitter is not transmitting in that band (e.g. when
+            // it transmits in another band). Frequencies in such gaps are extrapolated from the previous ramp, and a warning is
+            // printed (once per frequency table) when a gap is encountered, since this indicates an observation without
+            // transmitted frequency in its band. An extrapolated frequency that is far off results in an outlier.
+            const ground_stations::FrequencyGapHandling gapHandling =
+                    frequencyBand.has_value( ) ? ground_stations::print_error_once_at_gaps : ground_stations::extrapolate_at_gaps;
             std::shared_ptr< ground_stations::PiecewiseLinearFrequencyInterpolator > frequencyInterpolator =
-                    std::make_shared< ground_stations::PiecewiseLinearFrequencyInterpolator >(
-                            startTimes, endTimes, rampRates, startFrequencies );
-
-            if( referencePointName != "" )
+                    createFrequencyInterpolatorFromSupplementaryData( frequencyDataEntries, bodyName, referencePointName, gapHandling );
+            if( frequencyInterpolator == nullptr )
             {
-                if( bodies.at( bodyName )->getGroundStationMap( ).count( referencePointName ) == 0 )
-                {
-                    throw std::runtime_error( "Error when setting ramped frequency supplementary data in body " + bodyName +
-                                              ", ground station " + referencePointName + " was not found." );
-                }
+                continue;
+            }
 
-                std::shared_ptr< ground_stations::GroundStation > groundStation =
-                        bodies.at( bodyName )->getGroundStation( referencePointName );
-                if( !groundStation->hasFrequencyCalculator( ) )
+            if( referencePointName != "" && bodies.at( bodyName )->getGroundStationMap( ).count( referencePointName ) == 0 )
+            {
+                throw std::runtime_error( "Error when setting ramped frequency supplementary data in body " + bodyName +
+                                          ", ground station " + referencePointName + " was not found." );
+            }
+
+            try
+            {
+                if( referencePointName != "" )
                 {
-                    groundStation->setTransmittingFrequencyCalculator( frequencyInterpolator );
+                    bodies.at( bodyName )
+                            ->getGroundStation( referencePointName )
+                            ->addTransmittingFrequencyCalculator( frequencyInterpolator, frequencyBand );
                 }
                 else
                 {
-                    std::shared_ptr< ground_stations::PiecewiseLinearFrequencyInterpolator > existingFrequencyInterpolator =
-                            std::dynamic_pointer_cast< ground_stations::PiecewiseLinearFrequencyInterpolator >(
-                                    groundStation->getTransmittingFrequencyCalculator( ) );
-                    if( existingFrequencyInterpolator == nullptr )
+                    if( bodies.at( bodyName )->getVehicleSystems( ) == nullptr )
                     {
-                        throw std::runtime_error( "Error when setting ramped frequency supplementary data in body " + bodyName +
-                                                  ", ground station " + referencePointName +
-                                                  " already has a non-ramped frequency calculator." );
+                        bodies.at( bodyName )->setVehicleSystems( std::make_shared< system_models::VehicleSystems >( ) );
                     }
-                    existingFrequencyInterpolator->addFrequencyInterpolator( frequencyInterpolator );
+
+                    bodies.at( bodyName )->getVehicleSystems( )->addTransmittedFrequencyCalculator( frequencyInterpolator, frequencyBand );
                 }
             }
-            else
+            catch( const std::runtime_error& caughtException )
             {
-                if( bodies.at( bodyName )->getVehicleSystems( ) == nullptr )
-                {
-                    bodies.at( bodyName )->setVehicleSystems( std::make_shared< system_models::VehicleSystems >( ) );
-                }
-
-                std::shared_ptr< ground_stations::StationFrequencyInterpolator > existingFrequencyCalculator =
-                        bodies.at( bodyName )->getVehicleSystems( )->getTransmittedFrequencyCalculator( );
-                if( existingFrequencyCalculator == nullptr )
-                {
-                    bodies.at( bodyName )->getVehicleSystems( )->setTransmittedFrequencyCalculator( frequencyInterpolator );
-                }
-                else
-                {
-                    std::shared_ptr< ground_stations::PiecewiseLinearFrequencyInterpolator > existingFrequencyInterpolator =
-                            std::dynamic_pointer_cast< ground_stations::PiecewiseLinearFrequencyInterpolator >(
-                                    existingFrequencyCalculator );
-                    if( existingFrequencyInterpolator == nullptr )
-                    {
-                        throw std::runtime_error( "Error when setting ramped frequency supplementary data in body " + bodyName +
-                                                  ", vehicle systems already contain a non-ramped frequency calculator." );
-                    }
-                    existingFrequencyInterpolator->addFrequencyInterpolator( frequencyInterpolator );
-                }
+                throw std::runtime_error( "Error when setting frequency supplementary data in body " + bodyName + ", reference point " +
+                                          referencePointName + ": " + std::string( caughtException.what( ) ) );
             }
         }
     }

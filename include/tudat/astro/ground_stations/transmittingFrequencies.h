@@ -14,8 +14,15 @@
 #ifndef TUDAT_TRANSMITTINGFREQUENCIES_H
 #define TUDAT_TRANSMITTINGFREQUENCIES_H
 
+#include <algorithm>
 #include <iostream>
+#include <map>
+#include <memory>
+#include <optional>
+#include <string>
+#include <vector>
 
+#include "tudat/astro/basic_astro/frequencyBands.h"
 #include "tudat/math/quadrature/trapezoidQuadrature.h"
 #include "tudat/math/interpolators/lookupScheme.h"
 #include "tudat/astro/basic_astro/dateTime.h"
@@ -59,6 +66,71 @@ public:
      */
     template< typename ObservationScalarType = double, typename TimeType = Time >
     ObservationScalarType getTemplatedFrequencyIntegral( const TimeType& quadratureStartTime, const TimeType& quadratureEndTime );
+
+    /*! Templated function to compute the transmitted frequency in a given frequency band at the specified time.
+     *
+     * Templated function to compute the transmitted frequency in a given frequency band at the specified time. If no
+     * frequency band is provided, the band-independent function is used (which is ambiguous for interpolators with
+     * multiple bands). Single-band interpolators ignore the frequency band.
+     *
+     * @param lookupTime Time at which to compute the frequency.
+     * @param frequencyBand Frequency band for which to compute the frequency (if any).
+     * @return Frequency value.
+     */
+    template< typename ObservationScalarType = double, typename TimeType = Time >
+    ObservationScalarType getTemplatedCurrentFrequency( const TimeType& lookupTime,
+                                                        const std::optional< basic_astrodynamics::FrequencyBands >& frequencyBand )
+    {
+        if( frequencyBand.has_value( ) )
+        {
+            return getInterpolatorForBand( frequencyBand.value( ) )
+                    ->template getTemplatedCurrentFrequency< ObservationScalarType, TimeType >( lookupTime );
+        }
+        else
+        {
+            return getTemplatedCurrentFrequency< ObservationScalarType, TimeType >( lookupTime );
+        }
+    }
+
+    /*! Templated function to compute the integral of the transmitted frequency in a given frequency band.
+     *
+     * Templated function to compute the integral of the transmitted frequency in a given frequency band. If no
+     * frequency band is provided, the band-independent function is used (which is ambiguous for interpolators with
+     * multiple bands). Single-band interpolators ignore the frequency band.
+     *
+     * @param quadratureStartTime Start time of integration interval.
+     * @param quadratureEndTime End time of integration interval.
+     * @param frequencyBand Frequency band for which to compute the frequency integral (if any).
+     * @return Frequency integral
+     */
+    template< typename ObservationScalarType = double, typename TimeType = Time >
+    ObservationScalarType getTemplatedFrequencyIntegral( const TimeType& quadratureStartTime,
+                                                         const TimeType& quadratureEndTime,
+                                                         const std::optional< basic_astrodynamics::FrequencyBands >& frequencyBand )
+    {
+        if( frequencyBand.has_value( ) )
+        {
+            return getInterpolatorForBand( frequencyBand.value( ) )
+                    ->template getTemplatedFrequencyIntegral< ObservationScalarType, TimeType >( quadratureStartTime, quadratureEndTime );
+        }
+        else
+        {
+            return getTemplatedFrequencyIntegral< ObservationScalarType, TimeType >( quadratureStartTime, quadratureEndTime );
+        }
+    }
+
+    /*! Function to retrieve the interpolator to be used for a given frequency band.
+     *
+     * Function to retrieve the interpolator to be used for a given frequency band. Single-band interpolators are not
+     * associated with a specific band, and return themselves for any band.
+     *
+     * @param frequencyBand Frequency band for which the interpolator is to be retrieved.
+     * @return Interpolator for the requested frequency band.
+     */
+    virtual StationFrequencyInterpolator* getInterpolatorForBand( const basic_astrodynamics::FrequencyBands /*frequencyBand*/ )
+    {
+        return this;
+    }
 
 private:
     //! Get frequency (with long double as observation scalar type and double as time type).
@@ -465,6 +537,154 @@ private:
     //! Lookup scheme to find the nearest start time of the blocks without frequency transmission
     std::shared_ptr< interpolators::LookUpScheme< Time > > invalidStartTimeLookupScheme_;
 };
+
+//! Class to compute the transmitted frequency of a transmitter that can transmit in multiple frequency bands
+//! simultaneously (e.g. multi-band uplinks), using a separate frequency interpolator for each band.
+class MultiBandFrequencyInterpolator : public StationFrequencyInterpolator
+{
+public:
+    //! Constructor
+    using StationFrequencyInterpolator::StationFrequencyInterpolator;
+
+    /*! Constructor
+     *
+     * Constructor.
+     *
+     * @param bandInterpolators Frequency interpolator for each frequency band (at least one).
+     */
+    explicit MultiBandFrequencyInterpolator(
+            const std::map< basic_astrodynamics::FrequencyBands, std::shared_ptr< StationFrequencyInterpolator > >& bandInterpolators ):
+        StationFrequencyInterpolator( )
+    {
+        if( bandInterpolators.empty( ) )
+        {
+            throw std::runtime_error(
+                    "Error when creating multi-band frequency interpolator: at least one frequency band interpolator must be "
+                    "provided." );
+        }
+
+        for( auto const& [ frequencyBand, bandInterpolator ] : bandInterpolators )
+        {
+            addBandInterpolator( frequencyBand, bandInterpolator );
+        }
+    }
+
+    //! Destructor
+    ~MultiBandFrequencyInterpolator( ) override = default;
+
+    /*! Function to check whether a frequency interpolator can be added for a given frequency band.
+     *
+     * Function to check whether a frequency interpolator can be added for a given frequency band (see
+     * addBandInterpolator), without modifying this object. An exception is thrown if the interpolator cannot be added.
+     *
+     * @param frequencyBand Frequency band of the interpolator to add.
+     * @param bandInterpolator Frequency interpolator to add.
+     */
+    void checkBandInterpolatorCanBeAdded( const basic_astrodynamics::FrequencyBands frequencyBand,
+                                          const std::shared_ptr< StationFrequencyInterpolator >& bandInterpolator ) const;
+
+    /*! Function to add a frequency interpolator for a given frequency band.
+     *
+     * Function to add a frequency interpolator for a given frequency band. If an interpolator is already defined for
+     * the band, and both the existing interpolator and the interpolator to add are piecewise linear, the ramp tables are
+     * merged into the existing interpolator. Otherwise, an exception is thrown. The interpolator to add is stored as
+     * given (not copied).
+     *
+     * @param frequencyBand Frequency band of the interpolator to add.
+     * @param bandInterpolator Frequency interpolator to add.
+     */
+    void addBandInterpolator( const basic_astrodynamics::FrequencyBands frequencyBand,
+                              const std::shared_ptr< StationFrequencyInterpolator >& bandInterpolator );
+
+    /*! Function to add frequency interpolators for multiple frequency bands.
+     *
+     * Function to add frequency interpolators for multiple frequency bands (see addBandInterpolator). All interpolators
+     * are checked before any of them is added, so that this object is unchanged if an exception is thrown.
+     *
+     * @param bandInterpolators Frequency interpolator to add for each frequency band.
+     */
+    void addBandInterpolators(
+            const std::map< basic_astrodynamics::FrequencyBands, std::shared_ptr< StationFrequencyInterpolator > >& bandInterpolators );
+
+    //! Function to retrieve the frequency interpolator of a given frequency band.
+    const std::shared_ptr< StationFrequencyInterpolator >& getBandInterpolator(
+            const basic_astrodynamics::FrequencyBands frequencyBand ) const;
+
+    //! Function to retrieve the frequency interpolators of all frequency bands.
+    const std::map< basic_astrodynamics::FrequencyBands, std::shared_ptr< StationFrequencyInterpolator > >& getBandInterpolators( ) const
+    {
+        return bandInterpolators_;
+    }
+
+    //! Function to retrieve the frequency bands for which an interpolator is defined.
+    std::vector< basic_astrodynamics::FrequencyBands > getAvailableBands( ) const;
+
+    //! Function to check whether an interpolator is defined for a given frequency band.
+    bool hasBand( const basic_astrodynamics::FrequencyBands frequencyBand ) const
+    {
+        return bandInterpolators_.count( frequencyBand ) > 0;
+    }
+
+    //! Function to retrieve the interpolator of a given frequency band (throws if band is not defined).
+    StationFrequencyInterpolator* getInterpolatorForBand( const basic_astrodynamics::FrequencyBands frequencyBand ) override
+    {
+        return getBandInterpolator( frequencyBand ).get( );
+    }
+
+private:
+    //! Function to retrieve the interpolator to use when no frequency band is specified (throws if not unique).
+    std::shared_ptr< StationFrequencyInterpolator > getSingleBandInterpolator( ) const;
+
+    //! Get frequency (with long double as observation scalar type and double as time type).
+    double getCurrentFrequency( const double lookupTime ) override;
+
+    //! Get frequency (with double as observation scalar type and Time as time type).
+    double getCurrentFrequency( const Time& lookupTime ) override;
+
+    //! Get frequency (with long double as observation scalar type and double as time type).
+    long double getCurrentLongFrequency( const double lookupTime ) override;
+
+    //! Get frequency (with long double as observation scalar type and Time as time type).
+    long double getCurrentLongFrequency( const Time& lookupTime ) override;
+
+    //! Get frequency integral (with long double as observation scalar type and double as time type).
+    double getFrequencyIntegral( const double quadratureStartTime, const double quadratureEndTime ) override;
+
+    //! Get frequency integral (with double as observation scalar type and Time as time type).
+    double getFrequencyIntegral( const Time& quadratureStartTime, const Time& quadratureEndTime ) override;
+
+    //! Get frequency integral (with long double as observation scalar type and double as time type).
+    long double getLongFrequencyIntegral( const double quadratureStartTime, const double quadratureEndTime ) override;
+
+    //! Get frequency integral (with long double as observation scalar type and Time as time type).
+    long double getLongFrequencyIntegral( const Time& quadratureStartTime, const Time& quadratureEndTime ) override;
+
+    //! Frequency interpolator for each frequency band
+    std::map< basic_astrodynamics::FrequencyBands, std::shared_ptr< StationFrequencyInterpolator > > bandInterpolators_;
+};
+
+/*! Function to combine an existing transmitted frequency calculator with a new one.
+ *
+ * Function to combine an existing transmitted frequency calculator (e.g. of a ground station) with a new one, and return
+ * the calculator to be stored. If a frequency band is provided, the calculator to add is stored for that band in a
+ * MultiBandFrequencyInterpolator (which is created if the existing calculator is null). If no frequency band is provided,
+ * the calculator to add is either set (if the existing calculator is null), merged with the existing one (if both are
+ * piecewise linear), or its bands are added to the existing one (if both are multi-band). Combining band-specific and
+ * band-independent calculators results in an exception. If an exception is thrown, the existing calculator is unchanged.
+ *
+ * Calculators are stored as given (not copied), and merging modifies the existing calculator in place. Objects that
+ * refer to the existing calculator (e.g. observation models), or to a calculator that was previously added, therefore
+ * reflect the merged result.
+ *
+ * @param existingCalculator Existing frequency calculator (may be null).
+ * @param calculatorToAdd Frequency calculator to add.
+ * @param frequencyBand Frequency band of the calculator to add (if any).
+ * @return Frequency calculator to be stored for the transmitter.
+ */
+std::shared_ptr< StationFrequencyInterpolator > combineTransmittingFrequencyCalculators(
+        const std::shared_ptr< StationFrequencyInterpolator >& existingCalculator,
+        const std::shared_ptr< StationFrequencyInterpolator >& calculatorToAdd,
+        const std::optional< basic_astrodynamics::FrequencyBands >& frequencyBand );
 
 }  // namespace ground_stations
 

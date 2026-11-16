@@ -1761,6 +1761,30 @@ bool
                     transmitted_frequency_calculator : StationFrequencyInterpolator
                         The frequency calculator object to be associated with the vehicle.
                     )doc" )
+            .def( "add_transmitted_frequency_calculator",
+                  &tsm::VehicleSystems::addTransmittedFrequencyCalculator,
+                  py::arg( "transmitted_frequency_calculator" ),
+                  py::arg( "frequency_band" ) = std::nullopt,
+                  R"doc(
+                    Add a transmitted frequency calculator to the vehicle, combining it with any existing calculator.
+
+                    If a frequency band is provided, the calculator is stored for that band in a
+                    :class:`~MultiBandFrequencyInterpolator` (which is created if needed). Piecewise linear calculators
+                    for the same band are merged. If no band is provided, the calculator is set (if none exists) or
+                    merged with the existing piecewise linear calculator. Band-specific and band-independent calculators
+                    cannot be combined. If an exception is raised, the existing calculator is unchanged.
+
+                    The calculator is stored as given (not copied), and later additions are merged into the stored
+                    calculator in place. Objects that refer to it, including the calculator passed here, therefore reflect
+                    these additions.
+
+                    Parameters
+                    ----------
+                    transmitted_frequency_calculator : StationFrequencyInterpolator
+                        The frequency calculator to add.
+                    frequency_band : FrequencyBands, optional
+                        Frequency band in which the calculator applies.
+                    )doc" )
             .def( "get_control_surface_deflection",
                   &tsm::VehicleSystems::getCurrentControlSurfaceDeflection,
                   py::arg( "control_surface_id" ),
@@ -3531,6 +3555,90 @@ bool
 
                   )doc" );
 
+    py::class_< tgs::MultiBandFrequencyInterpolator,
+                std::shared_ptr< tgs::MultiBandFrequencyInterpolator >,
+                tgs::StationFrequencyInterpolator >( m,
+                                                     "MultiBandFrequencyInterpolator",
+                                                     R"doc(
+
+                Object that computes the transmitting frequency of a transmitter that transmits in multiple frequency bands simultaneously (e.g. a ground station with multi-band uplink), using a separate frequency calculator per band.
+
+                When computing an observation, the calculator of the transmitter's frequency band (the first entry of the ``frequency_bands`` ancillary setting) is used. If the observation does not define its frequency bands, the frequency can only be computed if a single band is defined.
+                )doc" )
+            .def( py::init< const std::map< tba::FrequencyBands, std::shared_ptr< tgs::StationFrequencyInterpolator > >& >( ),
+                  py::arg( "band_interpolators" ),
+                  R"doc(
+
+                Initialize the multi-band frequency interpolator.
+
+                Parameters
+                ----------
+                band_interpolators : dict[FrequencyBands, TransmittingFrequencyCalculator]
+                    Frequency calculator for each frequency band. At least one band must be provided.
+
+                )doc" )
+            .def( "add_band_interpolator",
+                  &tgs::MultiBandFrequencyInterpolator::addBandInterpolator,
+                  py::arg( "frequency_band" ),
+                  py::arg( "band_interpolator" ),
+                  R"doc(
+
+                Add a frequency calculator for a given frequency band. If a calculator is already defined for the band, and both calculators are piecewise linear, their ramp tables are merged into the existing calculator; otherwise, an exception is raised. The calculator is stored as given (not copied).
+
+                Parameters
+                ----------
+                frequency_band : FrequencyBands
+                    Frequency band of the calculator to add.
+                band_interpolator : TransmittingFrequencyCalculator
+                    Frequency calculator to add.
+
+                )doc" )
+            .def( "get_band_interpolator",
+                  &tgs::MultiBandFrequencyInterpolator::getBandInterpolator,
+                  py::arg( "frequency_band" ),
+                  R"doc(
+
+                Retrieve the frequency calculator of a given frequency band.
+
+                Parameters
+                ----------
+                frequency_band : FrequencyBands
+                    Frequency band of the calculator to retrieve.
+
+                Returns
+                -------
+                TransmittingFrequencyCalculator
+                    Frequency calculator of the requested band.
+
+                )doc" )
+            .def( "has_band",
+                  &tgs::MultiBandFrequencyInterpolator::hasBand,
+                  py::arg( "frequency_band" ),
+                  R"doc(
+
+                Check whether a frequency calculator is defined for a given frequency band.
+
+                Parameters
+                ----------
+                frequency_band : FrequencyBands
+                    Frequency band to check.
+
+                Returns
+                -------
+                bool
+                    True if a frequency calculator is defined for the band, False otherwise.
+
+                )doc" )
+            .def_property_readonly( "available_bands",
+                                    &tgs::MultiBandFrequencyInterpolator::getAvailableBands,
+                                    R"doc(
+
+                Frequency bands for which a frequency calculator is defined.
+
+                :type: list[FrequencyBands]
+
+                )doc" );
+
     py::class_< tgs::PointingAnglesCalculator, std::shared_ptr< tgs::PointingAnglesCalculator > >( m, "PointingAnglesCalculator", R"doc(
 
          Calculator for ground station elevation and azimuth in a local East-North-Up frame.
@@ -3734,18 +3842,76 @@ bool
              The transmitting frequency calculator to set.
 
      )doc" )
-            .def( "has_frequency_calculator", &tgs::GroundStation::hasFrequencyCalculator, R"doc(
+            .def(
+                    "has_frequency_calculator",
+                    []( tgs::GroundStation& groundStation, const std::optional< tba::FrequencyBands >& frequencyBand ) {
+                        return frequencyBand.has_value( ) ? groundStation.hasFrequencyCalculator( frequencyBand.value( ) )
+                                                          : groundStation.hasFrequencyCalculator( );
+                    },
+                    py::arg( "frequency_band" ) = std::nullopt,
+                    R"doc(
 
          Check if the ground station has a frequency calculator.
+
+         Parameters
+         ----------
+         frequency_band : FrequencyBands, optional
+            If provided, check whether the ground station can compute its transmitting frequency in this band. A frequency
+            calculator that is not band-specific is used for any band.
 
          Returns
          -------
          bool
-            True if the ground station has a frequency calculator, False otherwise.
+            True if the ground station has a (suitable) frequency calculator, False otherwise.
+
+     )doc" )
+            .def( "add_transmitting_frequency_calculator",
+                  &tgs::GroundStation::addTransmittingFrequencyCalculator,
+                  py::arg( "transmitting_frequency_calculator" ),
+                  py::arg( "frequency_band" ) = std::nullopt,
+                  R"doc(
+
+         Add a transmitting frequency calculator to the ground station, combining it with any existing calculator.
+
+         If a frequency band is provided, the calculator is stored for that band in a
+         :class:`~MultiBandFrequencyInterpolator` (which is created if needed), allowing the station to transmit in multiple
+         bands simultaneously. Piecewise linear calculators for the same band are merged. If no band is provided, the
+         calculator is set (if none exists) or merged with the existing piecewise linear calculator. Band-specific and
+         band-independent calculators cannot be combined. If an exception is raised, the existing calculator is unchanged.
+
+         The calculator is stored as given (not copied), and later additions are merged into the stored calculator in
+         place. Objects that refer to it, including the calculator passed here, therefore reflect these additions.
+
+         Parameters
+         ----------
+         transmitting_frequency_calculator : TransmittingFrequencyCalculator
+             The transmitting frequency calculator to add.
+         frequency_band : FrequencyBands, optional
+             Frequency band in which the calculator applies.
+
+     )doc" )
+            .def( "get_transmitting_frequency_calculator",
+                  py::overload_cast< tba::FrequencyBands >( &tgs::GroundStation::getTransmittingFrequencyCalculator ),
+                  py::arg( "frequency_band" ),
+                  R"doc(
+
+         Retrieve the transmitting frequency calculator of the ground station for a given frequency band.
+
+         A frequency calculator that is not band-specific is returned for any band.
+
+         Parameters
+         ----------
+         frequency_band : FrequencyBands
+             Frequency band for which the calculator is to be retrieved.
+
+         Returns
+         -------
+         TransmittingFrequencyCalculator
+             Transmitting frequency calculator for the requested band.
 
      )doc" )
             .def_property( "transmitting_frequency_calculator",
-                           &tgs::GroundStation::getTransmittingFrequencyCalculator,
+                           py::overload_cast<>( &tgs::GroundStation::getTransmittingFrequencyCalculator ),
                            &tgs::GroundStation::setTransmittingFrequencyCalculator,
                            R"doc(
 

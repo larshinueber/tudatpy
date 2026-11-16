@@ -482,11 +482,15 @@ public:
      * \param oneWayDopplerScaling The underlying one-way Doppler scaling object
      * \param transmittedFrequencyFunction Function returning the transmitted frequency at a given transmission time and
      *        transmitter state. The time argument is the TDB transmission time; the function is responsible for converting
-     *        it to the time scale required by the frequency interpolator.
+     *        it to the time scale required by the frequency interpolator. The ancillary settings of the observation are
+     *        passed to retrieve the transmitter frequency band (for multi-band transmitters).
      */
     OneWayDopplerMeasuredFrequencyScaling(
             const std::shared_ptr< OneWayDopplerScaling > oneWayDopplerScaling,
-            const std::function< double( const double, const Eigen::Vector6d& ) > transmittedFrequencyFunction ):
+            const std::function< double( const double,
+                                         const Eigen::Vector6d&,
+                                         const std::shared_ptr< observation_models::ObservationAncillarySimulationSettings >& ) >
+                    transmittedFrequencyFunction ):
         DirectPositionPartialScaling< 1 >( observation_models::one_way_doppler_measured_frequency ),
         oneWayDopplerScaling_( oneWayDopplerScaling ), transmittedFrequencyFunction_( transmittedFrequencyFunction ),
         currentTransmittedFrequency_( 0.0 )
@@ -515,7 +519,7 @@ public:
         oneWayDopplerScaling_->update( linkEndStates, times, fixedLinkEnd, currentObservation, ancillarySettings );
 
         // Get the transmitted frequency at transmission time (index 0) using the transmitter state for TDB->UTC conversion.
-        currentTransmittedFrequency_ = transmittedFrequencyFunction_( times.at( 0 ), linkEndStates.at( 0 ) );
+        currentTransmittedFrequency_ = transmittedFrequencyFunction_( times.at( 0 ), linkEndStates.at( 0 ), ancillarySettings );
     }
 
     //! Function to retrieve the position scaling factor for specific link end
@@ -631,7 +635,10 @@ private:
     std::shared_ptr< OneWayDopplerScaling > oneWayDopplerScaling_;
 
     //! Function returning the transmitted frequency at a given transmission time and transmitter state
-    std::function< double( const double, const Eigen::Vector6d& ) > transmittedFrequencyFunction_;
+    std::function< double( const double,
+                           const Eigen::Vector6d&,
+                           const std::shared_ptr< observation_models::ObservationAncillarySimulationSettings >& ) >
+            transmittedFrequencyFunction_;
 
     //! Current transmitted frequency (updated in update() method)
     double currentTransmittedFrequency_;

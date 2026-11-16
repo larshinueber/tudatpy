@@ -169,6 +169,205 @@ void PiecewiseLinearFrequencyInterpolator::addFrequencyInterpolator(
     initialize( );
 }
 
+void MultiBandFrequencyInterpolator::checkBandInterpolatorCanBeAdded(
+        const basic_astrodynamics::FrequencyBands frequencyBand,
+        const std::shared_ptr< StationFrequencyInterpolator >& bandInterpolator ) const
+{
+    if( bandInterpolator == nullptr )
+    {
+        throw std::runtime_error( "Error when adding frequency interpolator for " +
+                                  basic_astrodynamics::getFrequencyBandString( frequencyBand ) +
+                                  " to multi-band frequency interpolator: interpolator is null." );
+    }
+
+    if( std::dynamic_pointer_cast< MultiBandFrequencyInterpolator >( bandInterpolator ) != nullptr )
+    {
+        throw std::runtime_error( "Error when adding frequency interpolator for " +
+                                  basic_astrodynamics::getFrequencyBandString( frequencyBand ) +
+                                  " to multi-band frequency interpolator: interpolator to add is itself a multi-band interpolator." );
+    }
+
+    // Existing interpolator of the band can only be merged with the interpolator to add if both are piecewise linear
+    auto existingBandInterpolator = bandInterpolators_.find( frequencyBand );
+    if( existingBandInterpolator != bandInterpolators_.end( ) &&
+        ( std::dynamic_pointer_cast< PiecewiseLinearFrequencyInterpolator >( existingBandInterpolator->second ) == nullptr ||
+          std::dynamic_pointer_cast< PiecewiseLinearFrequencyInterpolator >( bandInterpolator ) == nullptr ) )
+    {
+        throw std::runtime_error( "Error when adding frequency interpolator for " +
+                                  basic_astrodynamics::getFrequencyBandString( frequencyBand ) +
+                                  " to multi-band frequency interpolator: an interpolator is already defined for this band, and "
+                                  "only piecewise linear interpolators can be merged." );
+    }
+}
+
+void MultiBandFrequencyInterpolator::addBandInterpolator( const basic_astrodynamics::FrequencyBands frequencyBand,
+                                                          const std::shared_ptr< StationFrequencyInterpolator >& bandInterpolator )
+{
+    checkBandInterpolatorCanBeAdded( frequencyBand, bandInterpolator );
+
+    auto existingBandInterpolator = bandInterpolators_.find( frequencyBand );
+    if( existingBandInterpolator == bandInterpolators_.end( ) )
+    {
+        bandInterpolators_[ frequencyBand ] = bandInterpolator;
+    }
+    else
+    {
+        // Both interpolators are piecewise linear (checked by checkBandInterpolatorCanBeAdded)
+        std::dynamic_pointer_cast< PiecewiseLinearFrequencyInterpolator >( existingBandInterpolator->second )
+                ->addFrequencyInterpolator( std::dynamic_pointer_cast< PiecewiseLinearFrequencyInterpolator >( bandInterpolator ) );
+    }
+}
+
+void MultiBandFrequencyInterpolator::addBandInterpolators(
+        const std::map< basic_astrodynamics::FrequencyBands, std::shared_ptr< StationFrequencyInterpolator > >& bandInterpolators )
+{
+    // Check all interpolators before adding any, so that this object is unchanged if one of them cannot be added
+    for( auto const& [ frequencyBand, bandInterpolator ] : bandInterpolators )
+    {
+        checkBandInterpolatorCanBeAdded( frequencyBand, bandInterpolator );
+    }
+
+    for( auto const& [ frequencyBand, bandInterpolator ] : bandInterpolators )
+    {
+        addBandInterpolator( frequencyBand, bandInterpolator );
+    }
+}
+
+const std::shared_ptr< StationFrequencyInterpolator >& MultiBandFrequencyInterpolator::getBandInterpolator(
+        const basic_astrodynamics::FrequencyBands frequencyBand ) const
+{
+    auto bandIterator = bandInterpolators_.find( frequencyBand );
+    if( bandIterator == bandInterpolators_.end( ) )
+    {
+        throw std::runtime_error( "Error when retrieving transmitted frequency: no frequency interpolator defined for " +
+                                  basic_astrodynamics::getFrequencyBandString( frequencyBand ) );
+    }
+    return bandIterator->second;
+}
+
+std::vector< basic_astrodynamics::FrequencyBands > MultiBandFrequencyInterpolator::getAvailableBands( ) const
+{
+    std::vector< basic_astrodynamics::FrequencyBands > availableBands;
+    for( auto const& [ frequencyBand, bandInterpolator ] : bandInterpolators_ )
+    {
+        availableBands.push_back( frequencyBand );
+    }
+    return availableBands;
+}
+
+std::shared_ptr< StationFrequencyInterpolator > MultiBandFrequencyInterpolator::getSingleBandInterpolator( ) const
+{
+    if( bandInterpolators_.size( ) != 1 )
+    {
+        throw std::runtime_error(
+                "Error when retrieving transmitted frequency: no frequency band was specified, but multi-band frequency "
+                "interpolator contains " +
+                std::to_string( bandInterpolators_.size( ) ) +
+                " bands. Provide the frequency bands of the observation in the ancillary settings." );
+    }
+    return bandInterpolators_.begin( )->second;
+}
+
+double MultiBandFrequencyInterpolator::getCurrentFrequency( const double lookupTime )
+{
+    return getSingleBandInterpolator( )->getTemplatedCurrentFrequency< double, double >( lookupTime );
+}
+
+double MultiBandFrequencyInterpolator::getCurrentFrequency( const Time& lookupTime )
+{
+    return getSingleBandInterpolator( )->getTemplatedCurrentFrequency< double, Time >( lookupTime );
+}
+
+long double MultiBandFrequencyInterpolator::getCurrentLongFrequency( const double lookupTime )
+{
+    return getSingleBandInterpolator( )->getTemplatedCurrentFrequency< long double, double >( lookupTime );
+}
+
+long double MultiBandFrequencyInterpolator::getCurrentLongFrequency( const Time& lookupTime )
+{
+    return getSingleBandInterpolator( )->getTemplatedCurrentFrequency< long double, Time >( lookupTime );
+}
+
+double MultiBandFrequencyInterpolator::getFrequencyIntegral( const double quadratureStartTime, const double quadratureEndTime )
+{
+    return getSingleBandInterpolator( )->getTemplatedFrequencyIntegral< double, double >( quadratureStartTime, quadratureEndTime );
+}
+
+double MultiBandFrequencyInterpolator::getFrequencyIntegral( const Time& quadratureStartTime, const Time& quadratureEndTime )
+{
+    return getSingleBandInterpolator( )->getTemplatedFrequencyIntegral< double, Time >( quadratureStartTime, quadratureEndTime );
+}
+
+long double MultiBandFrequencyInterpolator::getLongFrequencyIntegral( const double quadratureStartTime, const double quadratureEndTime )
+{
+    return getSingleBandInterpolator( )->getTemplatedFrequencyIntegral< long double, double >( quadratureStartTime, quadratureEndTime );
+}
+
+long double MultiBandFrequencyInterpolator::getLongFrequencyIntegral( const Time& quadratureStartTime, const Time& quadratureEndTime )
+{
+    return getSingleBandInterpolator( )->getTemplatedFrequencyIntegral< long double, Time >( quadratureStartTime, quadratureEndTime );
+}
+
+std::shared_ptr< StationFrequencyInterpolator > combineTransmittingFrequencyCalculators(
+        const std::shared_ptr< StationFrequencyInterpolator >& existingCalculator,
+        const std::shared_ptr< StationFrequencyInterpolator >& calculatorToAdd,
+        const std::optional< basic_astrodynamics::FrequencyBands >& frequencyBand )
+{
+    const std::string errorMessagePrefix = "Error when adding transmitted frequency calculator";
+    if( calculatorToAdd == nullptr )
+    {
+        throw std::runtime_error( errorMessagePrefix + ": calculator is null." );
+    }
+
+    auto existingMultiBandCalculator = std::dynamic_pointer_cast< MultiBandFrequencyInterpolator >( existingCalculator );
+    auto multiBandCalculatorToAdd = std::dynamic_pointer_cast< MultiBandFrequencyInterpolator >( calculatorToAdd );
+
+    // A calculator to add is band-specific if a frequency band is provided, or if it is a multi-band calculator. Band-specific
+    // calculators can only be combined with an existing multi-band calculator, band-independent ones only with an existing
+    // band-independent calculator.
+    const bool isCalculatorToAddBandSpecific = frequencyBand.has_value( ) || multiBandCalculatorToAdd != nullptr;
+    if( existingCalculator != nullptr && isCalculatorToAddBandSpecific != ( existingMultiBandCalculator != nullptr ) )
+    {
+        throw std::runtime_error( errorMessagePrefix + ": band-specific and band-independent frequency calculators cannot be combined." );
+    }
+
+    // Calculator for a given frequency band: store in new or existing multi-band calculator (an exception is thrown if the
+    // calculator to add is itself a multi-band calculator)
+    if( frequencyBand.has_value( ) )
+    {
+        if( existingCalculator == nullptr )
+        {
+            return std::make_shared< MultiBandFrequencyInterpolator >(
+                    std::map< basic_astrodynamics::FrequencyBands, std::shared_ptr< StationFrequencyInterpolator > >{
+                            { frequencyBand.value( ), calculatorToAdd } } );
+        }
+        existingMultiBandCalculator->addBandInterpolator( frequencyBand.value( ), calculatorToAdd );
+        return existingCalculator;
+    }
+
+    // No frequency band provided: set calculator, or merge it with the existing calculator of the same kind
+    if( existingCalculator == nullptr )
+    {
+        return calculatorToAdd;
+    }
+    else if( multiBandCalculatorToAdd != nullptr )
+    {
+        existingMultiBandCalculator->addBandInterpolators( multiBandCalculatorToAdd->getBandInterpolators( ) );
+    }
+    else
+    {
+        auto existingPiecewiseLinearCalculator = std::dynamic_pointer_cast< PiecewiseLinearFrequencyInterpolator >( existingCalculator );
+        auto piecewiseLinearCalculatorToAdd = std::dynamic_pointer_cast< PiecewiseLinearFrequencyInterpolator >( calculatorToAdd );
+        if( existingPiecewiseLinearCalculator == nullptr || piecewiseLinearCalculatorToAdd == nullptr )
+        {
+            throw std::runtime_error( errorMessagePrefix +
+                                      ": a calculator is already defined, and only piecewise linear calculators can be merged." );
+        }
+        existingPiecewiseLinearCalculator->addFrequencyInterpolator( piecewiseLinearCalculatorToAdd );
+    }
+    return existingCalculator;
+}
+
 }  // namespace ground_stations
 
 }  // namespace tudat

@@ -243,13 +243,21 @@ public:
                 auto timeScaleConverter = owdmfObservationModel->getTimeScaleConverter( );
 
                 // Create a function that returns the transmitted frequency at a given transmission time and state.
-                // The frequency interpolator is queried in UTC to match the observation model.
-                std::function< double( const double, const Eigen::Vector6d& ) > transmittedFrequencyFunction =
-                        [ frequencyInterpolator, timeScaleConverter ]( const double time,
-                                                                       const Eigen::Vector6d& transmitterState ) -> double {
+                // The frequency interpolator is queried in UTC to match the observation model, and in the transmitter band
+                // (from the ancillary settings) for multi-band transmitters.
+                std::function< double( const double,
+                                       const Eigen::Vector6d&,
+                                       const std::shared_ptr< observation_models::ObservationAncillarySimulationSettings >& ) >
+                        transmittedFrequencyFunction =
+                                [ frequencyInterpolator, timeScaleConverter ](
+                                        const double time,
+                                        const Eigen::Vector6d& transmitterState,
+                                        const std::shared_ptr< observation_models::ObservationAncillarySimulationSettings >&
+                                                ancillarySettings ) -> double {
                     const double transmitterUtcTime = timeScaleConverter->template getCurrentTime< double >(
                             basic_astrodynamics::tdb_scale, basic_astrodynamics::utc_scale, time, transmitterState.segment< 3 >( 0 ) );
-                    return frequencyInterpolator->template getTemplatedCurrentFrequency< double, double >( transmitterUtcTime );
+                    return frequencyInterpolator->template getTemplatedCurrentFrequency< double, double >(
+                            transmitterUtcTime, observation_models::getTransmitterFrequencyBand( ancillarySettings ) );
                 };
 
                 // Create the OWDMF scaling that wraps the one-way Doppler scaling and multiplies by f_tx
