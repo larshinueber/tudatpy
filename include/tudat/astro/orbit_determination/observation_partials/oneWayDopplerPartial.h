@@ -324,7 +324,7 @@ public:
         }
     }
 
-    bool isVelocityScalingNonZero( ) override
+    bool isVelocityScalingNonZero( const observation_models::LinkEndType linkEndType ) override
     {
         return true;
     }
@@ -573,7 +573,7 @@ public:
         return currentTransmittedFrequency_ * oneWayDopplerScaling_->getLightTimeGradientPartialScalingFactor( linkEndType );
     }
 
-    bool isVelocityScalingNonZero( ) override
+    bool isVelocityScalingNonZero( const observation_models::LinkEndType linkEndType ) override
     {
         return true;
     }
