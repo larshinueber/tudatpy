@@ -113,10 +113,20 @@ std::vector< std::shared_ptr< data::TrackingData< ObservationScalarType, TimeTyp
     return trackingDataSets;
 }
 
+/*! Extract the transmitted frequency ramps from raw IFMS data, as one supplementary data set per ground station.
+ *
+ * @param rawIfmsDataVector Raw IFMS file contents.
+ * @param groundStationNames Name of the ground station of each IFMS file.
+ * @param earthName Name of the body on which the ground stations are located.
+ * @param transmitterFrequencyBand Frequency band in which the ramps are transmitted (e.g. "X-band"), applied to all files.
+ *        If empty, the ramps are not band-specific.
+ * @return Supplementary data sets holding the frequency ramps of each ground station.
+ */
 inline std::vector< std::shared_ptr< data::TrackingSupplementaryData > > extractTrackingSupplementaryDataFromRawIfms(
         const std::vector< std::shared_ptr< TrackingTxtFileContents > >& rawIfmsDataVector,
         const std::vector< std::string >& groundStationNames,
-        const std::string& earthName = "Earth" )
+        const std::string& earthName = "Earth",
+        const std::string& transmitterFrequencyBand = std::string( ) )
 {
     if( rawIfmsDataVector.size( ) != groundStationNames.size( ) )
     {
@@ -129,7 +139,8 @@ inline std::vector< std::shared_ptr< data::TrackingSupplementaryData > > extract
         std::shared_ptr< data::RampedFrequencySupplementaryData >& frequencyData = frequencyDataPerStation[ groundStationNames.at( i ) ];
         if( frequencyData == nullptr )
         {
-            frequencyData = std::make_shared< data::RampedFrequencySupplementaryData >( );
+            frequencyData = std::make_shared< data::RampedFrequencySupplementaryData >(
+                    std::vector< data::RampedFrequencySupplementaryData::FrequencyRamp >( ), transmitterFrequencyBand );
         }
 
         addIfmsFrequencyRamps( rawIfmsDataVector.at( i ), frequencyData );
@@ -158,14 +169,17 @@ convertRawIfmsFiles( const std::vector< std::shared_ptr< TrackingTxtFileContents
                      const std::string& receptionReferenceFrequencyBand = std::string( ),
                      const double dopplerReferenceFrequency = std::numeric_limits< double >::quiet_NaN( ) )
 {
-    return std::make_pair( extractTrackingDataFromRawIfms< ObservationScalarType, TimeType >( rawIfmsDataVector,
-                                                                                              spacecraftName,
-                                                                                              groundStationNames,
-                                                                                              earthName,
-                                                                                              frequencyBands,
-                                                                                              receptionReferenceFrequencyBand,
-                                                                                              dopplerReferenceFrequency ),
-                           extractTrackingSupplementaryDataFromRawIfms( rawIfmsDataVector, groundStationNames, earthName ) );
+    return std::make_pair(
+            extractTrackingDataFromRawIfms< ObservationScalarType, TimeType >( rawIfmsDataVector,
+                                                                               spacecraftName,
+                                                                               groundStationNames,
+                                                                               earthName,
+                                                                               frequencyBands,
+                                                                               receptionReferenceFrequencyBand,
+                                                                               dopplerReferenceFrequency ),
+            // Ramps are transmitted in the band of the first leg of the link (uplink band)
+            extractTrackingSupplementaryDataFromRawIfms(
+                    rawIfmsDataVector, groundStationNames, earthName, frequencyBands.empty( ) ? std::string( ) : frequencyBands.at( 0 ) ) );
 }
 
 template< typename ObservationScalarType = double, typename TimeType = Time >

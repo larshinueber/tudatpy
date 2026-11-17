@@ -80,9 +80,16 @@ void expose_ifms( py::module& m )
              Whether records with invalid frequencies or corrections are skipped
              (to be used for all files).
          frequency_bands : list[str], default=[]
-             Frequency-band identifiers used for supplementary data (to be used
-             for all files). Allowed values are ``"S-band"``, ``"X-band"``,
-             ``"Ka-band"``, and ``"Ku-band"``.
+             Frequency-band identifiers of the legs of the link, starting with
+             the uplink (to be used for all files). Allowed values are
+             ``"S-band"``, ``"X-band"``, ``"Ka-band"``, and ``"Ku-band"``. If
+             provided, the first entry (uplink band) is also set as
+             :attr:`~tudatpy.data_input.tracking_data.FrequencySupplementaryData.frequency_band`
+             of the returned frequency ramps, so that the ramps are only used
+             for that band (see
+             :class:`~tudatpy.dynamics.environment.MultiBandFrequencyInterpolator`).
+             To load a station's uplinks in multiple bands, use a separate call
+             per band.
          reception_reference_frequency_band : str, optional
              Reference reception frequency band (to be used for all files),
              using the same string convention as ``frequency_bands``.

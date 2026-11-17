@@ -16,6 +16,7 @@
 
 #include <cmath>
 #include <map>
+#include <set>
 #include <memory>
 #include <string>
 #include <utility>
@@ -60,6 +61,33 @@ inline bool odfObservableRequiresFirstReceivingStation( const std::string& obser
     }
 
     throw std::runtime_error( "Error when determining ODF link ends: observable " + observableName + " not recognized." );
+}
+
+/*!
+ * Returns the name of the DSN uplink frequency band that contains a given (sky-level) uplink frequency, according to the
+ * DSN Earth-to-space frequency allocations for deep space (Category B) and near-Earth (Category A) missions (DSN
+ * Telecommunications Link Design Handbook 810-005, module 201): S-band (2025-2120 MHz), X-band (7145-7235 MHz) and
+ * Ka-band (34200-34700 MHz).
+ *
+ * @param uplinkFrequency Uplink frequency in Hz
+ * @return Name of the frequency band (as used by getFrequencyBandFromString), or an empty string if the frequency is not
+ * in any of the DSN uplink allocations.
+ */
+inline std::string getDsnUplinkFrequencyBandName( const double uplinkFrequency )
+{
+    if( uplinkFrequency >= 2025.0E6 && uplinkFrequency <= 2120.0E6 )
+    {
+        return "S-band";
+    }
+    else if( uplinkFrequency >= 7145.0E6 && uplinkFrequency <= 7235.0E6 )
+    {
+        return "X-band";
+    }
+    else if( uplinkFrequency >= 34200.0E6 && uplinkFrequency <= 34700.0E6 )
+    {
+        return "Ka-band";
+    }
+    return "";
 }
 
 /*! Get the frequency band name associated with a given ODF frequency band ID.
@@ -480,8 +508,9 @@ public:
         return ignoredGroundStations_;
     }
 
-    // Return the ramp tables per ground station
-    const std::map< std::string, std::shared_ptr< data::RampedFrequencySupplementaryData > >& getRampTables( ) const
+    // Return the ramp tables per ground station and uplink frequency band
+    const std::map< std::pair< std::string, std::string >, std::shared_ptr< data::RampedFrequencySupplementaryData > >& getRampTables( )
+            const
     {
         return rampTables_;
     }
@@ -613,8 +642,64 @@ private:
     }
 
     /*!
+     * Retrieves the identifier < ground station name, frequency band name > of the ramp table that applies to a ground
+     * station and ODF frequency band ID, as used as key of rampTables_.
+     *
+     * @param stationName Name of the ground station
+     * @param bandId ODF frequency band ID
+     * @return Identifier of the ramp table
+     */
+    std::pair< std::string, std::string > getRampTableId( const std::string& stationName, const int bandId ) const
+    {
+        return std::make_pair( stationName, getFrequencyBandNameForOdfId( bandId ) );
+    }
+
+    /*!
+     * Registers an observation that is ignored because no ramp table is available for the ground station and frequency
+     * band, and prints a warning (once per ground station, or once per ground station and band if ramp tables are
+     * available for the station in other bands).
+     *
+     * @param rawDataBlock Raw ODF data block of the ignored observation
+     * @param rampTableId Identifier < ground station name, frequency band name > of the missing ramp table
+     */
+    void registerMissingRampTable( std::shared_ptr< input_output::OdfDataBlock > rawDataBlock,
+                                   const std::pair< std::string, std::string >& rampTableId )
+    {
+        bool stationHasRampTables = false;
+        for( auto const& [ existingRampTableId, rampTable ] : rampTables_ )
+        {
+            if( existingRampTableId.first == rampTableId.first )
+            {
+                stationHasRampTables = true;
+            }
+        }
+        if( !stationHasRampTables )
+        {
+            if( std::count( ignoredGroundStations_.begin( ), ignoredGroundStations_.end( ), rampTableId.first ) == 0 )
+            {
+                ignoredGroundStations_.push_back( rampTableId.first );
+                if( verbose_ )
+                {
+                    std::cerr << "Warning: ground station " << rampTableId.first << " not available in ramp tables,"
+                              << " ignoring corresponding data." << std::endl;
+                }
+            }
+        }
+        else if( ignoredStationBands_.count( rampTableId ) == 0 )
+        {
+            ignoredStationBands_.insert( rampTableId );
+            if( verbose_ )
+            {
+                std::cerr << "Warning: ground station " << rampTableId.first << " has no ramp table for " << rampTableId.second
+                          << ", ignoring corresponding data." << std::endl;
+            }
+        }
+        ignoredOdfRawDataBlocks_.push_back( rawDataBlock );
+    }
+
+    /*!
      * Checks whether a given observation is valid. Checks if the observation time is covered by the
-     * available ramp tables, for the relevant ground station(s).
+     * available ramp tables, for the relevant ground station(s) and frequency band(s).
      *
      * @param rawDataBlock Raw ODF data block
      * @param linkEnds Link ends to which the ODF block applies
@@ -631,30 +716,22 @@ private:
                     getStationNameFromStationId( rawDataBlock->getCommonDataBlock( )->transmittingStationNetworkId_,
                                                  rawDataBlock->getCommonDataBlock( )->transmittingStationId_ );
 
-            // Check if transmitting station is in ramp tables
-            if( rampTables_.count( transmittingStation ) == 0 )
+            // Check if ramp table is available for transmitting station and uplink band
+            std::pair< std::string, std::string > rampTableId =
+                    getRampTableId( transmittingStation, rawDataBlock->getCommonDataBlock( )->uplinkBandId_ );
+            if( rampTables_.count( rampTableId ) == 0 )
             {
-                if( std::count( ignoredGroundStations_.begin( ), ignoredGroundStations_.end( ), transmittingStation ) == 0 )
-                {
-                    ignoredGroundStations_.push_back( transmittingStation );
-                    if( verbose_ )
-                    {
-                        std::cerr << "Warning: ground station " << transmittingStation << " not available in ramp tables,"
-                                  << " ignoring corresponding data." << std::endl;
-                    }
-                }
-                ignoredOdfRawDataBlocks_.push_back( rawDataBlock );
+                registerMissingRampTable( rawDataBlock, rampTableId );
                 return false;
             }
 
             // Check if observation time is covered by ramp tables
-            if( rawDataBlock->getCommonDataBlock( )->getObservableTime( ) <
-                unprocessedRampStartTimesPerStation_[ transmittingStation ].front( ) )
+            if( rawDataBlock->getCommonDataBlock( )->getObservableTime( ) < unprocessedRampStartTimesPerId_.at( rampTableId ).front( ) )
             {
                 if( verbose_ )
                 {
-                    noRampDataItems_[ static_cast< int >( currentObservableId ) ][ transmittingStation ].push_back(
-                            rawDataBlock->getCommonDataBlock( )->getObservableTime( ) );
+                    noRampDataItems_[ static_cast< int >( currentObservableId ) ][ transmittingStation + " (" + rampTableId.second + ")" ]
+                            .push_back( rawDataBlock->getCommonDataBlock( )->getObservableTime( ) );
                 }
                 ignoredOdfRawDataBlocks_.push_back( rawDataBlock );
                 return false;
@@ -664,27 +741,18 @@ private:
         {
             std::string receivingStation = getStationNameFromStationId( 0, rawDataBlock->getCommonDataBlock( )->receivingStationId_ );
 
-            // Check if receiving station is in ramp tables
-            if( rampTables_.count( receivingStation ) == 0 )
+            // Check if ramp table is available for receiving station and reference band
+            std::pair< std::string, std::string > rampTableId =
+                    getRampTableId( receivingStation, rawDataBlock->getCommonDataBlock( )->referenceBandId_ );
+            if( rampTables_.count( rampTableId ) == 0 )
             {
-                if( std::count( ignoredGroundStations_.begin( ), ignoredGroundStations_.end( ), receivingStation ) == 0 )
-                {
-                    ignoredGroundStations_.push_back( receivingStation );
-                    if( verbose_ )
-                    {
-                        std::cerr << "Warning: observation of ODF type " << static_cast< int >( currentObservableId )
-                                  << " not covered by ramp table of station " << receivingStation << ", ignoring it." << std::endl;
-                    }
-                }
-                ignoredOdfRawDataBlocks_.push_back( rawDataBlock );
+                registerMissingRampTable( rawDataBlock, rampTableId );
                 return false;
             }
 
             // Check if observation time is covered by ramp tables
-            if( rawDataBlock->getCommonDataBlock( )->getObservableTime( ) <
-                        unprocessedRampStartTimesPerStation_[ receivingStation ].front( ) ||
-                rawDataBlock->getCommonDataBlock( )->getObservableTime( ) >
-                        unprocessedRampStartTimesPerStation_[ receivingStation ].back( ) )
+            if( rawDataBlock->getCommonDataBlock( )->getObservableTime( ) < unprocessedRampStartTimesPerId_.at( rampTableId ).front( ) ||
+                rawDataBlock->getCommonDataBlock( )->getObservableTime( ) > unprocessedRampStartTimesPerId_.at( rampTableId ).back( ) )
             {
                 if( verbose_ )
                 {
@@ -792,6 +860,13 @@ private:
 
     void printExtractionWarnings( )
     {
+        for( auto const& [ stationName, rampFrequencies ] : unrecognizedRampFrequencies_ )
+        {
+            std::cerr << "Warning: " << rampFrequencies.size( ) << " ramps of ground station " << stationName
+                      << " have a frequency outside the DSN uplink allocations (e.g. " << rampFrequencies.front( )
+                      << " Hz). These ramps are ignored." << std::endl;
+        }
+
         for( auto it : noRampDataItems_ )
         {
             for( auto it2 : it.second )
@@ -870,40 +945,52 @@ private:
 
     /*!
      * Extracts and merges the ramp data from the provided ODF files, creating one frequency
-     * interpolator object per ground station.
+     * interpolator object per ground station and uplink frequency band. Since the ODF ramp blocks do not
+     * provide the uplink band, it is determined from the (sky-level) ramp frequency. Ramps with a frequency
+     * outside the DSN uplink allocations are ignored. Gaps in the ramps of a band (e.g. between files, or while the
+     * station transmits in another band) are not filled here: they are detected by the frequency interpolator that is
+     * created from the ramp table.
      *
      * @param rawOdfDataVector Vector of raw ODF data objects.
      */
-    void extractMultipleRawOdfRampData( std::vector< std::shared_ptr< input_output::OdfRawFileContents > > rawOdfDataVector )
+    void extractMultipleRawOdfRampData( const std::vector< std::shared_ptr< input_output::OdfRawFileContents > >& rawOdfDataVector )
     {
-        std::map< std::string, std::vector< double > > rampRatesPerStation, startFrequenciesPerStation;
+        std::map< std::pair< std::string, std::string >, std::vector< double > > rampRatesPerId;
+        std::map< std::pair< std::string, std::string >, std::vector< double > > startFrequenciesPerId;
 
         for( auto const& rawOdfData : rawOdfDataVector )
         {
-            std::map< int, std::vector< std::shared_ptr< input_output::OdfRampBlock > > > rampBlocksPerStation =
-                    rawOdfData->getRampBlocks( );
-            for( auto const& [ stationId, rampBlocks ] : rampBlocksPerStation )
+            // Ramp tables to which the current file has already contributed
+            std::set< std::pair< std::string, std::string > > rampTableIdsInCurrentFile;
+
+            for( auto const& [ stationId, rampBlocks ] : rawOdfData->getRampBlocks( ) )
             {
                 std::string stationName = getStationNameFromStationId( 0, stationId );
-
-                for( unsigned int j = 0; j < rampBlocks.size( ); j++ )
+                for( auto const& rampBlock : rampBlocks )
                 {
-                    // Check if zero time ramp
-                    if( rampBlocks.at( j )->getRampStartTime( ) == rampBlocks.at( j )->getRampEndTime( ) )
+                    if( rampBlock->getRampStartTime( ) == rampBlock->getRampEndTime( ) )
                     {
                         continue;
                     }
 
-                    auto& rampStartTimes = unprocessedRampStartTimesPerStation_[ stationName ];
-                    auto& rampEndTimes = unprocessedRampEndTimesPerStation_[ stationName ];
-                    auto& rampRates = rampRatesPerStation[ stationName ];
-                    auto& startFrequencies = startFrequenciesPerStation[ stationName ];
+                    std::string bandName = getDsnUplinkFrequencyBandName( rampBlock->getRampStartFrequency( ) );
+                    if( bandName == "" )
+                    {
+                        continue;
+                    }
+                    const std::pair< std::string, std::string > rampTableId = std::make_pair( stationName, bandName );
 
-                    // Add a connection interval only when consecutive ODF files leave a real gap.
-                    if( j == 0 && !rampStartTimes.empty( ) )
+                    auto& rampStartTimes = unprocessedRampStartTimesPerId_[ rampTableId ];
+                    auto& rampEndTimes = unprocessedRampEndTimesPerId_[ rampTableId ];
+                    auto& rampRates = rampRatesPerId[ rampTableId ];
+                    auto& startFrequencies = startFrequenciesPerId[ rampTableId ];
+
+                    // Add a connection interval only when consecutive ODF files leave a real gap (per band).
+                    bool isFirstRampBlockInFile = rampTableIdsInCurrentFile.insert( rampTableId ).second;
+                    if( isFirstRampBlockInFile && !rampStartTimes.empty( ) )
                     {
                         Time previousRampEndTime = rampEndTimes.back( );
-                        Time currentRampStartTime = rampBlocks.at( j )->getRampStartTime( );
+                        Time currentRampStartTime = rampBlock->getRampStartTime( );
                         if( previousRampEndTime < currentRampStartTime )
                         {
                             rampStartTimes.push_back( previousRampEndTime );
@@ -913,31 +1000,29 @@ private:
                         }
                     }
 
-                    rampStartTimes.push_back( rampBlocks.at( j )->getRampStartTime( ) );
-                    rampEndTimes.push_back( rampBlocks.at( j )->getRampEndTime( ) );
-                    rampRates.push_back( rampBlocks.at( j )->getRampRate( ) );
-                    startFrequencies.push_back( rampBlocks.at( j )->getRampStartFrequency( ) );
+                    rampStartTimes.push_back( rampBlock->getRampStartTime( ) );
+                    rampEndTimes.push_back( rampBlock->getRampEndTime( ) );
+                    rampRates.push_back( rampBlock->getRampRate( ) );
+                    startFrequencies.push_back( rampBlock->getRampStartFrequency( ) );
                 }
             }
         }
 
-        for( auto it = unprocessedRampStartTimesPerStation_.begin( ); it != unprocessedRampStartTimesPerStation_.end( ); ++it )
+        for( auto const& [ rampTableId, rampStartTimes ] : unprocessedRampStartTimesPerId_ )
         {
-            std::string stationName = it->first;
+            std::vector< Time > rampStartTimesUtc = computeObservationTimesUtcFromJ2000< Time >( rampStartTimes );
+            std::vector< Time > rampEndTimesUtc =
+                    computeObservationTimesUtcFromJ2000< Time >( unprocessedRampEndTimesPerId_.at( rampTableId ) );
 
-            std::vector< Time > rampStartTimesPerStationUtc =
-                    computeObservationTimesUtcFromJ2000< Time >( unprocessedRampStartTimesPerStation_[ stationName ] );
-            std::vector< Time > rampEndTimesPerStationUtc =
-                    computeObservationTimesUtcFromJ2000< Time >( unprocessedRampEndTimesPerStation_[ stationName ] );
+            rampTables_[ rampTableId ] = std::make_shared< data::RampedFrequencySupplementaryData >(
+                    std::vector< data::RampedFrequencySupplementaryData::FrequencyRamp >( ), rampTableId.second );
 
-            rampTables_[ stationName ] = std::make_shared< data::RampedFrequencySupplementaryData >( );
-
-            for( unsigned int i = 0; i < rampStartTimesPerStationUtc.size( ); ++i )
+            for( unsigned int i = 0; i < rampStartTimesUtc.size( ); ++i )
             {
-                rampTables_[ stationName ]->addFrequencyRamp( rampStartTimesPerStationUtc.at( i ),
-                                                              rampEndTimesPerStationUtc.at( i ),
-                                                              startFrequenciesPerStation[ stationName ].at( i ),
-                                                              rampRatesPerStation[ stationName ].at( i ) );
+                rampTables_[ rampTableId ]->addFrequencyRamp( rampStartTimesUtc.at( i ),
+                                                              rampEndTimesUtc.at( i ),
+                                                              startFrequenciesPerId.at( rampTableId ).at( i ),
+                                                              rampRatesPerId.at( rampTableId ).at( i ) );
             }
         }
     }
@@ -994,12 +1079,15 @@ private:
     std::map< std::string, std::map< data::PlainLinkDefinition, std::shared_ptr< ProcessedOdfFileSingleLinkData< TimeType > > > >
             processedDataBlocks_;
 
-    // Transmitting frequency objects mapped by the ground station names
-    std::map< std::string, std::shared_ptr< data::RampedFrequencySupplementaryData > > rampTables_;
+    // Transmitting frequency objects mapped by the ground station names and uplink frequency band names
+    std::map< std::pair< std::string, std::string >, std::shared_ptr< data::RampedFrequencySupplementaryData > > rampTables_;
 
-    // Unprocessed ramp start and end times. Used for pre-processing observations
-    std::map< std::string, std::vector< Time > > unprocessedRampStartTimesPerStation_;
-    std::map< std::string, std::vector< Time > > unprocessedRampEndTimesPerStation_;
+    // Unprocessed ramp start and end times, per ground station and uplink frequency band. Used for pre-processing observations
+    std::map< std::pair< std::string, std::string >, std::vector< Time > > unprocessedRampStartTimesPerId_;
+    std::map< std::pair< std::string, std::string >, std::vector< Time > > unprocessedRampEndTimesPerId_;
+
+    // Ramp frequencies outside the DSN uplink allocations, per ground station
+    std::map< std::string, std::vector< double > > unrecognizedRampFrequencies_;
 
     // Ignored data: either because processing of the data type has not been implemented or because
     // the required data to simulate the corresponding observable is not available in the ODF files
@@ -1008,6 +1096,9 @@ private:
     std::vector< input_output::OdfDataType > ignoredRawOdfObservableTypes_;
     // Vector keeping the invalid ground stations that were found in the raw ODF data
     std::vector< std::string > ignoredGroundStations_;
+    // Ground stations and frequency bands for which observations were ignored due to a missing ramp table, while ramp
+    // tables are available for the ground station in other bands
+    std::set< std::pair< std::string, std::string > > ignoredStationBands_;
     // Vector keeping the invalid data blocks that were found in the raw ODF data
     std::vector< std::shared_ptr< input_output::OdfDataBlock > > ignoredOdfRawDataBlocks_;
 
@@ -1253,15 +1344,18 @@ std::vector< std::shared_ptr< data::TrackingSupplementaryData > > extractTrackin
 {
     auto odfFileContents = std::make_shared< PreProcessedOdfFileContents< TimeType > >( rawOdfDataVector, spacecraftName, verboseOutput );
 
-    auto const& rampTables = odfFileContents->getRampTables( );
+    // Collect ramp tables (one per uplink frequency band) per ground station
+    std::map< std::string, std::vector< std::shared_ptr< data::FrequencySupplementaryData > > > rampTablesPerStation;
+    for( auto const& [ rampTableId, rampTable ] : odfFileContents->getRampTables( ) )
+    {
+        rampTablesPerStation[ rampTableId.first ].push_back( rampTable );
+    }
 
     std::vector< std::shared_ptr< data::TrackingSupplementaryData > > trackingSupplementaryDataSets;
-
-    for( auto const& [ stationName, rampTable ] : rampTables )
+    for( auto const& [ stationName, rampTables ] : rampTablesPerStation )
     {
         auto currentSupplementarySet = std::make_shared< data::TrackingSupplementaryData >( earthName, stationName );
-        currentSupplementarySet->setFrequencySupplementaryData(
-                std::vector< std::shared_ptr< data::FrequencySupplementaryData > >( { rampTable } ) );
+        currentSupplementarySet->setFrequencySupplementaryData( rampTables );
         trackingSupplementaryDataSets.push_back( currentSupplementarySet );
     }
 
