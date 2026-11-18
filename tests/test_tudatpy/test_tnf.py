@@ -24,6 +24,7 @@ def test_single_ramp():
     data = [
         {
             "station": "A",
+            "band": "X",
             "epoch": pd.Timestamp("2021-01-01 10:00:00"),
             "type": 1,
             "freq": 50.0,
@@ -31,6 +32,7 @@ def test_single_ramp():
         },
         {
             "station": "A",
+            "band": "X",
             "epoch": pd.Timestamp("2021-01-01 10:05:00"),
             "type": 4,
             "freq": 50.0,
@@ -46,6 +48,7 @@ def test_single_ramp():
                 "start_time": pd.Timestamp("2021-01-01 10:00:00"),
                 "end_time": pd.Timestamp("2021-01-01 10:05:00"),
                 "station": "A",
+                "band": "X",
                 "type": 1,
                 "freq": 50.0,
                 "rate": 0.0,
@@ -63,6 +66,7 @@ def test_continuation():
     data = [
         {
             "station": "A",
+            "band": "X",
             "epoch": pd.Timestamp("2021-01-01 10:00:00"),
             "type": 1,
             "freq": 50.0,
@@ -70,6 +74,7 @@ def test_continuation():
         },
         {
             "station": "A",
+            "band": "X",
             "epoch": pd.Timestamp("2021-01-01 10:05:00"),
             "type": 1,
             "freq": 80.0,
@@ -85,6 +90,7 @@ def test_continuation():
                 "start_time": pd.Timestamp("2021-01-01 10:00:00"),
                 "end_time": pd.Timestamp("2021-01-01 10:05:00"),
                 "station": "A",
+                "band": "X",
                 "type": 1,
                 "freq": 50.0,
                 "rate": 0.1,
@@ -102,6 +108,7 @@ def test_new_ramp_non_continuation():
     data = [
         {
             "station": "A",
+            "band": "X",
             "epoch": pd.Timestamp("2021-01-01 10:00:00"),
             "type": 1,
             "freq": 50.0,
@@ -110,6 +117,7 @@ def test_new_ramp_non_continuation():
         # This start event does not match the expected continuation frequency.
         {
             "station": "A",
+            "band": "X",
             "epoch": pd.Timestamp("2021-01-01 10:05:00"),
             "type": 1,
             "freq": 75.0,
@@ -117,6 +125,7 @@ def test_new_ramp_non_continuation():
         },
         {
             "station": "A",
+            "band": "X",
             "epoch": pd.Timestamp("2021-01-01 10:10:00"),
             "type": 4,
             "freq": 75.0,
@@ -132,6 +141,7 @@ def test_new_ramp_non_continuation():
                 "start_time": pd.Timestamp("2021-01-01 10:00:00"),
                 "end_time": pd.Timestamp("2021-01-01 10:05:00"),
                 "station": "A",
+                "band": "X",
                 "type": 1,
                 "freq": 50.0,
                 "rate": 0.1,
@@ -140,6 +150,7 @@ def test_new_ramp_non_continuation():
                 "start_time": pd.Timestamp("2021-01-01 10:05:00"),
                 "end_time": pd.Timestamp("2021-01-01 10:10:00"),
                 "station": "A",
+                "band": "X",
                 "type": 1,
                 "freq": 75.0,
                 "rate": 0.1,
@@ -157,6 +168,7 @@ def test_end_without_open_ramp():
     data = [
         {
             "station": "A",
+            "band": "X",
             "epoch": pd.Timestamp("2021-01-01 10:00:00"),
             "type": 4,
             "freq": 50.0,
@@ -177,6 +189,7 @@ def test_multiple_stations():
     data_A = [
         {
             "station": "A",
+            "band": "X",
             "epoch": pd.Timestamp("2021-01-01 10:00:00"),
             "type": 1,
             "freq": 50.0,
@@ -184,6 +197,7 @@ def test_multiple_stations():
         },
         {
             "station": "A",
+            "band": "X",
             "epoch": pd.Timestamp("2021-01-01 10:10:00"),
             "type": 4,
             "freq": 50.0,
@@ -193,6 +207,7 @@ def test_multiple_stations():
     data_B = [
         {
             "station": "B",
+            "band": "X",
             "epoch": pd.Timestamp("2021-01-01 11:00:00"),
             "type": 1,
             "freq": 60.0,
@@ -200,6 +215,7 @@ def test_multiple_stations():
         },
         {
             "station": "B",
+            "band": "X",
             "epoch": pd.Timestamp("2021-01-01 11:05:00"),
             "type": 4,
             "freq": 60.0,
@@ -221,6 +237,7 @@ def test_multiple_stations():
                 "start_time": pd.Timestamp("2021-01-01 10:00:00"),
                 "end_time": pd.Timestamp("2021-01-01 10:10:00"),
                 "station": "A",
+                "band": "X",
                 "type": 1,
                 "freq": 50.0,
                 "rate": 0.0,
@@ -233,6 +250,7 @@ def test_multiple_stations():
                 "start_time": pd.Timestamp("2021-01-01 11:00:00"),
                 "end_time": pd.Timestamp("2021-01-01 11:05:00"),
                 "station": "B",
+                "band": "X",
                 "type": 1,
                 "freq": 60.0,
                 "rate": 0.0,
@@ -251,6 +269,7 @@ def test_open_final_ramp_left_unbounded():
     data = [
         {
             "station": "A",
+            "band": "X",
             "epoch": pd.Timestamp("2021-01-01 10:00:00"),
             "type": 1,
             "freq": 50.0,

@@ -106,6 +106,7 @@ def ramp_row(**overrides) -> dict:
         "Start-Time (DT)": pd.Timestamp("1999-03-07 11:46:54"),
         "End-Time (DT)": pd.Timestamp("1999-03-07 11:47:00"),
         "Station": " DSS 34",
+        "Band": " X",
         "Frequency (Hz)": 7164234321.75112,
         "Rate (Hz/sec)": 0.0,
     }
@@ -524,8 +525,19 @@ class TestRampConverter:
 
     def test_every_fixture_ramp_is_assigned_to_its_station(self, converter, ramp_df):
         supplementary_data = converter.process(converter.extract(ramp_df), EARTH)
+        # Each station holds one ramp table per uplink band (DSS-34 also has three S-band ramps)
+        bands_per_station = {
+            sd.reference_point_name: {fd.frequency_band for fd in sd.frequency_supplementary_data}
+            for sd in supplementary_data
+        }
+        assert bands_per_station == {
+            station: {"X-band", "S-band"} if station == "DSS-34" else {"X-band"}
+            for station in RAMP_ROWS_PER_STATION
+        }
         ramps_per_station = {
-            sd.reference_point_name: len(sd.frequency_supplementary_data[0].frequency_ramps)
+            sd.reference_point_name: sum(
+                len(fd.frequency_ramps) for fd in sd.frequency_supplementary_data
+            )
             for sd in supplementary_data
         }
         assert ramps_per_station == RAMP_ROWS_PER_STATION
