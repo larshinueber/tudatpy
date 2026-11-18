@@ -317,46 +317,6 @@ BOOST_AUTO_TEST_CASE( test_RotationalDynamicsEstimationFromLanderData )
                            .cwiseQuotient( estimationOutput->parameterEstimate_ - truthParameters ) )
                          .transpose( )
               << std::endl;
-
-    //    input_output::writeMatrixToFile( estimationOutput->normalizedDesignMatrix_,
-    //                                     "rotationTestEstimationDesignMatrix.dat", 16,
-    //                                     input_output::getTudatRootPath( ) );
-    //    input_output::writeMatrixToFile( estimationOutput->designMatrixTransformationDiagonal_,
-    //                                     "rotationTestEstimationDesignMatrixNormalization.dat", 16,
-    //                                     input_output::getTudatRootPath( ) );
-    //    input_output::writeMatrixToFile( estimationOutput->weightsMatrixDiagonal_,
-    //                                     "rotationTestEstimationWeightsDiagonal.dat", 16,
-    //                                     input_output::getTudatRootPath( ) );
-    //    input_output::writeMatrixToFile( estimationOutput->residuals_,
-    //                                     "rotationTestEstimationResiduals.dat", 16,
-    //                                     input_output::getTudatRootPath( ) );
-    //    input_output::writeMatrixToFile( estimationOutput->getCorrelationMatrix( ),
-    //                                     "rotationTestEstimationCorrelations.dat", 16,
-    //                                     input_output::getTudatRootPath( ) );
-    //    input_output::writeMatrixToFile( estimationOutput->getResidualHistoryMatrix( ),
-    //                                     "rotationTestResidualHistory.dat", 16,
-    //                                     input_output::getTudatRootPath( ) );
-    //    input_output::writeMatrixToFile( estimationOutput->getParameterHistoryMatrix( ),
-    //                                     "rotationTestParameterHistory.dat", 16,
-    //                                     input_output::getTudatRootPath( ) );
-    //    input_output::writeMatrixToFile( getConcatenatedMeasurementVector( estimationInput->getObservationsAndTimes( ) ),
-    //                                     "rotationTestObservationMeasurements.dat", 16,
-    //                                     input_output::getTudatRootPath( ) );
-    //    input_output::writeMatrixToFile( utilities::convertStlVectorToEigenVector(
-    //                                         getConcatenatedTimeVector( estimationInput->getObservationsAndTimes( ) ) ),
-    //                                     "rotationTestObservationTimes.dat", 16,
-    //                                     input_output::getTudatRootPath( ) );
-    //    input_output::writeMatrixToFile( utilities::convertStlVectorToEigenVector(
-    //                                         getConcatenatedGroundStationIndex( estimationInput->getObservationsAndTimes( ) ).first ),
-    //                                     "rotationTestObservationLinkEnds.dat", 16,
-    //                                     input_output::getTudatRootPath( ) );
-    //    input_output::writeMatrixToFile( getConcatenatedMeasurementVector( estimationInput->getObservationsAndTimes( ) ),
-    //                                     "rotationTestObservationMeasurements.dat", 16,
-    //                                     input_output::getTudatRootPath( ) );
-
-    //    input_output::writeMatrixToFile( estimationOutput->getFormalErrorVector( ),
-    //                                     "rotationTestObservationFormalEstimationError.dat", 16,
-    //                                     input_output::getTudatRootPath( ) );
 }
 
 //! Test if Phobos coupled translational-rotational dynamics is correctly estimation from lander tracking data

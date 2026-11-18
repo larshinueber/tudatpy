@@ -242,8 +242,6 @@ BOOST_AUTO_TEST_CASE( testEihEstimation )
                   << std::endl;
 
         parameterCorrections.push_back( parameterCorrection );
-        //        Eigen::VectorXd bestResiduals = estimationOutput->residuals_;
-        //        input_output::writeMatrixToFile( bestResiduals, "residuals_eih_" + std::to_string( test ) + ".dat", 16 );
     }
 
     BOOST_CHECK_SMALL( parameterCorrections.at( 0 ).segment( 0, 3 ).norm( ) / parameterCorrections.at( 1 ).segment( 0, 3 ).norm( ),

@@ -176,13 +176,6 @@ BOOST_AUTO_TEST_CASE( testIfmsObservationMex )
         std::cout << residualVector.rows( ) << " " << rmsResidual << " " << meanResidual << std::endl;
         BOOST_CHECK_SMALL( rmsResidual, 3.5E-3 );
         BOOST_CHECK_SMALL( meanResidual, 1.0E-3 );
-
-        //        input_output::writeMatrixToFile( observedObservationCollection->getObservationVector( ), "ifms_doppler_" +
-        //        std::to_string( i ) + ".dat", 16 ); input_output::writeMatrixToFile( residualVector, "ifms_residuals_" +
-        //        std::to_string( i ) + ".dat", 16 ); input_output::writeMatrixToFile(
-        //            utilities::convertStlVectorToEigenVector(
-        //                utilities::staticCastVector< double, Time >( observedObservationCollection->getConcatenatedTimeVector() ) ),
-        //                "ifms_times_" + std::to_string( i ) + ".dat", 16 );
     }
 }
 // End test suite

@@ -125,8 +125,6 @@ std::pair< std::shared_ptr< EstimationOutput< StateScalarType > >, Eigen::Vector
     std::shared_ptr< ObservationCollection<> > observationsAndTimes = simulateObservations< StateScalarType, TimeType >(
             measurementSimulationInput, orbitDeterminationManager.getObservationSimulators( ), bodies );
 
-    // input_output::writeMatrixToFile( observationsAndTimes.begin( )->second.begin( )->second.first, "preFitObservations.dat" );
-
     // Define estimation input
     std::shared_ptr< EstimationInput< StateScalarType, TimeType > > estimationInput =
             std::make_shared< EstimationInput< StateScalarType, TimeType > >( observationsAndTimes );
