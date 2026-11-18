@@ -9,7 +9,7 @@ import numpy as np
 from tudatpy.dynamics import environment_setup, parameters_setup, propagation_setup
 from tudatpy.dynamics.parameters_setup import EstimatableParameterTypes
 from tudatpy.estimation import estimation_analysis
-from tudatpy.interface import spice
+from tudatpy.data_input.environment_data import spice
 
 
 def _create_multi_body_tide_environment():

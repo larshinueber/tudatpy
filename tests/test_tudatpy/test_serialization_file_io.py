@@ -516,7 +516,7 @@ class TestPropagationTerminationDetailsFileIO:
     def test_termination_details_binary(self):
         """Requires a real propagation to create a valid instance."""
         pytest.importorskip("spice")
-        from tudatpy.interface import spice
+        from tudatpy.data_input.environment_data import spice
         from tudatpy.astro import element_conversion
         from tudatpy.astro.time_representation import DateTime
         from tudatpy.dynamics import environment_setup, propagation_setup, simulator
@@ -584,7 +584,7 @@ class TestSimulationResultsFileIO:
     @staticmethod
     def _single_arc_results():
         pytest.importorskip("spice")
-        from tudatpy.interface import spice
+        from tudatpy.data_input.environment_data import spice
         from tudatpy.astro import element_conversion
         from tudatpy.astro.time_representation import DateTime
         from tudatpy.dynamics import environment_setup, propagation_setup, simulator
@@ -651,7 +651,7 @@ class TestSimulationResultsFileIO:
     def test_single_arc_variational_simulation_results_binary(self):
         """Save/load SingleArcVariationalSimulationResults through binary file."""
         pytest.importorskip("spice")
-        from tudatpy.interface import spice
+        from tudatpy.data_input.environment_data import spice
         from tudatpy.astro import element_conversion
         from tudatpy.astro.time_representation import DateTime
         from tudatpy.dynamics import environment_setup, propagation_setup, simulator
@@ -729,7 +729,7 @@ class TestHybridTerminationDetailsFileIO:
     def test_hybrid_termination_details_binary(self):
         """Save/load PropagationTerminationDetailsFromHybridCondition through binary."""
         pytest.importorskip("spice")
-        from tudatpy.interface import spice
+        from tudatpy.data_input.environment_data import spice
         from tudatpy.astro import element_conversion
         from tudatpy.astro.time_representation import DateTime
         from tudatpy.dynamics import environment_setup, propagation_setup, simulator

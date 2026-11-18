@@ -337,9 +337,8 @@ void expose_parameters( py::module& m )
  .. code-block:: python
 
      import numpy as np
-     from tudatpy.interface import spice
+     from tudatpy.data_input.environment_data import spice
      from tudatpy.dynamics import environment_setup, propagation_setup, parameters_setup, parameters
-     from tudatpy
      from tudatpy.astro.time_representation import DateTime
 
      # Load SPICE kernels

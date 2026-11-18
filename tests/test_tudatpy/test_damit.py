@@ -8,7 +8,7 @@ import tudatpy.data_input.environment_data.damit.damit as damit_module
 from tudatpy.astro.polyhedron_utilities import volume
 from tudatpy.data_input.environment_data.damit import DamitModel
 from tudatpy.dynamics import environment_setup
-from tudatpy.interface import spice
+from tudatpy.data_input.environment_data import spice
 
 TEST_ASTEROID = 433
 TEST_ASTEROID_MODEL = 3083

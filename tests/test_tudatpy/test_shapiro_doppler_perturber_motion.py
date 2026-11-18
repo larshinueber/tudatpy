@@ -12,7 +12,7 @@ import pytest
 from tudatpy.astro.time_representation import Time
 from tudatpy.dynamics import environment_setup
 from tudatpy.estimation import observable_models_setup, observations_setup
-from tudatpy.interface import spice
+from tudatpy.data_input.environment_data import spice
 
 C = 299792458.0
 links = observable_models_setup.links

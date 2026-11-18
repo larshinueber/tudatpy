@@ -702,7 +702,7 @@ class TestSimulationBasedPickle:
     @staticmethod
     def _run_propagation():
         """Run a simple propagation and return the dynamics simulator."""
-        from tudatpy.interface import spice
+        from tudatpy.data_input.environment_data import spice
         from tudatpy.astro import element_conversion
         from tudatpy.astro.time_representation import DateTime
         from tudatpy.dynamics import environment_setup, propagation_setup, simulator
@@ -759,7 +759,7 @@ class TestSimulationBasedPickle:
     def test_propagation_termination_details_from_hybrid(self):
         """Pickle roundtrip for PropagationTerminationDetailsFromHybridCondition."""
         pytest.importorskip("spice")
-        from tudatpy.interface import spice
+        from tudatpy.data_input.environment_data import spice
         from tudatpy.astro import element_conversion
         from tudatpy.astro.time_representation import DateTime
         from tudatpy.dynamics import environment_setup, propagation_setup, simulator
@@ -807,7 +807,7 @@ class TestSimulationBasedPickle:
     def test_single_arc_variational_simulation_results(self):
         """Pickle roundtrip for SingleArcVariationalSimulationResults."""
         pytest.importorskip("spice")
-        from tudatpy.interface import spice
+        from tudatpy.data_input.environment_data import spice
         from tudatpy.astro import element_conversion
         from tudatpy.astro.time_representation import DateTime
         from tudatpy.dynamics import environment_setup, propagation_setup, simulator

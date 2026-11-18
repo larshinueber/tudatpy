@@ -2,7 +2,7 @@ import numpy as np
 
 from tudatpy.astro import element_conversion, two_body_dynamics
 from tudatpy.dynamics import environment_setup, propagation_setup, simulator
-from tudatpy.interface import spice
+from tudatpy.data_input.environment_data import spice
 
 SPACECRAFT_NAME = "Spacecraft"
 CENTRAL_BODY_NAME = "Earth"
