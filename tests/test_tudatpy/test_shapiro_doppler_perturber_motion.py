@@ -10,16 +10,13 @@ import numpy as np
 import pytest
 
 from tudatpy.astro.time_representation import Time
+from tudatpy.constants import SPEED_OF_LIGHT
 from tudatpy.dynamics import environment_setup
-from tudatpy.estimation import observable_models_setup, observations_setup
+from tudatpy.estimation import observations
 from tudatpy.data_input.environment_data import spice
-
-C = 299792458.0
-links = observable_models_setup.links
-models = observable_models_setup.model_settings
-corrections = observable_models_setup.light_time_corrections
-simulation = observations_setup.observations_simulation_settings
-wrapper = observations_setup.observations_wrapper
+from tudatpy.estimation.observable_models_setup import links, model_settings, light_time_corrections
+from tudatpy.estimation.observations_setup import observations_simulation_settings
+from tudatpy.estimation.observations_setup import observations_simulation_settings
 
 
 @pytest.mark.parametrize("perturber, gm_scaling", [("Sun", 1.0e4), ("Earth", 1.0)])
@@ -43,24 +40,33 @@ def test_shapiro_doppler_includes_perturber_motion(perturber, gm_scaling):
     )
 
     def simulate(model, observable_type, times):
-        sim_settings = simulation.tabulated_simulation_settings(
+        sim_settings = observations_simulation_settings.tabulated_simulation_settings(
             observable_type, link, [Time(float(t)) for t in times], links.receiver
         )
-        simulators = simulation.create_observation_simulators([model], bodies)
-        observations = wrapper.simulate_observations([sim_settings], simulators, bodies)
-        return np.asarray(observations.concatenated_observations, float).ravel()
+        simulators = observations_simulation_settings.create_observation_simulators([model], bodies)
+        simulated_observations = observations.simulate_observations(
+            [sim_settings], simulators, bodies
+        )
+        return np.asarray(simulated_observations.concatenated_observations, float).ravel()
 
-    shapiro = [corrections.first_order_relativistic_light_time_correction([perturber])]
+    shapiro = [light_time_corrections.first_order_relativistic_light_time_correction([perturber])]
     times = 3.5 * 86400.0 + np.arange(0.0, 86400.0, 7200.0)
 
     def doppler(corr):  # model output in m/s
-        model = models.one_way_doppler_instantaneous(link, corr)
-        return simulate(model, models.ObservableType.one_way_instantaneous_doppler_type, times) / C
+        model = model_settings.one_way_doppler_instantaneous(link, corr)
+        return (
+            simulate(model, model_settings.ObservableType.one_way_instantaneous_doppler_type, times)
+            / SPEED_OF_LIGHT
+        )
 
     def light_time(corr, t):
         return (
-            simulate(models.one_way_range(link, corr), models.ObservableType.one_way_range_type, t)
-            / C
+            simulate(
+                model_settings.one_way_range(link, corr),
+                model_settings.ObservableType.one_way_range_type,
+                t,
+            )
+            / SPEED_OF_LIGHT
         )
 
     shapiro_doppler = doppler(shapiro) - doppler([])
