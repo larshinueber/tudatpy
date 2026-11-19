@@ -11,12 +11,23 @@
 #include "tudat/simulation/estimation_setup/createAccelerationPartials.h"
 #include "tudat/astro/gravitation/basicSolidBodyTideGravityFieldVariations.h"
 #include "tudat/astro/gravitation/gravityFieldVariations.h"
+#include "tudat/simulation/propagation_setup/environmentUpdater.h"
 
 namespace tudat
 {
 
 namespace simulation_setup
 {
+
+std::function< void( const double ) > createNumericalPartialEnvironmentUpdateFunction(
+        const SystemOfBodies& bodies,
+        const std::map< propagators::EnvironmentModelsToUpdate, std::vector< std::string > >& environmentUpdateSettings )
+{
+    auto environmentUpdater = std::make_shared< propagators::EnvironmentUpdater< double, double > >( bodies, environmentUpdateSettings );
+    return [ environmentUpdater ]( const double currentTime ) {
+        environmentUpdater->updateEnvironment( currentTime, std::unordered_map< propagators::IntegratedStateType, Eigen::VectorXd >( ) );
+    };
+}
 
 //! Function to create a list of objects that can be used to compute partials of tidal gravity field variations
 std::vector< std::shared_ptr< orbit_determination::TidalLoveNumberPartialInterface > > createTidalLoveNumberInterfaces(

@@ -11,10 +11,12 @@
 #ifndef TUDAT_CREATEACCELERATIONPARTIALS_H
 #define TUDAT_CREATEACCELERATIONPARTIALS_H
 
-#include <memory.h>
+#include <functional>
+#include <memory>
 
 #include "tudat/astro/basic_astro/accelerationModel.h"
 
+#include "tudat/astro/gravitation/thirdBodyPerturbation.h"
 #include "tudat/simulation/environment_setup/body.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/accelerationPartial.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/centralGravityAccelerationPartial.h"
@@ -42,13 +44,16 @@
 #include "tudat/astro/basic_astro/accelerationModelTypes.h"
 #include "tudat/astro/relativity/einsteinInfeldHoffmannAcceleration.h"
 #include "tudat/astro/orbit_determination/acceleration_partials/tidalLoveNumberPartialInterface.h"
-#include "tudat/simulation/propagation_setup/environmentUpdater.h"
 
 namespace tudat
 {
 
 namespace simulation_setup
 {
+
+std::function< void( const double ) > createNumericalPartialEnvironmentUpdateFunction(
+        const SystemOfBodies& bodies,
+        const std::map< propagators::EnvironmentModelsToUpdate, std::vector< std::string > >& environmentUpdateSettings );
 
 template< typename ParameterScalarType >
 std::shared_ptr< estimatable_parameters::CustomAccelerationPartialCalculator > createCustomAccelerationPartial(
@@ -81,12 +86,7 @@ std::shared_ptr< estimatable_parameters::CustomAccelerationPartialCalculator > c
                 std::bind( &Body::setState, bodies.at( bodyName ), std::placeholders::_1 );
 
         std::function< void( const double ) > environmentUpdateFunction =
-                std::bind( &propagators::EnvironmentUpdater< double, double >::updateEnvironment,
-                           std::make_shared< propagators::EnvironmentUpdater< double, double > >(
-                                   bodies, numericalCustomPartialSettings->environmentUpdateSettings_ ),
-                           std::placeholders::_1,
-                           std::unordered_map< propagators::IntegratedStateType, Eigen::VectorXd >( ),
-                           std::vector< propagators::IntegratedStateType >( ) );
+                createNumericalPartialEnvironmentUpdateFunction( bodies, numericalCustomPartialSettings->environmentUpdateSettings_ );
 
         customPartialCalculator = std::make_shared< estimatable_parameters::NumericalAccelerationPartialWrtStateCalculator >(
                 numericalCustomPartialSettings->parameterPerturbation_,

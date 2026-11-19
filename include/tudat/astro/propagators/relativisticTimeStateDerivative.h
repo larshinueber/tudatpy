@@ -34,9 +34,10 @@
 
 #include "tudat/simulation/environment_setup/body.h"
 #include "tudat/astro/basic_astro/timeConversions.h"
+#include "tudat/astro/gravitation/gravityFieldModel.h"
+#include "tudat/astro/gravitation/sphericalHarmonicsGravityField.h"
 #include "tudat/interface/sofa/sofaTimeConversions.h"
 #include "tudat/astro/ephemerides/customEphemeris.h"
-#include "tudat/simulation/propagation_setup/createEnvironmentUpdater.h"
 #include "tudat/astro/propagators/singleStateTypeDerivative.h"
 #include "tudat/astro/relativity/relativisticPotentials.h"
 #include "tudat/astro/relativity/metric.h"
@@ -386,7 +387,7 @@ protected:
     //! Bodies for which spherical-harmonic corrections are applied (index matches external body list).
     std::map< int, std::shared_ptr< simulation_setup::Body > > sphericalHarmonicBodies_;
 
-    std::shared_ptr< propagators::EnvironmentUpdater< double, double > > environmentUpdater_;
+    // std::shared_ptr< propagators::EnvironmentUpdater< double, double > > environmentUpdater_;
 
     std::function< TimeType( const TimeType& ) > timeVariableConversionFunction_;
 
