@@ -560,7 +560,6 @@ add_subdirectory(src/tudat/interface)
 add_subdirectory(src/tudat/math)
 add_subdirectory(src/tudat/simulation)
 add_subdirectory(src/tudat/io)
-add_subdirectory(src/tudat/utils)
 
 if (TUDAT_BUILD_WITH_SERIALIZATION)
     # Serialization registration objects must be linked by every supported Tudat aggregate. Their
