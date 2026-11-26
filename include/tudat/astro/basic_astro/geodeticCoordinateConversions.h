@@ -18,6 +18,7 @@
 #include <utility>
 
 #include <Eigen/Core>
+#include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat
 {

@@ -11,7 +11,10 @@
 #ifndef TUDAT_AERODYNAMICSCALINGCOEFFICIENT_H
 #define TUDAT_AERODYNAMICSCALINGCOEFFICIENT_H
 
+#include "tudat/astro/aerodynamics/aerodynamicAcceleration.h"
 #include "tudat/astro/orbit_determination/estimatable_parameters/estimatableParameter.h"
+#include "tudat/math/interpolators/lookupScheme.h"
+#include "tudat/math/interpolators/piecewiseConstantInterpolator.h"
 
 namespace tudat
 {

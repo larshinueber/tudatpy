@@ -19,6 +19,7 @@
 
 #include "tudat/astro/basic_astro/physicalConstants.h"
 
+#include "tudat/astro/earth_orientation/terrestrialTimeScaleConverter.h"
 #include "tudat/astro/ground_stations/transmittingFrequencies.h"
 #include "tudat/astro/observation_models/lightTimeSolution.h"
 

@@ -15,6 +15,8 @@
 
 #include <Eigen/Core>
 
+#include "tudat/astro/gravitation/sphericalHarmonicsGravityField.h"
+#include "tudat/math/basic/coordinateConversions.h"
 #include "tudat/math/basic/sphericalHarmonics.h"
 
 namespace tudat

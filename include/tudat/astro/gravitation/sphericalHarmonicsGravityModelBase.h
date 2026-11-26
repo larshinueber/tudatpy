@@ -13,6 +13,7 @@
 #define TUDAT_SPHERICAL_HARMONICS_GRAVITATIONAL_ACCELERATION_MODEL_BASE_H
 
 #include <functional>
+#include "tudat/math/basic/mathematicalConstants.h"
 
 namespace tudat
 {

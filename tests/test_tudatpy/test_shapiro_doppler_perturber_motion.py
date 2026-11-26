@@ -16,7 +16,6 @@ from tudatpy.estimation import observations
 from tudatpy.data_input.environment_data import spice
 from tudatpy.estimation.observable_models_setup import links, model_settings, light_time_corrections
 from tudatpy.estimation.observations_setup import observations_simulation_settings
-from tudatpy.estimation.observations_setup import observations_simulation_settings
 
 
 @pytest.mark.parametrize("perturber, gm_scaling", [("Sun", 1.0e4), ("Earth", 1.0)])
