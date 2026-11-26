@@ -13,9 +13,6 @@
 
 #include "gravitation/basicSolidBodyTideGravityFieldVariations.h"
 #include "gravitation/centralGravityModel.h"
-// #include "gravitation/centralJ2GravityModel.h"
-// #include "gravitation/centralJ2J3GravityModel.h"
-// #include "gravitation/centralJ2J3J4GravityModel.h"
 #include "gravitation/directTidalDissipationAcceleration.h"
 #include "gravitation/fourthDegreeFullTwoBodyGravitationalTorque.h"
 #include "gravitation/gravityFieldModel.h"
