@@ -282,6 +282,57 @@ void expose_parameters_setup_types( py::module& m )
             .value( "normal_velocity_at_wall_ratio_type",
                     tep::EstimatebleParametersEnum::normal_velocity_at_wall_ratio,
                     R"doc(Estimatable parameter for normal velocity at wall ratio.)doc" )
+            .value( "initial_mass_state_type",
+                    tep::EstimatebleParametersEnum::initial_mass_state,
+                    R"doc(Estimatable parameter for initial mass state.)doc" )
+            .value( "scaled_longitude_libration_amplitude_type",
+                    tep::EstimatebleParametersEnum::scaled_longitude_libration_amplitude,
+                    R"doc(Estimatable parameter for scaled longitude libration amplitude.)doc" )
+            .value( "constant_thrust_magnitude_parameter_type",
+                    tep::EstimatebleParametersEnum::constant_thrust_magnitude_parameter,
+                    R"doc(Estimatable parameter for constant thrust magnitude.)doc" )
+            .value( "constant_specific_impulse_type",
+                    tep::EstimatebleParametersEnum::constant_specific_impulse,
+                    R"doc(Estimatable parameter for constant specific impulse.)doc" )
+            .value( "constant_time_observation_bias_type",
+                    tep::EstimatebleParametersEnum::constant_time_observation_bias,
+                    R"doc(Estimatable parameter for constant time observation bias.)doc" )
+            .value( "arc_wise_time_observation_bias_type",
+                    tep::EstimatebleParametersEnum::arc_wise_time_observation_bias,
+                    R"doc(Estimatable parameter for arc-wise time observation bias.)doc" )
+            .value( "yarkovsky_parameter_type",
+                    tep::EstimatebleParametersEnum::yarkovsky_parameter,
+                    R"doc(Estimatable parameter for Yarkovsky acceleration parameter.)doc" )
+            .value( "custom_estimated_parameter_type",
+                    tep::EstimatebleParametersEnum::custom_estimated_parameter,
+                    R"doc(Estimatable parameter for custom parameter.)doc" )
+            .value( "reference_point_position_type",
+                    tep::EstimatebleParametersEnum::reference_point_position,
+                    R"doc(Estimatable parameter for reference point position.)doc" )
+            .value( "polynomial_gravity_field_variation_amplitudes_type",
+                    tep::EstimatebleParametersEnum::polynomial_gravity_field_variation_amplitudes,
+                    R"doc(Estimatable parameter for polynomial gravity field variation amplitudes.)doc" )
+            .value( "periodic_gravity_field_variation_amplitudes_type",
+                    tep::EstimatebleParametersEnum::periodic_gravity_field_variation_amplitudes,
+                    R"doc(Estimatable parameter for periodic gravity field variation amplitudes.)doc" )
+            .value( "mode_coupled_tidal_love_numbers_type",
+                    tep::EstimatebleParametersEnum::mode_coupled_tidal_love_numbers,
+                    R"doc(Estimatable parameter for mode-coupled tidal Love numbers.)doc" )
+            .value( "nominal_rotation_pole_position_type",
+                    tep::EstimatebleParametersEnum::nominal_rotation_pole_position,
+                    R"doc(Estimatable parameter for nominal rotation pole position.)doc" )
+            .value( "rotation_pole_position_rate_type",
+                    tep::EstimatebleParametersEnum::rotation_pole_position_rate,
+                    R"doc(Estimatable parameter for rotation pole position rate.)doc" )
+            .value( "rotation_longitudinal_libration_terms_type",
+                    tep::EstimatebleParametersEnum::rotation_longitudinal_libration_terms,
+                    R"doc(Estimatable parameter for rotation longitudinal libration terms.)doc" )
+            .value( "rotation_pole_libration_terms_type",
+                    tep::EstimatebleParametersEnum::rotation_pole_libration_terms,
+                    R"doc(Estimatable parameter for rotation pole libration terms.)doc" )
+            .value( "full_acceleration_scaling_factor_type",
+                    tep::EstimatebleParametersEnum::full_acceleration_scaling_factor,
+                    R"doc(Estimatable parameter for full acceleration scaling factor.)doc" )
 
             .export_values( );
 
@@ -802,7 +853,7 @@ EstimatableParameterSettings
 
  Function for creating parameter settings for scaling the radiation pressure acceleration component in the direction from the body
  undergoing the acceleration to the source model. When using this parameter, the radiation pressure :math:`\mathbf{a}` is decomposed into
- a component :math:`\mathbf{a}_{\parallel}` and :math:`\mathbf{a}_{\perp}, such that :math:`\mathbf{a}=\mathbf{a}_{\parallel}+\mathbf{a}_{\perp}`,
+ a component :math:`\mathbf{a}_{\parallel}` and :math:`\mathbf{a}_{\perp}`, such that :math:`\mathbf{a}=\mathbf{a}_{\parallel}+\mathbf{a}_{\perp}`,
  where the parallel direction is computed as the component parallel with the vector from the center of mass of the source direction to the center of mass of the target direction.
  The radiation pressure model has parameters :math:`c_{\parallel}` and :math:`c_{\perp}` (nominally set to unity) that modify the acceleration as:
 
@@ -1279,11 +1330,18 @@ EstimatableParameterSettings
      Instance of :class:`~tudatpy.dynamics.parameters_setup.EstimatableParameterSettings` derived :class:`~tudatpy.dynamics.parameters_setup.SphericalHarmonicEstimatableParameterSettings` class
      for the applicable spherical harmonics c-coefficients of the specified body's gravitational model.
 
+ Examples
+ --------
 
+ In the following example, all cosine coefficients of the Jupiter gravity field from degree/order 2/0 to 4/4 are set up as parameter:
 
+ .. code-block:: python
 
+        from tudatpy.dynamics import parameters_setup
 
-
+        sh_parameter = parameters_setup.spherical_harmonics_c_coefficients(
+            "Jupiter", minimum_degree=2, minimum_order=0, maximum_degree=4, maximum_order=4
+        )
 
      )doc" );
 
@@ -1313,11 +1371,18 @@ EstimatableParameterSettings
      Instance of :class:`~tudatpy.dynamics.parameters_setup.EstimatableParameterSettings` derived :class:`~tudatpy.dynamics.parameters_setup.SphericalHarmonicEstimatableParameterSettings` class
      for the applicable spherical harmonics c-coefficients of the specified body's gravitational model.
 
+ Examples
+ --------
 
+ In the following example, the cosine coefficients of degree/order 2/0, 2/1, 2/2, 3/0, and 4/0 of the Jupiter gravity field are set up as parameter:
 
+ .. code-block:: python
 
+        from tudatpy.dynamics import parameters_setup
 
-
+        sh_parameter = parameters_setup.spherical_harmonics_c_coefficients_block(
+            "Jupiter", [(2, 0), (2, 1), (2, 2), (3, 0), (4, 0)]
+        )
 
      )doc" );
 
