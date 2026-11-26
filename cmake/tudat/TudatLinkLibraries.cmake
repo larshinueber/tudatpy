@@ -74,7 +74,6 @@ list(APPEND Tudat_PROPAGATION_LIBRARIES
         Tudat::tudat_basic_mathematics
         Tudat::tudat_input_output
         Tudat::tudat_basics
-        Tudat::tudat_data
         #        ${TUDAT_EXTERNAL_LIBRARIES}
         )
 
@@ -119,7 +118,6 @@ if (TUDAT_BUILD_WITH_ESTIMATION_TOOLS)
             Tudat::tudat_basic_mathematics
             Tudat::tudat_input_output
             Tudat::tudat_basics
-            Tudat::tudat_data
             )
 
 else ()
