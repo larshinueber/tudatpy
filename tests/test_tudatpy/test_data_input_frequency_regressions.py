@@ -1,7 +1,11 @@
 """Check that transmitted-frequency schedules keep exact times and remain safe to edit."""
 
 from tudatpy.astro.time_representation import Time
-from tudatpy.data_input.tracking_data import FrequencyRamp, RampedFrequencySupplementaryData
+from tudatpy.data_input.tracking_data import (
+    FrequencyRamp,
+    PiecewiseConstantFrequencySupplementaryData,
+    RampedFrequencySupplementaryData,
+)
 
 
 def test_ramp_epochs_preserve_time_precision_and_accept_floats():
@@ -42,3 +46,17 @@ def test_frequency_ramp_records_survive_container_growth_and_deletion():
     assert record.frequency_rate == 0.1
     record.end_time = 2.5
     assert float(record.end_time) == 2.5
+
+
+def test_frequency_supplementary_data_frequency_band():
+    """Frequency data are band-independent by default, and can be assigned to a frequency band."""
+
+    ramps = RampedFrequencySupplementaryData()
+    assert ramps.frequency_band == ""
+    ramps.frequency_band = "Ka-band"
+    assert ramps.frequency_band == "Ka-band"
+
+    ramps = RampedFrequencySupplementaryData([FrequencyRamp(1.0, 2.0, 7.1e9, 0.0)], "X-band")
+    assert ramps.frequency_band == "X-band"
+    history = PiecewiseConstantFrequencySupplementaryData({1.0: 34.3e9}, frequency_band="Ka-band")
+    assert history.frequency_band == "Ka-band"
