@@ -247,6 +247,32 @@ BOOST_AUTO_TEST_CASE( testMultipleIfmsFileReader )
     }
 }
 
+BOOST_AUTO_TEST_CASE( testIfmsFrequencyRampBand )
+{
+    const std::vector ifmsFiles{ paths::getTudatTestDataPath( ) +
+                                 "/estrack_n_way_doppler_observation_model/M32ICL1L02_D2X_133612305_00.TAB" };
+
+    // If the frequency bands are provided, the uplink band (first frequency band) is assigned to the frequency ramps
+    {
+        std::vector< std::shared_ptr< data::TrackingSupplementaryData > > supplementaryData =
+                readIfmsFiles< double, Time >(
+                        ifmsFiles, "spacecraft", "NWNORCIA", "Earth", true, true, std::vector< std::string >{ "X-band", "X-band" } )
+                        .second;
+        BOOST_REQUIRE_EQUAL( supplementaryData.size( ), 1u );
+        BOOST_REQUIRE_EQUAL( supplementaryData.at( 0 )->getFrequencySupplementaryData( ).size( ), 1u );
+        BOOST_CHECK_EQUAL( supplementaryData.at( 0 )->getFrequencySupplementaryData( ).at( 0 )->getFrequencyBand( ), "X-band" );
+    }
+    // If the frequency bands are not provided, no band is assigned to the frequency ramps
+    {
+        std::vector< std::shared_ptr< data::TrackingSupplementaryData > > supplementaryData =
+                readIfmsFiles< double, Time >( ifmsFiles, "spacecraft", "NWNORCIA", "Earth", true, true, std::vector< std::string >( ) )
+                        .second;
+        BOOST_REQUIRE_EQUAL( supplementaryData.size( ), 1u );
+        BOOST_REQUIRE_EQUAL( supplementaryData.at( 0 )->getFrequencySupplementaryData( ).size( ), 1u );
+        BOOST_CHECK_EQUAL( supplementaryData.at( 0 )->getFrequencySupplementaryData( ).at( 0 )->getFrequencyBand( ), "" );
+    }
+}
+
 // End test suite
 BOOST_AUTO_TEST_SUITE_END( );
 

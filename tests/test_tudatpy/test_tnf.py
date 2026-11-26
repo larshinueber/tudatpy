@@ -365,6 +365,76 @@ def test_handle_open_ramps_close_silently_leaves_closed_untouched():
     assert result["end_time"].iloc[1] == open_start + pd.Timedelta(seconds=1)
 
 
+def _dual_band_ramp_events(station: str = "DSS-14") -> pd.DataFrame:
+    """Interleaved X-band and S-band uplink ramp events of one station, with realistic DSN uplink frequencies."""
+    x_band_frequency = 7.18322247e9
+    s_band_frequency = x_band_frequency * 221.0 / 749.0
+    events = [
+        ("X", "2024-01-01 10:00:00", 1, x_band_frequency),
+        ("S", "2024-01-01 10:02:00", 1, s_band_frequency),
+        ("X", "2024-01-01 10:05:00", 4, x_band_frequency),
+        ("S", "2024-01-01 10:07:00", 4, s_band_frequency),
+    ]
+    return pd.DataFrame(
+        [
+            {
+                "station": station,
+                "band": band,
+                "epoch": pd.Timestamp(epoch),
+                "type": event_type,
+                "freq": frequency,
+                "rate": 0.0,
+            }
+            for band, epoch, event_type, frequency in events
+        ]
+    )
+
+
+def test_ramps_are_merged_per_band():
+    """Ramp events in another band do not interrupt the ramp of a band."""
+    result = tnf._RampConverter().process(_dual_band_ramp_events()).set_index("band")
+
+    assert len(result) == 2
+    assert result.loc["X", "start_time"] == pd.Timestamp("2024-01-01 10:00:00")
+    assert result.loc["X", "end_time"] == pd.Timestamp("2024-01-01 10:05:00")
+    assert result.loc["S", "start_time"] == pd.Timestamp("2024-01-01 10:02:00")
+    assert result.loc["S", "end_time"] == pd.Timestamp("2024-01-01 10:07:00")
+
+
+def test_supplementary_data_hold_one_ramp_table_per_band():
+    """Each supported uplink band gets its own ramp table, ramps in unsupported bands are ignored."""
+    unsupported_band_events = pd.DataFrame(
+        [
+            {
+                "station": "DSS-14",
+                "band": "K",
+                "epoch": pd.Timestamp(epoch),
+                "type": event_type,
+                "freq": 14.1e9,
+                "rate": 0.0,
+            }
+            for epoch, event_type in [("2024-01-01 11:00:00", 1), ("2024-01-01 11:05:00", 4)]
+        ]
+    )
+    processor = tnf.TnfTrackingDataProcessor(["fixture.tnf"], [])
+    (supplementary_data,) = processor._build_supplementary_data(
+        [_dual_band_ramp_events(), unsupported_band_events], tnf.OpenRampHandling.raise_exception
+    )
+
+    assert supplementary_data.reference_point_name == "DSS-14"
+    ramps_per_band = {
+        frequency_data.frequency_band: frequency_data.frequency_ramps
+        for frequency_data in supplementary_data.frequency_supplementary_data
+    }
+    assert set(ramps_per_band) == {"X-band", "S-band"}
+    assert len(ramps_per_band["X-band"]) == 1
+    assert len(ramps_per_band["S-band"]) == 1
+    assert ramps_per_band["X-band"][0].start_frequency == pytest.approx(7.18322247e9)
+    assert ramps_per_band["S-band"][0].start_frequency == pytest.approx(
+        7.18322247e9 * 221.0 / 749.0
+    )
+
+
 # -----------------------------------------------------------------------------
 # Pipeline tests: TrackingData -> create_observation_collection_from_tracking_data
 # -----------------------------------------------------------------------------

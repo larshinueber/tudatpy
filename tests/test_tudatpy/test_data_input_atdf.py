@@ -542,6 +542,34 @@ class TestRampConverter:
         }
         assert ramps_per_station == RAMP_ROWS_PER_STATION
 
+    def test_ramps_are_grouped_per_band(self, converter):
+        df = ramp_frame(
+            {"Band": " X"},
+            {"Band": " S", "Frequency (Hz)": 2113872687.0},
+            {
+                "Band": " X",
+                "Start-Time (DT)": pd.Timestamp("1999-03-07 11:47:00"),
+                "End-Time (DT)": pd.Timestamp("1999-03-07 14:40:10"),
+            },
+        )
+        (supplementary_data,) = converter.process(converter.extract(df), EARTH)
+
+        ramps_per_band = {
+            fd.frequency_band: len(fd.frequency_ramps)
+            for fd in supplementary_data.frequency_supplementary_data
+        }
+        assert ramps_per_band == {"X-band": 2, "S-band": 1}
+
+    def test_ramps_in_unsupported_bands_are_ignored(self, converter):
+        df = ramp_frame({"Band": " X"}, {"Band": " Ku", "Frequency (Hz)": 14.1e9})
+        (supplementary_data,) = converter.process(converter.extract(df), EARTH)
+
+        ramps_per_band = {
+            fd.frequency_band: len(fd.frequency_ramps)
+            for fd in supplementary_data.frequency_supplementary_data
+        }
+        assert ramps_per_band == {"X-band": 1}
+
 
 # -----------------------------------------------------------------------------
 # Public entry point

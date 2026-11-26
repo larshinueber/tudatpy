@@ -10,10 +10,12 @@
 #define BOOST_TEST_MAIN
 
 #include <boost/test/included/unit_test.hpp>
+#include <set>
 #include <string>
 #include <vector>
 
 #include "tudat/io/preProcessOdfFile.h"
+#include "tudat/simulation/environment_setup/createGroundStations.h"
 #include "tudat/simulation/estimation_setup/createObservationCollection.h"
 #include "tudat/simulation/estimation_setup/compressDopplerObservationCollection.h"
 
@@ -235,6 +237,54 @@ BOOST_AUTO_TEST_CASE( testProcessOdfData )
             }
             break;
         }
+    }
+}
+
+BOOST_AUTO_TEST_CASE( testOdfRampTablesPerFrequencyBand )
+{
+    // Uplink frequency bands are identified from the DSN uplink frequency allocations
+    BOOST_CHECK_EQUAL( getDsnUplinkFrequencyBandName( 2.115E9 ), "S-band" );
+    BOOST_CHECK_EQUAL( getDsnUplinkFrequencyBandName( 7.18E9 ), "X-band" );
+    BOOST_CHECK_EQUAL( getDsnUplinkFrequencyBandName( 34.4E9 ), "Ka-band" );
+    BOOST_CHECK_EQUAL( getDsnUplinkFrequencyBandName( 8.4E9 ), "" );
+
+    // Ramp tables are stored per ground station and uplink band. The file only contains X-band uplinks.
+    const std::vector odfFiles{ tudat::paths::getTudatTestDataPath( ) + "/odf07155.odf" };
+    std::shared_ptr< input_output::PreProcessedOdfFileContents< Time > > processedOdfFile =
+            input_output::processOdfData< Time >( odfFiles, "MESSENGER", false );
+
+    std::set< std::pair< std::string, std::string > > rampTableIds;
+    for( auto const& [ rampTableId, rampTable ] : processedOdfFile->getRampTables( ) )
+    {
+        rampTableIds.insert( rampTableId );
+        BOOST_CHECK_EQUAL( rampTable->getFrequencyBand( ), rampTableId.second );
+    }
+    BOOST_CHECK( rampTableIds ==
+                 ( std::set< std::pair< std::string, std::string > >{
+                         { "DSS-14", "X-band" }, { "DSS-43", "X-band" }, { "DSS-63", "X-band" } } ) );
+
+    // Supplementary data hold the band-specific ramp tables of each station
+    std::vector< std::shared_ptr< data::TrackingSupplementaryData > > supplementaryData =
+            loadOdfFile( odfFiles, "MESSENGER", "Earth", false ).second;
+    BOOST_CHECK_EQUAL( supplementaryData.size( ), 3u );
+
+    SystemOfBodies bodies;
+    bodies.createEmptyBody( "Earth" );
+    for( const std::shared_ptr< data::TrackingSupplementaryData >& stationSupplementaryData : supplementaryData )
+    {
+        BOOST_REQUIRE_EQUAL( stationSupplementaryData->getFrequencySupplementaryData( ).size( ), 1u );
+        BOOST_CHECK_EQUAL( stationSupplementaryData->getFrequencySupplementaryData( ).at( 0 )->getFrequencyBand( ), "X-band" );
+        createGroundStation(
+                bodies.at( "Earth" ), stationSupplementaryData->getReferencePointName( ), Eigen::Vector3d( 6378137.0, 0.0, 0.0 ) );
+    }
+
+    // Stations must receive a calculator for the X-band only
+    setTrackingSupplementaryDataInBodies( bodies, supplementaryData );
+    for( const std::string stationName : { "DSS-14", "DSS-43", "DSS-63" } )
+    {
+        std::shared_ptr< ground_stations::GroundStation > groundStation = bodies.at( "Earth" )->getGroundStation( stationName );
+        BOOST_CHECK( groundStation->hasFrequencyCalculator( basic_astrodynamics::x_band ) );
+        BOOST_CHECK( !groundStation->hasFrequencyCalculator( basic_astrodynamics::s_band ) );
     }
 }
 
