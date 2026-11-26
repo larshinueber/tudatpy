@@ -14,7 +14,6 @@
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/propagation_setup/singleArcDynamicsSimulator.h"
 
-#include "tudat/astro/aerodynamics/tests/applicationOutput.h"
 #include "tudat/io/basicInputOutput.h"
 
 namespace tudat
@@ -92,7 +91,7 @@ BOOST_AUTO_TEST_CASE( testTabulatedDragCoefficient )
     std::shared_ptr< AerodynamicCoefficientSettings > aerodynamicCoefficientSettings;
 
     // Read CD as semiMajorAixsfunction of altitude
-    Eigen::MatrixXd aerodynamicsDataFromFile = readMatrixFromFile( tudat_applications::getOutputPath( ) + "/tabulatedDragCoefficient.txt" );
+    Eigen::MatrixXd aerodynamicsDataFromFile = readMatrixFromFile( paths::getTudatTestDataPath( ) + "/tabulatedDragCoefficient.txt" );
     Eigen::VectorXd altitudeInKm = aerodynamicsDataFromFile.col( 0 );
     std::vector< double > altitudes;
     for( int i = 0; i < altitudeInKm.rows( ); i++ )

@@ -12,7 +12,6 @@
 #define TUDAT_IO_H
 
 #include "io/aerodynamicCoefficientReader.h"
-#include "io/applicationOutput.h"
 #include "io/basicInputOutput.h"
 #include "io/dictionaryComparer.h"
 #include "io/dictionaryEntry.h"
