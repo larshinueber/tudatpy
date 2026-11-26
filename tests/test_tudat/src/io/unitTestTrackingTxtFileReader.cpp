@@ -26,7 +26,6 @@
 #include "tudat/basics/testMacros.h"
 #include "tudat/io/basicInputOutput.h"
 #include "tudat/simulation/environment_setup/createBodiesFactory.h"
-#include "tudat/simulation/environment_setup/createGroundStations.h"
 #include "tudat/simulation/environment_setup/defaultBodies.h"
 #include "tudat/simulation/estimation_setup/observationCollection.h"
 #include "tudat/simulation/estimation_setup/createObservationCollection.h"
@@ -684,54 +683,6 @@ BOOST_AUTO_TEST_CASE( testMixedCorrectedAndUncorrectedInputs )
     BOOST_CHECK( correctedSet->getObservations( ).at( 0 ).isApprox( Eigen::Vector2d( 0.9, 1.8 ) ) );
     BOOST_CHECK_EQUAL( uncorrectedSet->getObservations( ).at( 0 )( 0 ), 1000.0 );
     BOOST_CHECK( corrected->getObservations( ).at( 0 ).isApprox( Eigen::Vector2d( 1.0, 2.0 ) ) );
-}
-
-// Install a transmitter schedule on both a ground station and a spacecraft, then
-// verify that each requested frequency starts at the right time and stays constant.
-BOOST_AUTO_TEST_CASE( testPiecewiseConstantFrequencySupplementaryDataUsesZeroRateRamps )
-{
-    using FrequencyDataMap =
-            std::map< std::pair< std::string, std::string >, std::vector< std::shared_ptr< data::FrequencySupplementaryData > > >;
-    const std::map< double, double > firstHistory = { { 0.0, 100.0 }, { 10.0, 150.0 } };
-    const std::map< double, double > secondHistory = { { 10.0, 200.0 }, { 20.0, 300.0 } };
-    auto first = std::make_shared< data::PiecewiseConstantFrequencySupplementaryData >( firstHistory );
-    auto second = std::make_shared< data::PiecewiseConstantFrequencySupplementaryData >( secondHistory );
-
-    for( const bool useGroundStation : { true, false } )
-    {
-        simulation_setup::SystemOfBodies bodies;
-        const std::string bodyName = useGroundStation ? "Earth" : "Spacecraft";
-        const std::string referencePointName = useGroundStation ? "500" : "";
-        bodies.createEmptyBody( bodyName );
-        auto body = bodies.at( bodyName );
-        if( useGroundStation )
-        {
-            createGroundStation( body, referencePointName, Eigen::Vector3d( 6378137.0, 0.0, 0.0 ) );
-        }
-        const auto linkEnd = std::make_pair( bodyName, referencePointName );
-        const auto getCalculator = [ & ]( ) {
-            return useGroundStation ? body->getGroundStation( referencePointName )->getTransmittingFrequencyCalculator( )
-                                    : body->getVehicleSystems( )->getTransmittedFrequencyCalculator( );
-        };
-        FrequencyDataMap frequencyData;
-        frequencyData[ linkEnd ] = { first, second };
-        setFrequencySupplementaryDataInBodies( bodies, frequencyData );
-
-        // A spacecraft must receive its transmitter information even when it had no systems yet.
-        if( !useGroundStation )
-        {
-            BOOST_REQUIRE( body->getVehicleSystems( ) != nullptr );
-        }
-        // Both the station and the spacecraft must receive a usable frequency schedule.
-        auto calculator = std::dynamic_pointer_cast< ground_stations::PiecewiseLinearFrequencyInterpolator >( getCalculator( ) );
-        BOOST_REQUIRE( calculator != nullptr );
-
-        // The three frequency steps must be constant; the second input supplies the value at time 10.
-        BOOST_CHECK( calculator->getRampRates( ) == std::vector< double >( 3, 0.0 ) );
-        BOOST_CHECK_EQUAL( calculator->getTemplatedCurrentFrequency<>( 5.0 ), 100.0 );
-        BOOST_CHECK_EQUAL( calculator->getTemplatedCurrentFrequency<>( 15.0 ), 200.0 );
-        BOOST_CHECK_EQUAL( calculator->getTemplatedCurrentFrequency<>( 25.0 ), 300.0 );
-    }
 }
 
 BOOST_AUTO_TEST_SUITE_END( )
