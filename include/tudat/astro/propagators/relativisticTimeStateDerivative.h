@@ -38,6 +38,7 @@
 #include "tudat/astro/gravitation/sphericalHarmonicsGravityField.h"
 #include "tudat/interface/sofa/sofaTimeConversions.h"
 #include "tudat/astro/ephemerides/customEphemeris.h"
+#include "tudat/astro/gravitation/sphericalHarmonicsGravityField.h"
 #include "tudat/astro/propagators/singleStateTypeDerivative.h"
 #include "tudat/astro/relativity/relativisticPotentials.h"
 #include "tudat/astro/relativity/metric.h"
@@ -48,6 +49,12 @@
 
 namespace tudat
 {
+
+namespace propagators
+{
+template< typename StateScalarType, typename TimeType >
+class EnvironmentUpdater;
+}  // namespace propagators
 
 //! Base class for relativistic time difference calculations.
 /*!

@@ -15,6 +15,7 @@
 #include <memory>
 
 #include "tudat/astro/basic_astro/accelerationModel.h"
+#include "tudat/astro/gravitation/thirdBodyPerturbation.h"
 
 #include "tudat/astro/gravitation/thirdBodyPerturbation.h"
 #include "tudat/simulation/environment_setup/body.h"
